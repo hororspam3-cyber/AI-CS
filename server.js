@@ -1,5 +1,4 @@
 const express = require("express");
-const OpenAI = require("openai");
 const path = require("path");
 
 const app = express();
@@ -7,44 +6,47 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.post("/chat", async (req, res) => {
-  try {
-    const message = req.body.message;
+app.post("/chat", (req, res) => {
+  const message = (req.body.message || "").toLowerCase();
 
-    if (!message) {
-      return res.status(400).json({
-        error: "Pesan belum dikirim."
-      });
-    }
+  let reply;
 
-    const response = await client.responses.create({
-      model: "gpt-5-mini",
-      input: message
-    });
+  if (message.includes("halo") || message.includes("hai")) {
+    reply = "Halo 👋 Selamat datang di Customer Service. Ada yang bisa saya bantu?";
+  } 
+  else if (message.includes("harga") || message.includes("price")) {
+    reply = "Untuk informasi harga, silakan sebutkan produk yang ingin Anda tanyakan.";
+  } 
+  else if (message.includes("pembelian") || message.includes("beli")) {
+    reply = "Tentu. Saya dapat membantu proses pembelian. Silakan sebutkan produk yang ingin Anda beli.";
+  } 
+  else if (message.includes("pembayaran") || message.includes("bayar")) {
+    reply = "Saya dapat membantu masalah pembayaran. Silakan jelaskan kendala pembayaran Anda.";
+  } 
+  else if (message.includes("transaksi")) {
+    reply = "Untuk pemeriksaan transaksi, silakan siapkan nomor transaksi. Jangan berikan password atau OTP.";
+  } 
+  else if (message.includes("akun")) {
+    reply = "Saya dapat membantu masalah akun. Jelaskan masalah yang Anda alami.";
+  } 
+  else if (message.includes("terima kasih") || message.includes("thanks")) {
+    reply = "Sama-sama 😊 Senang bisa membantu.";
+  } 
+  else {
+    reply = "Terima kasih atas pertanyaan Anda. Untuk demo ini, saya dapat membantu tentang akun, pembelian, harga, pembayaran, dan transaksi.";
+  }
 
-    res.json({
-      reply: response.output_text
-    });
-
-  } catch (error) {
-  console.error("OPENAI ERROR:", error);
-
-  res.status(500).json({
-    error: error.message || "Terjadi kesalahan pada AI."
+  res.json({
+    reply: reply
   });
-}
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server berjalan pada port ${PORT}`);
+  console.log(`Server demo berjalan pada port ${PORT}`);
 });
