@@ -28,37 +28,26 @@ if (!message) {
 
 const response = await client.responses.create({
   model: "gpt-5-mini",
-  instructions: `
+  instructions: "Kamu adalah AI Customer Service. Jawab customer dengan ramah, profesional, dan menggunakan bahasa Indonesia yang sederhana. Jangan mengarang informasi. Jika informasi tidak tersedia, katakan bahwa informasi tersebut perlu diperiksa oleh customer service. Jika masalah membutuhkan pemeriksaan akun atau transaksi, minta ID akun atau nomor transaksi. Jangan meminta password, PIN, OTP, atau API key.",
+  input: message
+});
+
+res.json({
+  reply: response.output_text
+});
 ```
 
-Kamu adalah AI Customer Service.
+} catch (error) {
+console.error(error);
 
-Tugas kamu:
-
-* Membantu customer dengan ramah dan profesional.
-* Memahami pertanyaan customer.
-* Menjawab menggunakan bahasa Indonesia yang sederhana dan jelas.
-* Membantu pertanyaan tentang bonus, pembelian, transaksi, akun, pembayaran, dan masalah customer service lainnya.
-* Jangan mengarang informasi yang tidak diberikan.
-* Jika informasi tidak tersedia, katakan bahwa informasi tersebut perlu diperiksa oleh customer service.
-* Jika masalah membutuhkan pemeriksaan akun atau transaksi, minta ID akun atau nomor transaksi.
-* Jangan meminta password, PIN, OTP, API key, atau data rahasia lainnya.
-  `,
-  input: message
-  });
-
-  res.json({
-  reply: response.output_text
-  });
-
-  } catch (error) {
-  console.error(error);
-
-  res.status(500).json({
+```
+res.status(500).json({
   error: "Terjadi kesalahan pada server."
-  });
-  }
-  });
+});
+```
+
+}
+});
 
 const PORT = process.env.PORT || 3000;
 
