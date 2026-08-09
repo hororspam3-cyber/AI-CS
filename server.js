@@ -7,17 +7,14 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Membaca knowledge base
 const knowledge = JSON.parse(
   fs.readFileSync(path.join(__dirname, "knowledge.json"), "utf8")
 );
 
-// Halaman utama
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Customer Service Demo
 app.post("/chat", (req, res) => {
   const message = (req.body.message || "").toLowerCase();
 
