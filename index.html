@@ -154,6 +154,13 @@
   </div>
 </div>
 
+    <div class="quick-menu">
+  <button onclick="quickMessage('Masalah akun')">👤 Akun</button>
+  <button onclick="quickMessage('Masalah pembelian')">🛒 Pembelian</button>
+  <button onclick="quickMessage('Masalah pembayaran')">💳 Pembayaran</button>
+  <button onclick="quickMessage('Masalah transaksi')">📄 Transaksi</button>
+</div>
+    
 <div class="messages" id="messages">
   <div class="message bot">
     Halo 👋 Selamat datang di Customer Service.
@@ -193,7 +200,11 @@
 
       return message;
     }
-
+function quickMessage(text) {
+  input.value = text;
+  sendMessage();
+    }
+    
     async function sendMessage() {
       const text = input.value.trim();
 
