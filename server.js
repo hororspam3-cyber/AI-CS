@@ -1,26 +1,20 @@
 const express = require("express");
-const express = require("express");
 const OpenAI = require("openai");
 const path = require("path");
 
 const app = express();
 
 app.use(express.json());
+app.use(express.static(__dirname));
 
-// Menampilkan file index.html
-app.use(express.static(path.join(__dirname)));
-
-// OpenAI
 const client = new OpenAI({
 apiKey: process.env.OPENAI_API_KEY
 });
 
-// Halaman utama
 app.get("/", (req, res) => {
 res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Chat AI
 app.post("/chat", async (req, res) => {
 try {
 const message = req.body.message;
