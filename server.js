@@ -35,12 +35,12 @@ app.post("/chat", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("OPENAI ERROR:", error);
+  console.error("OPENAI ERROR:", error);
 
-    res.status(500).json({
-      error: "Terjadi kesalahan pada AI."
-    });
-  }
+  res.status(500).json({
+    error: error.message || "Terjadi kesalahan pada AI."
+  });
+}
 });
 
 const PORT = process.env.PORT || 3000;
