@@ -1,0 +1,15 @@
+{
+  "login": [
+    "Jika tidak dapat login, periksa kembali username dan password.",
+    "Jangan berikan password atau OTP kepada siapa pun."
+  ],
+  "akun": [
+    "Untuk masalah akun, pengguna dapat menghubungi customer support."
+  ],
+  "teknis": [
+    "Jika website tidak dapat dibuka, coba refresh halaman atau gunakan browser lain."
+  ],
+  "keamanan": [
+    "Customer support tidak memerlukan password atau OTP pengguna."
+  ]
+}
