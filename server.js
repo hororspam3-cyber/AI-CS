@@ -8,49 +8,43 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 const client = new OpenAI({
-apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 app.get("/", (req, res) => {
-res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.post("/chat", async (req, res) => {
-try {
-const message = req.body.message;
+  try {
+    const message = req.body.message;
 
-```
-if (!message) {
-  return res.status(400).json({
-    error: "Pesan belum dikirim."
-  });
-}
+    if (!message) {
+      return res.status(400).json({
+        error: "Pesan belum dikirim."
+      });
+    }
 
-const response = await client.responses.create({
-  model: "gpt-5-mini",
-  instructions: "Kamu adalah AI Customer Service. Jawab customer dengan ramah, profesional, dan menggunakan bahasa Indonesia yang sederhana. Jangan mengarang informasi. Jika informasi tidak tersedia, katakan bahwa informasi tersebut perlu diperiksa oleh customer service. Jika masalah membutuhkan pemeriksaan akun atau transaksi, minta ID akun atau nomor transaksi. Jangan meminta password, PIN, OTP, atau API key.",
-  input: message
-});
+    const response = await client.responses.create({
+      model: "gpt-5-mini",
+      input: message
+    });
 
-res.json({
-  reply: response.output_text
-});
-```
+    res.json({
+      reply: response.output_text
+    });
 
-} catch (error) {
-console.error(error);
+  } catch (error) {
+    console.error("OPENAI ERROR:", error);
 
-```
-res.status(500).json({
-  error: "Terjadi kesalahan pada server."
-});
-```
-
-}
+    res.status(500).json({
+      error: "Terjadi kesalahan pada AI."
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-console.log(`Server berjalan pada port ${PORT}`);
+  console.log(`Server berjalan pada port ${PORT}`);
 });
