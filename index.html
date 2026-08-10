@@ -21,149 +21,175 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #eef2f6;
+      background: #f1f4f8;
     }
 
     .container {
       width: 100%;
-      max-width: 650px;
+      max-width: 600px;
       height: 100vh;
       margin: auto;
-      background: white;
+      background: #ffffff;
       display: flex;
       flex-direction: column;
     }
 
+    /* =========================
+       HEADER
+    ========================= */
+
     .header {
       background: #1976d2;
       color: white;
-      padding: 20px;
+      padding: 16px;
     }
 
     .company {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
     }
 
     .title {
-      font-size: 18px;
-      margin-top: 6px;
+      font-size: 15px;
+      margin-top: 4px;
     }
 
     .status {
-      font-size: 13px;
-      margin-top: 6px;
+      font-size: 12px;
+      margin-top: 4px;
+      opacity: 0.9;
     }
 
+    /* =========================
+       LOGIN
+    ========================= */
+
     .login-area {
-      padding: 14px;
-      background: white;
-      border-bottom: 1px solid #ddd;
+      padding: 10px 12px;
+      border-bottom: 1px solid #e5e5e5;
     }
 
     .login-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
     .login-row select {
       flex: 1;
-      padding: 12px;
-      border: 1px solid #d0d7de;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid #d5dbe1;
       border-radius: 8px;
       font-size: 14px;
+      background: white;
     }
 
     .login-row button {
       background: #1976d2;
       color: white;
       border: none;
-      padding: 0 18px;
+      padding: 0 16px;
       border-radius: 8px;
       cursor: pointer;
     }
 
     .account-info {
       display: none;
-      margin-top: 10px;
-      padding: 12px;
-      background: #eef7ff;
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: #f2f7fc;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .logout {
-      margin-top: 8px;
+      margin-top: 6px;
       border: none;
       background: #e53935;
       color: white;
-      padding: 7px 12px;
+      padding: 5px 9px;
       border-radius: 6px;
       cursor: pointer;
+      font-size: 12px;
     }
+
+    /* =========================
+       MENU
+    ========================= */
 
     .menu {
       display: flex;
-      gap: 10px;
-      padding: 14px;
-      background: white;
+      gap: 7px;
+      padding: 9px 12px;
       border-bottom: 1px solid #e5e5e5;
       overflow-x: auto;
     }
 
     .menu button {
+      flex-shrink: 0;
       border: 1px solid #d8e2ec;
-      background: #f5f9fd;
-      padding: 11px 16px;
-      border-radius: 25px;
-      white-space: nowrap;
-      font-size: 14px;
+      background: #f7f9fb;
+      padding: 8px 12px;
+      border-radius: 18px;
+      font-size: 13px;
       cursor: pointer;
     }
 
+    /* =========================
+       CHAT
+    ========================= */
+
     .chat {
       flex: 1;
-      padding: 20px;
+      padding: 14px;
       overflow-y: auto;
       background: #f7f9fb;
     }
 
     .bot-message {
-      max-width: 85%;
+      max-width: 88%;
       background: white;
-      padding: 14px 16px;
-      border-radius: 15px;
-      margin-bottom: 15px;
-      line-height: 1.5;
+      padding: 11px 13px;
+      border-radius: 13px;
+      margin-bottom: 10px;
+      line-height: 1.45;
+      font-size: 14px;
       white-space: pre-line;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
     .user-message {
-      max-width: 85%;
+      max-width: 88%;
       margin-left: auto;
       background: #1976d2;
       color: white;
-      padding: 14px 16px;
-      border-radius: 15px;
-      margin-bottom: 15px;
-      line-height: 1.5;
+      padding: 11px 13px;
+      border-radius: 13px;
+      margin-bottom: 10px;
+      line-height: 1.45;
+      font-size: 14px;
       white-space: pre-line;
     }
 
+    /* =========================
+       INPUT
+    ========================= */
+
     .input-area {
       display: flex;
-      gap: 10px;
-      padding: 14px;
+      gap: 8px;
+      padding: 10px 12px;
       background: white;
       border-top: 1px solid #ddd;
     }
 
     .input-area input {
       flex: 1;
-      padding: 14px 18px;
+      min-width: 0;
+      padding: 11px 14px;
       border: 1px solid #d0d7de;
-      border-radius: 25px;
-      font-size: 15px;
+      border-radius: 20px;
+      font-size: 14px;
       outline: none;
     }
 
@@ -171,19 +197,60 @@
       background: #1976d2;
       color: white;
       border: none;
-      padding: 0 22px;
-      border-radius: 25px;
-      font-size: 15px;
+      padding: 0 17px;
+      border-radius: 20px;
+      font-size: 14px;
       cursor: pointer;
+    }
+
+    /* =========================
+       HP
+    ========================= */
+
+    @media (max-width: 480px) {
+
+      .header {
+        padding: 13px;
+      }
+
+      .company {
+        font-size: 18px;
+      }
+
+      .title {
+        font-size: 14px;
+      }
+
+      .menu {
+        padding: 8px 10px;
+      }
+
+      .menu button {
+        padding: 7px 10px;
+        font-size: 12px;
+      }
+
+      .chat {
+        padding: 12px;
+      }
+
+      .bot-message,
+      .user-message {
+        max-width: 92%;
+        font-size: 13px;
+      }
+
     }
 
   </style>
 
 </head>
 
+
 <body>
 
 <div class="container">
+
 
   <!-- HEADER -->
 
@@ -204,7 +271,7 @@
   </div>
 
 
-  <!-- LOGIN DEMO -->
+  <!-- LOGIN -->
 
   <div class="login-area">
 
@@ -236,14 +303,13 @@
 
     </div>
 
+
     <div
       id="accountInfo"
       class="account-info"
     >
 
-      <b>Akun aktif</b>
-
-      <br>
+      <b>Akun aktif:</b>
 
       <span id="loggedUser"></span>
 
@@ -302,9 +368,8 @@
 
       <br><br>
 
-      Silakan login menggunakan
-      akun demo untuk mencoba
-      fitur customer service.
+      Silakan login untuk mulai menggunakan
+      layanan customer service.
 
     </div>
 
@@ -318,13 +383,12 @@
     <input
       type="text"
       id="userInput"
-      placeholder="Ketik pertanyaan kamu..."
+      placeholder="Ketik pertanyaan..."
       autocomplete="off"
       onkeydown="tekanEnter(event)"
     >
 
     <button
-      id="sendButton"
       onclick="kirimPesan()"
     >
       Kirim
@@ -337,316 +401,284 @@
 
 <script>
 
-  // =====================================
-  // CUSTOMER YANG SEDANG LOGIN
-  // =====================================
-
-  let currentCustomerId = "";
+let currentCustomerId = "";
 
 
-  // =====================================
-  // LOGIN
-  // =====================================
+/* LOGIN */
 
-  function loginDemo() {
+function loginDemo() {
 
-    const select =
-      document.getElementById("customerSelect");
-
-    const customerId =
-      select.value;
-
-    if (!customerId) {
-
-      alert(
-        "Silakan pilih akun terlebih dahulu."
-      );
-
-      return;
-
-    }
-
-    currentCustomerId =
-      customerId;
-
-    const accountInfo =
-      document.getElementById("accountInfo");
-
-    const loggedUser =
-      document.getElementById("loggedUser");
-
-    loggedUser.textContent =
-      customerId;
-
-    accountInfo.style.display =
-      "block";
-
-    tambahPesanBot(
-      "Login berhasil sebagai " +
-      customerId +
-      ". Sekarang saya dapat membantu mengecek informasi akun Anda."
-    );
-
-  }
-
-
-  // =====================================
-  // LOGOUT
-  // =====================================
-
-  function logoutDemo() {
-
-    currentCustomerId = "";
-
-    document.getElementById(
-      "accountInfo"
-    ).style.display = "none";
-
+  const select =
     document.getElementById(
       "customerSelect"
-    ).value = "";
+    );
+
+  const customerId =
+    select.value;
+
+  if (!customerId) {
+
+    alert(
+      "Silakan pilih akun terlebih dahulu."
+    );
+
+    return;
+
+  }
+
+  currentCustomerId =
+    customerId;
+
+  document.getElementById(
+    "accountInfo"
+  ).style.display = "block";
+
+  document.getElementById(
+    "loggedUser"
+  ).textContent =
+    customerId;
+
+  tambahPesanBot(
+    "Login berhasil sebagai " +
+    customerId +
+    ". Saya siap membantu Anda."
+  );
+
+}
+
+
+/* LOGOUT */
+
+function logoutDemo() {
+
+  currentCustomerId = "";
+
+  document.getElementById(
+    "accountInfo"
+  ).style.display = "none";
+
+  document.getElementById(
+    "customerSelect"
+  ).value = "";
+
+  tambahPesanBot(
+    "Anda telah logout."
+  );
+
+}
+
+
+/* KATEGORI */
+
+function pilihKategori(kategori) {
+
+  let pertanyaan = "";
+
+  if (kategori === "Akun") {
+
+    pertanyaan =
+      "Saya ingin bertanya tentang akun saya.";
+
+  }
+
+  else if (kategori === "Pembelian") {
+
+    pertanyaan =
+      "Bagaimana cara melakukan pembelian?";
+
+  }
+
+  else if (kategori === "Pembayaran") {
+
+    pertanyaan =
+      "Saya ingin bertanya tentang pembayaran.";
+
+  }
+
+  else if (kategori === "Transaksi") {
+
+    pertanyaan =
+      "Saya ingin mengecek transaksi saya.";
+
+  }
+
+  document.getElementById(
+    "userInput"
+  ).value =
+    pertanyaan;
+
+  kirimPesan();
+
+}
+
+
+/* CHAT */
+
+async function kirimPesan() {
+
+  const input =
+    document.getElementById(
+      "userInput"
+    );
+
+  const pesan =
+    input.value.trim();
+
+  if (!pesan) {
+    return;
+  }
+
+  tambahPesanUser(
+    pesan
+  );
+
+  input.value = "";
+
+  const loading =
+    tambahPesanBot(
+      "🤖 Sedang memeriksa..."
+    );
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/chat",
+        {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+
+            message:
+              pesan,
+
+            customerId:
+              currentCustomerId
+
+          })
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+    loading.remove();
 
     tambahPesanBot(
-      "Anda telah logout. Silakan login kembali untuk mengecek informasi akun."
+      data.reply ||
+      "Maaf, AI tidak memberikan jawaban."
     );
 
   }
 
+  catch (error) {
 
-  // =====================================
-  // KATEGORI
-  // =====================================
+    console.error(
+      error
+    );
 
-  function pilihKategori(kategori) {
+    loading.remove();
 
-    let pertanyaan = "";
+    tambahPesanBot(
+      "⚠️ Terjadi masalah saat menghubungkan ke AI."
+    );
 
-    if (kategori === "Akun") {
+  }
 
-      pertanyaan =
-        "Saya ingin bertanya tentang akun saya.";
+}
 
-    }
 
-    else if (kategori === "Pembelian") {
+/* ENTER */
 
-      pertanyaan =
-        "Bagaimana cara melakukan pembelian?";
+function tekanEnter(event) {
 
-    }
-
-    else if (kategori === "Pembayaran") {
-
-      pertanyaan =
-        "Saya ingin bertanya tentang pembayaran.";
-
-    }
-
-    else if (kategori === "Transaksi") {
-
-      pertanyaan =
-        "Saya ingin mengecek transaksi saya.";
-
-    }
-
-    document.getElementById(
-      "userInput"
-    ).value = pertanyaan;
+  if (
+    event.key === "Enter"
+  ) {
 
     kirimPesan();
 
   }
 
-
-  // =====================================
-  // KIRIM PESAN
-  // =====================================
-
-  async function kirimPesan() {
-
-    const input =
-      document.getElementById(
-        "userInput"
-      );
-
-    const pesan =
-      input.value.trim();
-
-    if (!pesan) {
-      return;
-    }
+}
 
 
-    // Tampilkan pesan customer
+/* USER */
 
-    tambahPesanUser(
-      pesan
+function tambahPesanUser(
+  pesan
+) {
+
+  const chat =
+    document.getElementById(
+      "chat"
     );
 
-    input.value = "";
-
-
-    // Tampilkan loading
-
-    const loading =
-      tambahPesanBot(
-        "🤖 Sedang memeriksa informasi..."
-      );
-
-
-    try {
-
-      const response =
-        await fetch(
-          "/chat",
-          {
-
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body: JSON.stringify({
-
-              message: pesan,
-
-              customerId:
-                currentCustomerId
-
-            })
-
-          }
-        );
-
-
-      const data =
-        await response.json();
-
-
-      // Hapus loading
-
-      loading.remove();
-
-
-      // Tampilkan jawaban AI
-
-      tambahPesanBot(
-        data.reply ||
-        "Maaf, AI tidak memberikan jawaban."
-      );
-
-
-    }
-
-    catch (error) {
-
-      console.error(
-        "CHAT ERROR:",
-        error
-      );
-
-
-      loading.remove();
-
-
-      tambahPesanBot(
-        "⚠️ Maaf, terjadi masalah saat menghubungkan ke AI."
-      );
-
-    }
-
-  }
-
-
-  // =====================================
-  // ENTER
-  // =====================================
-
-  function tekanEnter(event) {
-
-    if (
-      event.key === "Enter"
-    ) {
-
-      kirimPesan();
-
-    }
-
-  }
-
-
-  // =====================================
-  // USER MESSAGE
-  // =====================================
-
-  function tambahPesanUser(
-    pesan
-  ) {
-
-    const chat =
-      document.getElementById(
-        "chat"
-      );
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-    div.className =
-      "user-message";
-
-    div.textContent =
-      pesan;
-
-    chat.appendChild(
-      div
+  const div =
+    document.createElement(
+      "div"
     );
 
-    chat.scrollTop =
-      chat.scrollHeight;
+  div.className =
+    "user-message";
 
-  }
+  div.textContent =
+    pesan;
+
+  chat.appendChild(
+    div
+  );
+
+  chat.scrollTop =
+    chat.scrollHeight;
+
+}
 
 
-  // =====================================
-  // BOT MESSAGE
-  // =====================================
+/* BOT */
 
-  function tambahPesanBot(
-    pesan
-  ) {
+function tambahPesanBot(
+  pesan
+) {
 
-    const chat =
-      document.getElementById(
-        "chat"
-      );
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-    div.className =
-      "bot-message";
-
-    div.textContent =
-      pesan;
-
-    chat.appendChild(
-      div
+  const chat =
+    document.getElementById(
+      "chat"
     );
 
-    chat.scrollTop =
-      chat.scrollHeight;
+  const div =
+    document.createElement(
+      "div"
+    );
 
-    return div;
+  div.className =
+    "bot-message";
 
-  }
+  div.textContent =
+    pesan;
+
+  chat.appendChild(
+    div
+  );
+
+  chat.scrollTop =
+    chat.scrollHeight;
+
+  return div;
+
+}
 
 </script>
+
 
 </body>
 
