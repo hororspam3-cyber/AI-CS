@@ -176,24 +176,47 @@ if (!reply) {
   });
 }
 
-return res.json({
-  reply: reply,
-  companyId: companyId,
-  customerId: customerId || null
-});
-```
+    const data = await response.json();
 
-} catch (error) {
+    if (!response.ok) {
 
-```
-console.error("CHAT ERROR:", error);
+      console.error("GROQ ERROR:", data);
 
-return res.status(500).json({
-  reply: "Maaf, terjadi masalah pada sistem AI."
-});
-```
+      return res.status(500).json({
+        reply: "Maaf, layanan AI sedang mengalami masalah."
+      });
 
-}
+    }
+
+    const reply =
+      data.choices &&
+      data.choices[0] &&
+      data.choices[0].message &&
+      data.choices[0].message.content;
+
+    if (!reply) {
+
+      return res.json({
+        reply: "Maaf, AI tidak memberikan jawaban."
+      });
+
+    }
+
+    return res.json({
+      reply: reply,
+      companyId: companyId,
+      customerId: customerId || null
+    });
+
+  } catch (error) {
+
+    console.error("CHAT ERROR:", error);
+
+    return res.status(500).json({
+      reply: "Maaf, terjadi masalah pada sistem AI."
+    });
+
+  }
 
 });
 
@@ -201,8 +224,9 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, function () {
 
-console.log(
-"AI Customer Service berjalan pada port " + PORT
-);
+  console.log(
+    "AI Customer Service berjalan pada port " +
+    PORT
+  );
 
 });
