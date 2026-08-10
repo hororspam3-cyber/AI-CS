@@ -174,7 +174,7 @@ app.post("/chat", async function (req, res) {
 "7. Jika data yang dibutuhkan tidak tersedia, katakan data tersebut belum tersedia.\n" +
 "8. Jangan meminta password, PIN, OTP, atau kode keamanan.\n" +
 "9. Gunakan Knowledge Base sebagai panduan.\n" +
-"10. Jangan menyuruh customer menghubungi customer service jika AI masih dapat memberikan jawaban berdasarkan data yang tersedia. Arahkan ke pemeriksaan manusia hanya jika masalah benar-benar membutuhkan akses atau pemeriksaan yang tidak tersedia bagi AI.";
+"10. Jangan menyuruh customer menghubungi customer service atau tim lain jika AI tidak memiliki informasi tambahan. Jika penyebab atau informasi yang dibutuhkan tidak tersedia, cukup jelaskan bahwa informasi tersebut belum tersedia di data yang dapat diakses AI.";
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
