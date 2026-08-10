@@ -5,7 +5,8 @@
     "Pilih metode deposit yang tersedia.",
     "Masukkan nominal deposit.",
     "Ikuti instruksi pembayaran sampai selesai.",
-    "Setelah pembayaran berhasil, tunggu sistem memproses deposit."
+    "Setelah pembayaran berhasil, tunggu sistem memproses deposit.",
+    "Jika saldo belum bertambah setelah pembayaran berhasil, periksa status transaksi atau hubungi customer service."
   ],
 
   "withdrawal": [
@@ -15,56 +16,91 @@
     "Masukkan nominal yang ingin ditarik.",
     "Periksa kembali tujuan dan nominal withdrawal.",
     "Konfirmasi permintaan withdrawal.",
-    "Status withdrawal dapat diperiksa melalui sistem perusahaan."
+    "Status withdrawal dapat diperiksa melalui sistem perusahaan.",
+    "Jika withdrawal masih diproses, pelanggan dapat menunggu sampai proses selesai.",
+    "Jika withdrawal gagal, periksa alasan yang diberikan sistem atau hubungi customer service."
   ],
 
   "pendaftaran": [
     "Untuk membuat akun baru, pelanggan dapat melakukan pendaftaran melalui aplikasi atau website resmi perusahaan.",
+    "Klik menu Daftar atau Register.",
     "Ikuti formulir pendaftaran dan lengkapi data yang diminta.",
-    "Gunakan data yang benar dan sesuai dengan identitas pelanggan."
+    "Gunakan data yang benar dan sesuai dengan identitas pelanggan.",
+    "Setelah pendaftaran selesai, ikuti proses verifikasi jika diperlukan."
+  ],
+
+  "login": [
+    "Untuk login, pelanggan harus membuka halaman login perusahaan.",
+    "Masukkan informasi akun yang diperlukan.",
+    "Pastikan informasi login sudah benar.",
+    "Jika tidak dapat login, periksa kembali informasi akun atau gunakan fitur Lupa Password."
   ],
 
   "lupa_password": [
     "Jika pelanggan lupa password, gunakan fitur Lupa Password pada halaman login.",
+    "Masukkan informasi yang diminta oleh sistem.",
     "Ikuti instruksi pemulihan password yang diberikan oleh sistem.",
     "Jangan memberikan password atau kode keamanan kepada orang lain."
   ],
 
   "ganti_password": [
     "Pelanggan dapat mengganti password melalui pengaturan akun jika fitur tersebut tersedia.",
-    "Gunakan password baru yang kuat dan jangan membagikannya kepada orang lain."
+    "Masukkan password lama jika diminta.",
+    "Buat password baru yang kuat.",
+    "Simpan perubahan setelah password berhasil diperbarui.",
+    "Jangan membagikan password kepada siapa pun."
   ],
 
   "bonus": [
     "Informasi bonus mengikuti program dan ketentuan yang berlaku di perusahaan.",
     "Untuk mengambil bonus, pelanggan perlu mengikuti ketentuan program bonus yang tersedia.",
+    "Tidak semua akun selalu memiliki bonus yang tersedia.",
+    "Jika data bonus pelanggan tersedia di sistem, AI dapat membantu menjelaskan status bonus tersebut.",
     "Jika pelanggan menanyakan bonus tertentu tetapi detailnya belum tersedia di sistem, arahkan pelanggan ke customer service untuk mendapatkan informasi yang akurat."
   ],
 
   "transaksi": [
     "Pelanggan dapat memeriksa transaksi melalui menu Transaksi.",
+    "Pelanggan dapat melihat status transaksi jika informasi tersebut tersedia di akun.",
     "Jika transaksi bermasalah, pelanggan dapat memberikan informasi transaksi kepada customer service untuk diperiksa."
   ],
 
   "pembayaran": [
     "Pelanggan harus mengikuti metode pembayaran yang tersedia pada sistem perusahaan.",
     "Jika pembayaran gagal, periksa kembali metode pembayaran dan ikuti instruksi yang diberikan sistem.",
+    "Pastikan nominal pembayaran sesuai dengan instruksi.",
     "Jika pembayaran sudah berhasil tetapi transaksi belum diperbarui, pelanggan dapat menghubungi customer service."
+  ],
+
+  "akun": [
+    "Pelanggan dapat memeriksa informasi akun melalui menu Akun.",
+    "Informasi seperti status akun dan verifikasi dapat diperiksa jika tersedia di sistem.",
+    "Jika terdapat masalah pada akun, pelanggan dapat menghubungi customer service."
   ],
 
   "verifikasi": [
     "Jika akun membutuhkan verifikasi, pelanggan harus mengikuti instruksi verifikasi yang diberikan oleh sistem.",
-    "Gunakan data yang benar saat melakukan verifikasi."
+    "Gunakan data yang benar saat melakukan verifikasi.",
+    "Jangan memberikan kode keamanan kepada orang lain."
   ],
 
   "customer_support": [
     "Jika masalah pelanggan tidak dapat diselesaikan oleh AI Customer Service, pelanggan dapat diarahkan kepada customer service manusia.",
-    "Jangan meminta pelanggan memberikan password, PIN, atau API key."
+    "Customer service manusia dapat melakukan pemeriksaan lebih lanjut jika diperlukan.",
+    "Jangan meminta pelanggan memberikan password, PIN, OTP, atau API key."
   ],
 
   "keamanan": [
     "Jangan membagikan password kepada siapa pun.",
     "Jangan membagikan PIN atau kode keamanan.",
-    "Customer service tidak boleh meminta password pelanggan."
+    "Jangan membagikan OTP kepada orang lain.",
+    "Customer service tidak boleh meminta password pelanggan.",
+    "Customer service tidak boleh meminta API key pelanggan."
+  ],
+
+  "umum": [
+    "Gunakan informasi resmi perusahaan sebagai dasar jawaban.",
+    "Jika informasi belum tersedia, jangan mengarang jawaban.",
+    "Jika AI tidak dapat memastikan informasi, arahkan pelanggan ke customer service manusia."
   ]
 }
