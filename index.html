@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -67,6 +66,10 @@
       cursor: pointer;
     }
 
+    .menu button:hover {
+      background: #e3f2fd;
+    }
+
     .chat {
       flex: 1;
       padding: 20px;
@@ -81,6 +84,7 @@
       border-radius: 15px;
       margin-bottom: 15px;
       line-height: 1.5;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
     .user-message {
@@ -111,6 +115,10 @@
       outline: none;
     }
 
+    .input-area input:focus {
+      border-color: #1976d2;
+    }
+
     .input-area button {
       background: #1976d2;
       color: white;
@@ -119,6 +127,36 @@
       border-radius: 25px;
       font-size: 15px;
       cursor: pointer;
+    }
+
+    .input-area button:hover {
+      background: #125ca8;
+    }
+
+    @media (max-width: 500px) {
+      .header {
+        padding: 16px;
+      }
+
+      .company {
+        font-size: 20px;
+      }
+
+      .title {
+        font-size: 16px;
+      }
+
+      .chat {
+        padding: 15px;
+      }
+
+      .input-area {
+        padding: 10px;
+      }
+
+      .input-area button {
+        padding: 0 18px;
+      }
     }
   </style>
 </head>
@@ -153,6 +191,7 @@
     </div>
 
     <div class="input-area">
+
       <input
         type="text"
         id="userInput"
@@ -161,78 +200,145 @@
       >
 
       <button onclick="kirimPesan()">Kirim</button>
+
     </div>
 
   </div>
 
   <script>
-    function pilihKategori(kategori) {
+
+    function tambahPesanUser(pesan) {
 
       const chat = document.getElementById("chat");
+
+      const div = document.createElement("div");
+
+      div.className = "user-message";
+
+      div.textContent = pesan;
+
+      chat.appendChild(div);
+    }
+
+
+    function tambahPesanBot(pesan) {
+
+      const chat = document.getElementById("chat");
+
+      const div = document.createElement("div");
+
+      div.className = "bot-message";
+
+      div.innerHTML = pesan;
+
+      chat.appendChild(div);
+    }
+
+
+    function pilihKategori(kategori) {
 
       let jawaban = "";
 
       if (kategori === "Akun") {
-        jawaban = "Untuk masalah akun, silakan jelaskan masalah yang kamu alami. Contohnya lupa password atau ingin mengubah data akun.";
+
+        jawaban =
+          "Untuk masalah akun, silakan jelaskan masalah yang kamu alami.<br><br>" +
+          "Contohnya lupa password atau ingin mengubah data akun.";
+
       }
 
-      if (kategori === "Pembelian") {
-        jawaban = "Untuk masalah pembelian, silakan jelaskan produk atau pesanan yang ingin kamu tanyakan.";
+      else if (kategori === "Pembelian") {
+
+        jawaban =
+          "Untuk masalah pembelian, silakan jelaskan produk atau pesanan yang ingin kamu tanyakan.";
+
       }
 
-      if (kategori === "Pembayaran") {
-        jawaban = "Untuk masalah pembayaran, silakan jelaskan metode pembayaran atau kendala pembayaran yang kamu alami.";
+      else if (kategori === "Pembayaran") {
+
+        jawaban =
+          "Untuk masalah pembayaran, silakan jelaskan metode pembayaran atau kendala pembayaran yang kamu alami.";
+
       }
 
-      if (kategori === "Transaksi") {
-        jawaban = "Untuk masalah transaksi, silakan berikan nomor transaksi atau jelaskan transaksi yang ingin kamu tanyakan.";
+      else if (kategori === "Transaksi") {
+
+        jawaban =
+          "Untuk masalah transaksi, silakan berikan nomor transaksi atau jelaskan transaksi yang ingin kamu tanyakan.";
+
       }
 
-      chat.innerHTML += `
-        <div class="user-message">${kategori}</div>
+      tambahPesanUser(kategori);
 
-        <div class="bot-message">${jawaban}</div>
-      `;
+      tambahPesanBot(
+        "🤖 " + jawaban
+      );
 
-      chat.scrollTop = chat.scrollHeight;
+      scrollChat();
+
     }
+
 
     function kirimPesan() {
 
       const input = document.getElementById("userInput");
+
       const pesan = input.value.trim();
 
       if (pesan === "") {
         return;
       }
 
-      const chat = document.getElementById("chat");
+      tambahPesanUser(pesan);
 
-      chat.innerHTML += `
-        <div class="user-message">${pesan}</div>
-
-        <div class="bot-message">
-          🤖 Terima kasih atas pertanyaannya.
-          <br><br>
-          Ini masih merupakan <b>AI Customer Service dummy</b>.
-          <br><br>
-          Jawaban otomatis akan kita kembangkan pada tahap berikutnya.
-        </div>
-      `;
+      tambahPesanBot(
+        "🤖 Terima kasih atas pertanyaannya." +
+        "<br><br>" +
+        "Saya menerima pesan kamu:" +
+        "<br><br>" +
+        "<b>" + escapeHTML(pesan) + "</b>" +
+        "<br><br>" +
+        "AI Customer Service sedang dikembangkan agar nantinya dapat memberikan jawaban otomatis."
+      );
 
       input.value = "";
-      chat.scrollTop = chat.scrollHeight;
+
+      scrollChat();
+
     }
+
+
+    function escapeHTML(teks) {
+
+      const div = document.createElement("div");
+
+      div.textContent = teks;
+
+      return div.innerHTML;
+
+    }
+
 
     function tekanEnter(event) {
 
       if (event.key === "Enter") {
+
         kirimPesan();
+
       }
 
     }
+
+
+    function scrollChat() {
+
+      const chat = document.getElementById("chat");
+
+      chat.scrollTop = chat.scrollHeight;
+
+    }
+
   </script>
 
 </body>
 </html>
-```
