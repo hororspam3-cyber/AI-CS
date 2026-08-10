@@ -506,44 +506,112 @@ function logoutDemo() {
 
 function pilihKategori(kategori) {
 
-  let pertanyaan = "";
-
-  if (kategori === "Akun") {
-
-    pertanyaan =
-      "Saya ingin bertanya tentang akun saya.";
-
+  if (!currentCustomerId) {
+    tambahPesanBot(
+      "Silakan login terlebih dahulu untuk menggunakan menu " +
+      kategori +
+      "."
+    );
+    return;
   }
 
-  else if (kategori === "Pembelian") {
+  if (kategori === "Akun") {
+    tampilkanDataAkun();
+    return;
+  }
 
+  let pertanyaan = "";
+
+  if (kategori === "Pembelian") {
     pertanyaan =
       "Bagaimana cara melakukan pembelian?";
-
   }
 
   else if (kategori === "Pembayaran") {
-
     pertanyaan =
       "Saya ingin bertanya tentang pembayaran.";
-
   }
 
   else if (kategori === "Transaksi") {
-
     pertanyaan =
       "Saya ingin mengecek transaksi saya.";
-
   }
 
   document.getElementById(
     "userInput"
-  ).value =
-    pertanyaan;
+  ).value = pertanyaan;
 
   kirimPesan();
-
 }
+
+async function tampilkanDataAkun() {
+
+  const loading =
+    tambahPesanBot(
+      "🤖 Sedang mengambil data akun..."
+    );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/company/ABC001/customer/" +
+        currentCustomerId
+      );
+
+    const data =
+      await response.json();
+
+    loading.remove();
+
+    if (!response.ok || !data.success) {
+      tambahPesanBot(
+        "Maaf, data akun tidak ditemukan."
+      );
+      return;
+    }
+
+    const customer =
+      data.customer;
+
+    const saldo =
+      Number(customer.balance || 0)
+        .toLocaleString("id-ID");
+
+    const informasi =
+      "👤 INFORMASI AKUN\n\n" +
+      "Nama: " +
+      (customer.name || "-") +
+      "\n" +
+      "ID: " +
+      (customer.id || currentCustomerId) +
+      "\n" +
+      "Status akun: " +
+      (customer.account_status || "-") +
+      "\n" +
+      "Verifikasi: " +
+      (customer.verification || "-") +
+      "\n" +
+      "Saldo: Rp " +
+      saldo;
+
+    tambahPesanBot(informasi);
+
+  } catch (error) {
+
+    console.error(
+      "ACCOUNT ERROR:",
+      error
+    );
+
+    loading.remove();
+
+    tambahPesanBot(
+      "⚠️ Gagal mengambil data akun."
+    );
+  }
+}
+  
 
 
 /* =====================================
