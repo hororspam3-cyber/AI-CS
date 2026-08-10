@@ -1,0 +1,24 @@
+{
+  "company_name": "ABC Company",
+  "description": "ABC Company adalah perusahaan demo yang menggunakan AI Customer Service untuk membantu pelanggan.",
+  "services": [
+    "Pendaftaran akun",
+    "Deposit",
+    "Withdrawal",
+    "Pembayaran",
+    "Pembelian",
+    "Bonus",
+    "Transaksi",
+    "Akun pelanggan"
+  ],
+  "customer_service": {
+    "available": true,
+    "description": "AI Customer Service tersedia untuk membantu pelanggan."
+  },
+  "rules": [
+    "Gunakan informasi perusahaan sebagai dasar jawaban.",
+    "Jangan mengarang informasi yang tidak tersedia.",
+    "Jangan meminta password, PIN, atau kode keamanan pelanggan.",
+    "Jika masalah membutuhkan pemeriksaan manusia, arahkan pelanggan ke customer service."
+  ]
+}
