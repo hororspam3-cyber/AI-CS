@@ -1,0 +1,60 @@
+{
+  "USER001": {
+    "name": "Andi",
+    "account_status": "active",
+    "verification": "verified",
+    "balance": 1500000,
+    "withdrawal": {
+      "status": "pending",
+      "reason": "Sedang dalam proses verifikasi"
+    },
+    "transactions": [
+      {
+        "id": "TX001",
+        "type": "withdrawal",
+        "amount": 500000,
+        "status": "pending"
+      }
+    ],
+    "tickets": []
+  },
+
+  "USER002": {
+    "name": "Budi",
+    "account_status": "active",
+    "verification": "verified",
+    "balance": 2500000,
+    "withdrawal": {
+      "status": "completed",
+      "reason": "Transaksi berhasil"
+    },
+    "transactions": [
+      {
+        "id": "TX002",
+        "type": "withdrawal",
+        "amount": 750000,
+        "status": "completed"
+      }
+    ],
+    "tickets": []
+  },
+
+  "USER003": {
+    "name": "Citra",
+    "account_status": "restricted",
+    "verification": "pending",
+    "balance": 800000,
+    "withdrawal": {
+      "status": "failed",
+      "reason": "Akun membutuhkan verifikasi"
+    },
+    "transactions": [],
+    "tickets": [
+      {
+        "id": "TICKET001",
+        "status": "open",
+        "issue": "Tidak dapat melakukan transaksi"
+      }
+    ]
+  }
+}
