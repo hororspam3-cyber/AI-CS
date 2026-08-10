@@ -487,19 +487,26 @@
       /* PEMBAYARAN */
 
       if (
-        teks.includes("pembayaran gagal") ||
-        teks.includes("bayar gagal") ||
-        teks.includes("gagal bayar")
-      ) {
+  teks.includes("pembayaran gagal") ||
+  teks.includes("pembayaran saya gagal") ||
+  teks.includes("pembayaran tidak berhasil") ||
+  teks.includes("pembayaran gagal") ||
+  teks.includes("gagal bayar") ||
+  teks.includes("saya gagal bayar") ||
+  teks.includes("bayar gagal") ||
+  teks.includes("tidak bisa bayar") ||
+  teks.includes("tidak bisa melakukan pembayaran") ||
+  teks.includes("tidak dapat melakukan pembayaran")
+) {
 
-        return (
-          "Mohon maaf atas kendalanya. 💳<br><br>" +
-          "Jika pembayaran gagal, pastikan saldo mencukupi " +
-          "dan metode pembayaran masih aktif.<br><br>" +
-          "Jika tetap gagal, silakan coba metode pembayaran lainnya."
-        );
+  return (
+    "Mohon maaf atas kendalanya. 💳<br><br>" +
+    "Jika pembayaran gagal, pastikan saldo mencukupi " +
+    "dan metode pembayaran masih aktif.<br><br>" +
+    "Jika tetap gagal, silakan coba metode pembayaran lainnya."
+  );
 
-      }
+}
 
 
       if (
