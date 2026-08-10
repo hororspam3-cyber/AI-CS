@@ -1,0 +1,8 @@
+{
+  "ABC001": {
+    "company_name": "ABC Company",
+    "company_id": "ABC001",
+    "status": "active",
+    "ai_enabled": true
+  }
+}
