@@ -520,29 +520,22 @@ function pilihKategori(kategori) {
     return;
   }
 
-  let pertanyaan = "";
-
-  if (kategori === "Pembelian") {
-    pertanyaan =
-      "Bagaimana cara melakukan pembelian?";
+  if (kategori === "Deposit") {
+    tampilkanDataDeposit();
+    return;
   }
 
-  else if (kategori === "Pembayaran") {
-    pertanyaan =
-      "Saya ingin bertanya tentang pembayaran.";
+  if (kategori === "Withdraw") {
+    tampilkanDataWithdraw();
+    return;
   }
 
-  else if (kategori === "Transaksi") {
-    pertanyaan =
-      "Saya ingin mengecek transaksi saya.";
+  if (kategori === "Bonus") {
+    tampilkanDataBonus();
+    return;
   }
-
-  document.getElementById(
-    "userInput"
-  ).value = pertanyaan;
-
-  kirimPesan();
 }
+
 
 async function tampilkanDataAkun() {
 
@@ -608,6 +601,203 @@ async function tampilkanDataAkun() {
 
     tambahPesanBot(
       "⚠️ Gagal mengambil data akun."
+    );
+  }
+}
+
+
+async function tampilkanDataDeposit() {
+
+  const loading =
+    tambahPesanBot(
+      "🤖 Sedang mengambil data deposit..."
+    );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/company/ABC001/customer/" +
+        currentCustomerId
+      );
+
+    const data =
+      await response.json();
+
+    loading.remove();
+
+    if (!response.ok || !data.success) {
+      tambahPesanBot(
+        "Maaf, data deposit tidak ditemukan."
+      );
+      return;
+    }
+
+    const deposit =
+      data.customer.deposit;
+
+    const nominal =
+      Number(deposit.last_amount || 0)
+        .toLocaleString("id-ID");
+
+    const informasi =
+      "💰 INFORMASI DEPOSIT\n\n" +
+      "Status: " +
+      (deposit.status || "-") +
+      "\n" +
+      "Deposit terakhir: Rp " +
+      nominal +
+      "\n" +
+      "Status terakhir: " +
+      (deposit.last_status || "-");
+
+    tambahPesanBot(informasi);
+
+  } catch (error) {
+
+    console.error(
+      "DEPOSIT ERROR:",
+      error
+    );
+
+    loading.remove();
+
+    tambahPesanBot(
+      "⚠️ Gagal mengambil data deposit."
+    );
+  }
+}
+
+
+async function tampilkanDataWithdraw() {
+
+  const loading =
+    tambahPesanBot(
+      "🤖 Sedang mengambil data withdrawal..."
+    );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/company/ABC001/customer/" +
+        currentCustomerId
+      );
+
+    const data =
+      await response.json();
+
+    loading.remove();
+
+    if (!response.ok || !data.success) {
+      tambahPesanBot(
+        "Maaf, data withdrawal tidak ditemukan."
+      );
+      return;
+    }
+
+    const withdrawal =
+      data.customer.withdrawal;
+
+    const nominal =
+      Number(withdrawal.last_amount || 0)
+        .toLocaleString("id-ID");
+
+    const informasi =
+      "💸 INFORMASI WITHDRAWAL\n\n" +
+      "Status: " +
+      (withdrawal.status || "-") +
+      "\n" +
+      "Nominal terakhir: Rp " +
+      nominal +
+      "\n" +
+      "Keterangan: " +
+      (withdrawal.reason || "-");
+
+    tambahPesanBot(informasi);
+
+  } catch (error) {
+
+    console.error(
+      "WITHDRAW ERROR:",
+      error
+    );
+
+    loading.remove();
+
+    tambahPesanBot(
+      "⚠️ Gagal mengambil data withdrawal."
+    );
+  }
+}
+
+
+async function tampilkanDataBonus() {
+
+  const loading =
+    tambahPesanBot(
+      "🤖 Sedang mengambil data bonus..."
+    );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/company/ABC001/customer/" +
+        currentCustomerId
+      );
+
+    const data =
+      await response.json();
+
+    loading.remove();
+
+    if (!response.ok || !data.success) {
+      tambahPesanBot(
+        "Maaf, data bonus tidak ditemukan."
+      );
+      return;
+    }
+
+    const bonus =
+      data.customer.bonus;
+
+    const nominal =
+      Number(bonus.amount || 0)
+        .toLocaleString("id-ID");
+
+    const tersedia =
+      bonus.available
+        ? "Tersedia"
+        : "Tidak tersedia";
+
+    const informasi =
+      "🎁 INFORMASI BONUS\n\n" +
+      "Ketersediaan: " +
+      tersedia +
+      "\n" +
+      "Nominal: Rp " +
+      nominal +
+      "\n" +
+      "Status: " +
+      (bonus.status || "-") +
+      "\n" +
+      "Keterangan: " +
+      (bonus.description || "-");
+
+    tambahPesanBot(informasi);
+
+  } catch (error) {
+
+    console.error(
+      "BONUS ERROR:",
+      error
+    );
+
+    loading.remove();
+
+    tambahPesanBot(
+      "⚠️ Gagal mengambil data bonus."
     );
   }
 }
