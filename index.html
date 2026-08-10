@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>ABC Company - AI Customer Service</title>
 
   <style>
@@ -28,8 +27,6 @@
       flex-direction: column;
     }
 
-    /* HEADER */
-
     .header {
       background: #1976d2;
       color: white;
@@ -49,10 +46,7 @@
     .status {
       font-size: 13px;
       margin-top: 6px;
-      opacity: 0.9;
     }
-
-    /* CATEGORY */
 
     .menu {
       display: flex;
@@ -73,12 +67,6 @@
       cursor: pointer;
     }
 
-    .menu button:hover {
-      background: #e3f0fc;
-    }
-
-    /* CHAT */
-
     .chat {
       flex: 1;
       padding: 20px;
@@ -92,7 +80,6 @@
       padding: 14px 16px;
       border-radius: 15px;
       margin-bottom: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       line-height: 1.5;
     }
 
@@ -106,8 +93,6 @@
       margin-bottom: 15px;
       line-height: 1.5;
     }
-
-    /* INPUT */
 
     .input-area {
       display: flex;
@@ -126,10 +111,6 @@
       outline: none;
     }
 
-    .input-area input:focus {
-      border-color: #1976d2;
-    }
-
     .input-area button {
       background: #1976d2;
       color: white;
@@ -139,25 +120,6 @@
       font-size: 15px;
       cursor: pointer;
     }
-
-    .input-area button:hover {
-      background: #125aa0;
-    }
-
-    /* DESKTOP */
-
-    @media (min-width: 651px) {
-
-      .container {
-        height: 95vh;
-        margin-top: 2.5vh;
-        margin-bottom: 2.5vh;
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: 0 5px 25px rgba(0,0,0,0.12);
-      }
-
-    }
   </style>
 </head>
 
@@ -165,74 +127,32 @@
 
   <div class="container">
 
-    <!-- HEADER -->
-
     <div class="header">
-
-      <div class="company">
-        🏢 ABC Company
-      </div>
-
-      <div class="title">
-        🤖 AI Customer Service
-      </div>
-
-      <div class="status">
-        ● Online • Siap membantu
-      </div>
-
+      <div class="company">🏢 ABC Company</div>
+      <div class="title">🤖 AI Customer Service</div>
+      <div class="status">● Online • Siap membantu</div>
     </div>
-
-
-    <!-- CATEGORY -->
 
     <div class="menu">
-
-      <button onclick="pilihKategori('Akun')">
-        👤 Akun
-      </button>
-
-      <button onclick="pilihKategori('Pembelian')">
-        🛒 Pembelian
-      </button>
-
-      <button onclick="pilihKategori('Pembayaran')">
-        💳 Pembayaran
-      </button>
-
-      <button onclick="pilihKategori('Transaksi')">
-        📄 Transaksi
-      </button>
-
+      <button onclick="pilihKategori('Akun')">👤 Akun</button>
+      <button onclick="pilihKategori('Pembelian')">🛒 Pembelian</button>
+      <button onclick="pilihKategori('Pembayaran')">💳 Pembayaran</button>
+      <button onclick="pilihKategori('Transaksi')">📄 Transaksi</button>
     </div>
-
-
-    <!-- CHAT -->
 
     <div class="chat" id="chat">
 
       <div class="bot-message">
-
         <b>🤖 AI Customer Service</b>
-
         <br><br>
-
-        Halo 👋 Selamat datang di
-        <b>ABC Company</b>.
-
+        Halo 👋 Selamat datang di <b>ABC Company</b>.
         <br><br>
-
         Ada yang bisa saya bantu hari ini?
-
       </div>
 
     </div>
 
-
-    <!-- INPUT -->
-
     <div class="input-area">
-
       <input
         type="text"
         id="userInput"
@@ -240,17 +160,12 @@
         onkeydown="tekanEnter(event)"
       >
 
-      <button onclick="kirimPesan()">
-        Kirim
-      </button>
-
+      <button onclick="kirimPesan()">Kirim</button>
     </div>
 
   </div>
 
-
   <script>
-
     function pilihKategori(kategori) {
 
       const chat = document.getElementById("chat");
@@ -258,54 +173,33 @@
       let jawaban = "";
 
       if (kategori === "Akun") {
-
-        jawaban =
-        "Untuk masalah akun, silakan jelaskan masalah yang kamu alami. Contohnya lupa password atau ingin mengubah data akun.";
-
+        jawaban = "Untuk masalah akun, silakan jelaskan masalah yang kamu alami. Contohnya lupa password atau ingin mengubah data akun.";
       }
 
       if (kategori === "Pembelian") {
-
-        jawaban =
-        "Untuk masalah pembelian, silakan jelaskan produk atau pesanan yang ingin kamu tanyakan.";
-
+        jawaban = "Untuk masalah pembelian, silakan jelaskan produk atau pesanan yang ingin kamu tanyakan.";
       }
 
       if (kategori === "Pembayaran") {
-
-        jawaban =
-        "Untuk masalah pembayaran, silakan jelaskan metode pembayaran atau kendala pembayaran yang kamu alami.";
-
+        jawaban = "Untuk masalah pembayaran, silakan jelaskan metode pembayaran atau kendala pembayaran yang kamu alami.";
       }
 
       if (kategori === "Transaksi") {
-
-        jawaban =
-        "Untuk masalah transaksi, silakan berikan nomor transaksi atau jelaskan transaksi yang ingin kamu tanyakan.";
-
+        jawaban = "Untuk masalah transaksi, silakan berikan nomor transaksi atau jelaskan transaksi yang ingin kamu tanyakan.";
       }
 
       chat.innerHTML += `
+        <div class="user-message">${kategori}</div>
 
-        <div class="user-message">
-          ${kategori}
-        </div>
-
-        <div class="bot-message">
-          ${jawaban}
-        </div>
-
+        <div class="bot-message">${jawaban}</div>
       `;
 
       chat.scrollTop = chat.scrollHeight;
-
     }
-
 
     function kirimPesan() {
 
       const input = document.getElementById("userInput");
-
       const pesan = input.value.trim();
 
       if (pesan === "") {
@@ -315,45 +209,28 @@
       const chat = document.getElementById("chat");
 
       chat.innerHTML += `
-
-        <div class="user-message">
-          ${pesan}
-        </div>
+        <div class="user-message">${pesan}</div>
 
         <div class="bot-message">
-
           🤖 Terima kasih atas pertanyaannya.
-
           <br><br>
-
-          Ini masih merupakan
-          <b>AI Customer Service dummy</b>.
-
+          Ini masih merupakan <b>AI Customer Service dummy</b>.
           <br><br>
-
           Jawaban otomatis akan kita kembangkan pada tahap berikutnya.
-
         </div>
-
       `;
 
       input.value = "";
-
       chat.scrollTop = chat.scrollHeight;
-
     }
-
 
     function tekanEnter(event) {
 
       if (event.key === "Enter") {
-
         kirimPesan();
-
       }
 
     }
-
   </script>
 
 </body>
