@@ -9,7 +9,7 @@ app.use(express.static(__dirname));
 
 
 // =====================================
-// GROQ
+// GROQ API KEY
 // =====================================
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
@@ -56,22 +56,18 @@ try {
 // =====================================
 
 app.get("/", (req, res) => {
-
   res.sendFile(
     path.join(__dirname, "index.html")
   );
-
 });
 
 
 // =====================================
-// CUSTOMER
+// CARI CUSTOMER
 // =====================================
 
 function findCustomer(customerId) {
-
   return customers[customerId];
-
 }
 
 
@@ -96,17 +92,28 @@ app.post("/chat", async (req, res) => {
     }
 
 
+    // =================================
+    // CEK GROQ API KEY
+    // =================================
+
     if (!GROQ_API_KEY) {
 
+      console.error(
+        "GROQ_API_KEY tidak ditemukan."
+      );
+
       return res.status(500).json({
-        reply: "GROQ_API_KEY belum ditemukan di server."
+
+        reply:
+          "Konfigurasi AI belum tersedia di server."
+
       });
 
     }
 
 
     // =================================
-    // CUSTOMER ID
+    // CEK CUSTOMER ID
     // =================================
 
     const customerIdMatch =
@@ -138,8 +145,10 @@ app.post("/chat", async (req, res) => {
       }
 
 
+      // Semua data customer diberikan
+      // kepada AI
+
       customerInfo = `
-customerInfo = `
 
 DATA CUSTOMER:
 
@@ -162,7 +171,11 @@ ${JSON.stringify(
     // =================================
 
     const knowledgeText =
-      JSON.stringify(knowledge);
+      JSON.stringify(
+        knowledge,
+        null,
+        2
+      );
 
 
     // =================================
@@ -171,30 +184,55 @@ ${JSON.stringify(
 
     const systemPrompt = `
 
-Kamu adalah AI Customer Service untuk ABC Company.
+Kamu adalah AI Customer Service
+untuk ABC Company.
 
 Gunakan bahasa Indonesia.
 
-Jawablah dengan ramah, jelas, dan mudah dipahami.
+Jawablah dengan ramah, jelas,
+dan mudah dipahami.
 
-Bantu pelanggan mengenai:
+Kamu dapat membantu pelanggan
+mengenai:
 
+- Pendaftaran akun
 - Akun
+- Deposit
+- Withdrawal
 - Pembelian
 - Pembayaran
+- Bonus
 - Transaksi
-- Keamanan
+- Password
+- Verifikasi
 - Customer Service
 
-Jangan mengarang informasi.
+Gunakan Knowledge Base sebagai
+panduan utama.
 
-Jika data tidak tersedia, katakan bahwa informasi
+Jika terdapat DATA CUSTOMER,
+gunakan data tersebut untuk
+menjawab pertanyaan pelanggan.
+
+Jangan mengarang data customer.
+
+Jika informasi tidak tersedia,
+katakan bahwa informasi tersebut
 belum tersedia.
 
-Jangan pernah memberikan API key,
-password, atau informasi rahasia.
+Jangan pernah meminta atau
+menampilkan:
 
-Knowledge Base:
+- Password
+- PIN
+- API key
+- Kode keamanan rahasia
+
+Jika pelanggan membutuhkan bantuan
+yang tidak dapat diselesaikan AI,
+arahkan kepada customer service.
+
+KNOWLEDGE BASE:
 
 ${knowledgeText}
 
@@ -226,7 +264,8 @@ ${customerInfo}
 
           body: JSON.stringify({
 
-            model: "llama-3.3-70b-versatile",
+            model:
+              "llama-3.3-70b-versatile",
 
             messages: [
 
@@ -253,7 +292,7 @@ ${customerInfo}
 
 
     // =================================
-    // CEK RESPONSE
+    // BACA RESPONSE
     // =================================
 
     const data =
@@ -271,7 +310,7 @@ ${customerInfo}
       return res.status(500).json({
 
         reply:
-          "Maaf, terjadi masalah pada layanan AI. Silakan coba lagi."
+          "Maaf, terjadi masalah pada layanan AI."
 
       });
 
@@ -279,11 +318,15 @@ ${customerInfo}
 
 
     // =================================
-    // AMBIL JAWABAN
+    // AMBIL JAWABAN AI
     // =================================
 
     const reply =
-      data.choices?.[0]?.message?.content;
+      data.choices &&
+      data.choices[0] &&
+      data.choices[0].message
+        ? data.choices[0].message.content
+        : null;
 
 
     if (!reply) {
@@ -299,7 +342,7 @@ ${customerInfo}
 
 
     // =================================
-    // KIRIM KE WEBSITE
+    // KIRIM JAWABAN KE WEBSITE
     // =================================
 
     res.json({
@@ -308,8 +351,10 @@ ${customerInfo}
 
     });
 
+  }
 
-  } catch (error) {
+
+  catch (error) {
 
     console.error(
       "ERROR CHAT:",
@@ -342,5 +387,7 @@ app.listen(PORT, () => {
   console.log(
     `Server AI Customer Service berjalan pada port ${PORT}`
   );
+
+});  );
 
 });
