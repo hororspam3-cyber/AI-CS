@@ -72,6 +72,11 @@ app.post("/chat", async (req, res) => {
     const message =
       String(req.body.message || "").trim();
 
+    const customerId =
+      String(req.body.customerId || "")
+        .trim()
+        .toUpperCase();
+
     if (!message) {
       return res.json({
         reply: "Silakan tuliskan pertanyaan Anda."
@@ -80,32 +85,29 @@ app.post("/chat", async (req, res) => {
 
     if (!GROQ_API_KEY) {
       return res.status(500).json({
-        reply: "GROQ_API_KEY belum tersedia di server."
+        reply:
+          "GROQ_API_KEY belum tersedia di server."
       });
     }
 
     // ===========================
-    // CUSTOMER ID
+    // CUSTOMER
     // ===========================
-
-    const match =
-      message.match(/\bUSER\d{3}\b/i);
 
     let customerInfo = "";
 
-    if (match) {
-
-      const customerId =
-        match[0].toUpperCase();
+    if (customerId) {
 
       const customer =
         findCustomer(customerId);
 
       if (!customer) {
+
         return res.json({
           reply:
-            "Maaf, ID customer tersebut tidak ditemukan."
+            "Maaf, akun customer tersebut tidak ditemukan."
         });
+
       }
 
       customerInfo =
@@ -120,7 +122,7 @@ app.post("/chat", async (req, res) => {
     }
 
     // ===========================
-    // SYSTEM PROMPT
+    // AI INSTRUCTION
     // ===========================
 
     const systemPrompt = `
@@ -130,7 +132,7 @@ untuk ABC Company.
 Gunakan bahasa Indonesia.
 
 Jawablah dengan ramah, jelas,
-dan mudah dipahami.
+dan singkat.
 
 Kamu dapat membantu:
 
@@ -146,19 +148,37 @@ Kamu dapat membantu:
 - Verifikasi
 - Customer Service
 
-Gunakan Knowledge Base sebagai
-panduan utama.
+Jika DATA CUSTOMER tersedia,
+anggap customer tersebut adalah
+pelanggan yang sedang berbicara.
 
-Jika data customer tersedia,
-gunakan data tersebut.
+Jangan meminta pelanggan mengetik
+USER ID lagi jika data customer
+sudah tersedia.
 
-Jangan mengarang data customer.
+Gunakan data customer untuk menjawab
+pertanyaan seperti:
 
-Jangan meminta password,
-PIN, API key, atau kode keamanan.
+- saldo
+- bonus
+- deposit
+- withdrawal
+- transaksi
+- status akun
+- verifikasi
 
-Jika informasi tidak tersedia,
-katakan dengan jujur.
+Jangan mengarang data.
+
+Jika data tidak tersedia,
+katakan bahwa informasi tersebut
+belum tersedia.
+
+Jangan pernah meminta:
+
+- password
+- PIN
+- API key
+- kode keamanan rahasia
 
 KNOWLEDGE BASE:
 
@@ -170,7 +190,7 @@ ${customerInfo}
 `;
 
     // ===========================
-    // GROQ REQUEST
+    // GROQ
     // ===========================
 
     const response = await fetch(
@@ -185,9 +205,12 @@ ${customerInfo}
         },
 
         body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
+
+          model:
+            "llama-3.3-70b-versatile",
 
           messages: [
+
             {
               role: "system",
               content: systemPrompt
@@ -197,10 +220,12 @@ ${customerInfo}
               role: "user",
               content: message
             }
+
           ],
 
           temperature: 0.3,
           max_tokens: 500
+
         })
       }
     );
