@@ -34,10 +34,6 @@
       flex-direction: column;
     }
 
-    /* =========================
-       HEADER
-    ========================= */
-
     .header {
       background: #1976d2;
       color: white;
@@ -59,10 +55,6 @@
       margin-top: 4px;
       opacity: 0.9;
     }
-
-    /* =========================
-       LOGIN
-    ========================= */
 
     .login-area {
       padding: 10px 12px;
@@ -113,10 +105,6 @@
       font-size: 12px;
     }
 
-    /* =========================
-       MENU
-    ========================= */
-
     .menu {
       display: flex;
       gap: 7px;
@@ -134,10 +122,6 @@
       font-size: 13px;
       cursor: pointer;
     }
-
-    /* =========================
-       CHAT
-    ========================= */
 
     .chat {
       flex: 1;
@@ -171,10 +155,6 @@
       white-space: pre-line;
     }
 
-    /* =========================
-       INPUT
-    ========================= */
-
     .input-area {
       display: flex;
       gap: 8px;
@@ -202,10 +182,6 @@
       font-size: 14px;
       cursor: pointer;
     }
-
-    /* =========================
-       HP
-    ========================= */
 
     @media (max-width: 480px) {
 
@@ -271,7 +247,7 @@
   </div>
 
 
-  <!-- LOGIN -->
+  <!-- LOGIN DEMO -->
 
   <div class="login-area">
 
@@ -388,9 +364,7 @@
       onkeydown="tekanEnter(event)"
     >
 
-    <button
-      onclick="kirimPesan()"
-    >
+    <button onclick="kirimPesan()">
       Kirim
     </button>
 
@@ -404,14 +378,14 @@
 let currentCustomerId = "";
 
 
-/* LOGIN */
+/* =====================================
+   LOGIN DEMO
+===================================== */
 
 function loginDemo() {
 
   const select =
-    document.getElementById(
-      "customerSelect"
-    );
+    document.getElementById("customerSelect");
 
   const customerId =
     select.value;
@@ -423,11 +397,23 @@ function loginDemo() {
     );
 
     return;
-
   }
 
+  aktifkanCustomer(customerId);
+
+}
+
+
+/* =====================================
+   AKTIFKAN CUSTOMER
+===================================== */
+
+function aktifkanCustomer(customerId) {
+
   currentCustomerId =
-    customerId;
+    customerId
+      .trim()
+      .toUpperCase();
 
   document.getElementById(
     "accountInfo"
@@ -436,18 +422,64 @@ function loginDemo() {
   document.getElementById(
     "loggedUser"
   ).textContent =
-    customerId;
+    currentCustomerId;
 
   tambahPesanBot(
     "Login berhasil sebagai " +
-    customerId +
+    currentCustomerId +
     ". Saya siap membantu Anda."
   );
 
 }
 
 
-/* LOGOUT */
+/* =====================================
+   OTOMATIS BACA CUSTOMER DARI URL
+===================================== */
+
+function cekCustomerOtomatis() {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const customerId =
+    params.get("customer");
+
+  if (!customerId) {
+    return;
+  }
+
+  const id =
+    customerId
+      .trim()
+      .toUpperCase();
+
+  const customerSelect =
+    document.getElementById(
+      "customerSelect"
+    );
+
+  const option =
+    customerSelect.querySelector(
+      'option[value="' + id + '"]'
+    );
+
+  if (option) {
+
+    customerSelect.value = id;
+
+    aktifkanCustomer(id);
+
+  }
+
+}
+
+
+/* =====================================
+   LOGOUT
+===================================== */
 
 function logoutDemo() {
 
@@ -468,7 +500,9 @@ function logoutDemo() {
 }
 
 
-/* KATEGORI */
+/* =====================================
+   KATEGORI
+===================================== */
 
 function pilihKategori(kategori) {
 
@@ -512,7 +546,9 @@ function pilihKategori(kategori) {
 }
 
 
-/* CHAT */
+/* =====================================
+   CHAT
+===================================== */
 
 async function kirimPesan() {
 
@@ -528,9 +564,7 @@ async function kirimPesan() {
     return;
   }
 
-  tambahPesanUser(
-    pesan
-  );
+  tambahPesanUser(pesan);
 
   input.value = "";
 
@@ -560,7 +594,10 @@ async function kirimPesan() {
               pesan,
 
             customerId:
-              currentCustomerId
+              currentCustomerId,
+
+            companyId:
+              "ABC001"
 
           })
 
@@ -582,9 +619,7 @@ async function kirimPesan() {
 
   catch (error) {
 
-    console.error(
-      error
-    );
+    console.error(error);
 
     loading.remove();
 
@@ -597,13 +632,13 @@ async function kirimPesan() {
 }
 
 
-/* ENTER */
+/* =====================================
+   ENTER
+===================================== */
 
 function tekanEnter(event) {
 
-  if (
-    event.key === "Enter"
-  ) {
+  if (event.key === "Enter") {
 
     kirimPesan();
 
@@ -612,21 +647,17 @@ function tekanEnter(event) {
 }
 
 
-/* USER */
+/* =====================================
+   USER MESSAGE
+===================================== */
 
-function tambahPesanUser(
-  pesan
-) {
+function tambahPesanUser(pesan) {
 
   const chat =
-    document.getElementById(
-      "chat"
-    );
+    document.getElementById("chat");
 
   const div =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   div.className =
     "user-message";
@@ -634,9 +665,7 @@ function tambahPesanUser(
   div.textContent =
     pesan;
 
-  chat.appendChild(
-    div
-  );
+  chat.appendChild(div);
 
   chat.scrollTop =
     chat.scrollHeight;
@@ -644,21 +673,17 @@ function tambahPesanUser(
 }
 
 
-/* BOT */
+/* =====================================
+   BOT MESSAGE
+===================================== */
 
-function tambahPesanBot(
-  pesan
-) {
+function tambahPesanBot(pesan) {
 
   const chat =
-    document.getElementById(
-      "chat"
-    );
+    document.getElementById("chat");
 
   const div =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   div.className =
     "bot-message";
@@ -666,9 +691,7 @@ function tambahPesanBot(
   div.textContent =
     pesan;
 
-  chat.appendChild(
-    div
-  );
+  chat.appendChild(div);
 
   chat.scrollTop =
     chat.scrollHeight;
@@ -676,6 +699,20 @@ function tambahPesanBot(
   return div;
 
 }
+
+
+/* =====================================
+   JALANKAN OTOMATIS
+===================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    cekCustomerOtomatis();
+
+  }
+);
 
 </script>
 
