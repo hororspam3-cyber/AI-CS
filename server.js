@@ -55,6 +55,41 @@ app.get("/", function (req, res) {
   );
 });
 
+app.get("/api/company/:companyId/customer/:customerId", function (req, res) {
+  const companyId = String(req.params.companyId || "").trim().toUpperCase();
+  const customerId = String(req.params.customerId || "").trim().toUpperCase();
+
+  const company = clients[companyId];
+
+  if (!company) {
+    return res.status(404).json({
+      success: false,
+      message: "Perusahaan tidak ditemukan."
+    });
+  }
+
+  const customer = customers[customerId];
+
+  if (!customer) {
+    return res.status(404).json({
+      success: false,
+      message: "Customer tidak ditemukan."
+    });
+  }
+
+  return res.json({
+    success: true,
+    company: {
+      id: companyId,
+      name: company.company_name || "ABC Company"
+    },
+    customer: {
+      id: customerId,
+      ...customer
+    }
+  });
+});
+
 // =====================================
 // CHAT
 // =====================================
