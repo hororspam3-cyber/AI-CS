@@ -139,22 +139,18 @@ app.post("/chat", async (req, res) => {
 
 
       customerInfo = `
+customerInfo = `
 
-Data customer:
+DATA CUSTOMER:
 
-ID: ${customerId}
-
-Nama: ${customer.name}
-
-Status akun: ${customer.account_status}
-
-Verifikasi: ${customer.verification}
-
-Saldo dummy: Rp${customer.balance.toLocaleString("id-ID")}
-
-Status withdrawal: ${customer.withdrawal.status}
-
-Keterangan: ${customer.withdrawal.reason}
+${JSON.stringify(
+  {
+    id: customerId,
+    ...customer
+  },
+  null,
+  2
+)}
 
 `;
 
