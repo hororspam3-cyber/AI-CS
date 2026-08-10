@@ -10,7 +10,9 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>ABC Company - AI Customer Service</title>
+  <title>
+    ABC Company - AI Customer Service
+  </title>
 
 
   <style>
@@ -22,19 +24,29 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #eef2f6;
+
+      font-family:
+        Arial,
+        sans-serif;
+
+      background:
+        #eef2f6;
     }
 
 
     .container {
       width: 100%;
+
       max-width: 650px;
+
       height: 100vh;
+
       margin: auto;
+
       background: white;
 
       display: flex;
+
       flex-direction: column;
     }
 
@@ -44,27 +56,134 @@
     ========================= */
 
     .header {
-      background: #1976d2;
+
+      background:
+        #1976d2;
+
       color: white;
+
       padding: 20px;
     }
 
 
     .company {
+
       font-size: 22px;
+
       font-weight: bold;
     }
 
 
     .title {
+
       font-size: 18px;
+
       margin-top: 6px;
     }
 
 
     .status {
+
       font-size: 13px;
+
       margin-top: 6px;
+    }
+
+
+    /* =========================
+       LOGIN
+    ========================= */
+
+    .login-area {
+
+      padding: 15px;
+
+      background: white;
+
+      border-bottom:
+        1px solid #e5e5e5;
+    }
+
+
+    .login-row {
+
+      display: flex;
+
+      gap: 10px;
+    }
+
+
+    .login-row select {
+
+      flex: 1;
+
+      padding: 12px;
+
+      border:
+        1px solid #d0d7de;
+
+      border-radius:
+        10px;
+
+      font-size: 14px;
+    }
+
+
+    .login-row button {
+
+      background:
+        #1976d2;
+
+      color: white;
+
+      border: none;
+
+      padding:
+        0 18px;
+
+      border-radius:
+        10px;
+
+      cursor: pointer;
+    }
+
+
+    .account-info {
+
+      display: none;
+
+      margin-top: 10px;
+
+      padding: 10px;
+
+      background:
+        #f1f8ff;
+
+      border-radius:
+        10px;
+
+      font-size: 14px;
+    }
+
+
+    .logout {
+
+      margin-top: 8px;
+
+      background:
+        #e53935;
+
+      color: white;
+
+      border: none;
+
+      padding:
+        8px 12px;
+
+      border-radius:
+        8px;
+
+      cursor: pointer;
     }
 
 
@@ -73,29 +192,38 @@
     ========================= */
 
     .menu {
+
       display: flex;
+
       gap: 10px;
 
       padding: 14px;
 
       background: white;
 
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom:
+        1px solid #e5e5e5;
 
       overflow-x: auto;
     }
 
 
     .menu button {
-      border: 1px solid #d8e2ec;
 
-      background: #f5f9fd;
+      border:
+        1px solid #d8e2ec;
 
-      padding: 11px 16px;
+      background:
+        #f5f9fd;
 
-      border-radius: 25px;
+      padding:
+        11px 16px;
 
-      white-space: nowrap;
+      border-radius:
+        25px;
+
+      white-space:
+        nowrap;
 
       font-size: 14px;
 
@@ -104,7 +232,9 @@
 
 
     .menu button:hover {
-      background: #e3f2fd;
+
+      background:
+        #e3f2fd;
     }
 
 
@@ -113,50 +243,64 @@
     ========================= */
 
     .chat {
+
       flex: 1;
 
       padding: 20px;
 
       overflow-y: auto;
 
-      background: #f7f9fb;
+      background:
+        #f7f9fb;
     }
 
 
     .bot-message {
+
       max-width: 85%;
 
       background: white;
 
-      padding: 14px 16px;
+      padding:
+        14px 16px;
 
-      border-radius: 15px;
+      border-radius:
+        15px;
 
-      margin-bottom: 15px;
+      margin-bottom:
+        15px;
 
-      line-height: 1.5;
+      line-height:
+        1.5;
 
       box-shadow:
-        0 1px 3px rgba(0,0,0,0.05);
+        0 1px 3px
+        rgba(0,0,0,0.05);
     }
 
 
     .user-message {
+
       max-width: 85%;
 
       margin-left: auto;
 
-      background: #1976d2;
+      background:
+        #1976d2;
 
       color: white;
 
-      padding: 14px 16px;
+      padding:
+        14px 16px;
 
-      border-radius: 15px;
+      border-radius:
+        15px;
 
-      margin-bottom: 15px;
+      margin-bottom:
+        15px;
 
-      line-height: 1.5;
+      line-height:
+        1.5;
     }
 
 
@@ -165,6 +309,7 @@
     ========================= */
 
     .input-area {
+
       display: flex;
 
       gap: 10px;
@@ -173,18 +318,23 @@
 
       background: white;
 
-      border-top: 1px solid #ddd;
+      border-top:
+        1px solid #ddd;
     }
 
 
     .input-area input {
+
       flex: 1;
 
-      padding: 14px 18px;
+      padding:
+        14px 18px;
 
-      border: 1px solid #d0d7de;
+      border:
+        1px solid #d0d7de;
 
-      border-radius: 25px;
+      border-radius:
+        25px;
 
       font-size: 15px;
 
@@ -193,20 +343,26 @@
 
 
     .input-area input:focus {
-      border-color: #1976d2;
+
+      border-color:
+        #1976d2;
     }
 
 
     .input-area button {
-      background: #1976d2;
+
+      background:
+        #1976d2;
 
       color: white;
 
       border: none;
 
-      padding: 0 22px;
+      padding:
+        0 22px;
 
-      border-radius: 25px;
+      border-radius:
+        25px;
 
       font-size: 15px;
 
@@ -214,58 +370,15 @@
     }
 
 
-    .input-area button:hover {
-      background: #125ca8;
+    .input-area button:disabled {
+
+      background:
+        #9e9e9e;
+
+      cursor:
+        not-allowed;
     }
 
-
-    /* =========================
-       LOADING
-    ========================= */
-
-    .loading {
-      color: #666;
-
-      font-style: italic;
-    }
-
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 500px) {
-
-      .header {
-        padding: 16px;
-      }
-
-
-      .company {
-        font-size: 20px;
-      }
-
-
-      .title {
-        font-size: 16px;
-      }
-
-
-      .chat {
-        padding: 15px;
-      }
-
-
-      .input-area {
-        padding: 10px;
-      }
-
-
-      .input-area button {
-        padding: 0 18px;
-      }
-
-    }
 
   </style>
 
@@ -285,20 +398,91 @@
     <div class="header">
 
       <div class="company">
+
         🏢 ABC Company
+
       </div>
 
 
       <div class="title">
+
         🤖 AI Customer Service
+
       </div>
 
 
       <div class="status">
+
         ● Online • Siap membantu
+
       </div>
 
     </div>
+
+
+
+    <!-- =========================
+         LOGIN
+    ========================= -->
+
+    <div class="login-area">
+
+      <div class="login-row">
+
+        <select id="customerSelect">
+
+          <option value="">
+            Pilih akun demo
+          </option>
+
+          <option value="USER001">
+            USER001 - Andi
+          </option>
+
+          <option value="USER002">
+            USER002 - Budi
+          </option>
+
+          <option value="USER003">
+            USER003 - Citra
+          </option>
+
+        </select>
+
+
+        <button
+          onclick="loginDemo()"
+        >
+          Login
+        </button>
+
+      </div>
+
+
+      <div
+        id="accountInfo"
+        class="account-info"
+      >
+
+        <b>Akun aktif</b>
+
+        <br>
+
+        <span id="loggedUser"></span>
+
+        <br>
+
+        <button
+          class="logout"
+          onclick="logoutDemo()"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </div>
+
 
 
     <!-- =========================
@@ -307,26 +491,35 @@
 
     <div class="menu">
 
-      <button onclick="pilihKategori('Akun')">
+      <button
+        onclick="pilihKategori('Akun')"
+      >
         👤 Akun
       </button>
 
 
-      <button onclick="pilihKategori('Pembelian')">
+      <button
+        onclick="pilihKategori('Pembelian')"
+      >
         🛒 Pembelian
       </button>
 
 
-      <button onclick="pilihKategori('Pembayaran')">
+      <button
+        onclick="pilihKategori('Pembayaran')"
+      >
         💳 Pembayaran
       </button>
 
 
-      <button onclick="pilihKategori('Transaksi')">
+      <button
+        onclick="pilihKategori('Transaksi')"
+      >
         📄 Transaksi
       </button>
 
     </div>
+
 
 
     <!-- =========================
@@ -340,7 +533,9 @@
 
       <div class="bot-message">
 
-        <b>🤖 AI Customer Service</b>
+        <b>
+          🤖 AI Customer Service
+        </b>
 
         <br><br>
 
@@ -349,17 +544,14 @@
 
         <br><br>
 
-        Saya adalah AI Customer Service.
-
-        <br><br>
-
-        Silakan tanyakan apa saja mengenai
-        akun, pembelian, pembayaran,
-        transaksi, atau layanan kami.
+        Silakan login menggunakan
+        akun demo untuk mencoba
+        fitur customer service.
 
       </div>
 
     </div>
+
 
 
     <!-- =========================
@@ -380,7 +572,9 @@
         id="sendButton"
         onclick="kirimPesan()"
       >
+
         Kirim
+
       </button>
 
     </div>
@@ -393,18 +587,120 @@
   <script>
 
 
-    /* =========================
-       TAMBAH PESAN USER
-    ========================= */
+    // =================================
+    // CUSTOMER LOGIN
+    // =================================
 
-    function tambahPesanUser(pesan) {
+    let currentCustomer = null;
+
+
+    function loginDemo() {
+
+      const select =
+        document.getElementById(
+          "customerSelect"
+        );
+
+
+      const customerId =
+        select.value;
+
+
+      if (!customerId) {
+
+        alert(
+          "Silakan pilih akun demo terlebih dahulu."
+        );
+
+        return;
+
+      }
+
+
+      currentCustomer =
+        customerId;
+
+
+      const selectedText =
+        select.options[
+          select.selectedIndex
+        ].text;
+
+
+      document.getElementById(
+        "accountInfo"
+      ).style.display = "block";
+
+
+      document.getElementById(
+        "loggedUser"
+      ).textContent =
+        selectedText;
+
+
+      tambahPesanBot(
+        "🤖 Login berhasil sebagai " +
+        selectedText +
+        ". Sekarang saya dapat membantu mengecek informasi akun Anda."
+      );
+
+
+      scrollChat();
+
+    }
+
+
+
+    // =================================
+    // LOGOUT
+    // =================================
+
+    function logoutDemo() {
+
+      currentCustomer = null;
+
+
+      document.getElementById(
+        "accountInfo"
+      ).style.display =
+        "none";
+
+
+      document.getElementById(
+        "customerSelect"
+      ).value =
+        "";
+
+
+      tambahPesanBot(
+        "🤖 Anda telah logout dari akun demo."
+      );
+
+
+      scrollChat();
+
+    }
+
+
+
+    // =================================
+    // TAMBAH USER
+    // =================================
+
+    function tambahPesanUser(
+      pesan
+    ) {
 
       const chat =
-        document.getElementById("chat");
+        document.getElementById(
+          "chat"
+        );
 
 
       const div =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
 
       div.className =
@@ -421,18 +717,24 @@
 
 
 
-    /* =========================
-       TAMBAH PESAN BOT
-    ========================= */
+    // =================================
+    // TAMBAH BOT
+    // =================================
 
-    function tambahPesanBot(pesan) {
+    function tambahPesanBot(
+      pesan
+    ) {
 
       const chat =
-        document.getElementById("chat");
+        document.getElementById(
+          "chat"
+        );
 
 
       const div =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
 
       div.className =
@@ -452,14 +754,16 @@
 
 
 
-    /* =========================
-       SCROLL CHAT
-    ========================= */
+    // =================================
+    // SCROLL
+    // =================================
 
     function scrollChat() {
 
       const chat =
-        document.getElementById("chat");
+        document.getElementById(
+          "chat"
+        );
 
 
       chat.scrollTop =
@@ -469,16 +773,20 @@
 
 
 
-    /* =========================
-       KATEGORI
-    ========================= */
+    // =================================
+    // KATEGORI
+    // =================================
 
-    function pilihKategori(kategori) {
+    function pilihKategori(
+      kategori
+    ) {
 
       let pertanyaan = "";
 
 
-      if (kategori === "Akun") {
+      if (
+        kategori === "Akun"
+      ) {
 
         pertanyaan =
           "Saya ingin mendapatkan bantuan mengenai akun saya.";
@@ -486,7 +794,9 @@
       }
 
 
-      else if (kategori === "Pembelian") {
+      else if (
+        kategori === "Pembelian"
+      ) {
 
         pertanyaan =
           "Saya ingin mendapatkan bantuan mengenai pembelian.";
@@ -494,7 +804,9 @@
       }
 
 
-      else if (kategori === "Pembayaran") {
+      else if (
+        kategori === "Pembayaran"
+      ) {
 
         pertanyaan =
           "Saya ingin mendapatkan bantuan mengenai pembayaran.";
@@ -502,7 +814,9 @@
       }
 
 
-      else if (kategori === "Transaksi") {
+      else if (
+        kategori === "Transaksi"
+      ) {
 
         pertanyaan =
           "Saya ingin mendapatkan bantuan mengenai transaksi.";
@@ -510,27 +824,31 @@
       }
 
 
-      kirimKeAI(pertanyaan);
+      kirimKeAI(
+        pertanyaan
+      );
 
     }
 
 
 
-    /* =========================
-       KIRIM PESAN
-    ========================= */
+    // =================================
+    // KIRIM PESAN
+    // =================================
 
     async function kirimPesan() {
 
       const input =
-        document.getElementById("userInput");
+        document.getElementById(
+          "userInput"
+        );
 
 
       const pesan =
         input.value.trim();
 
 
-      if (pesan === "") {
+      if (!pesan) {
 
         return;
 
@@ -540,38 +858,44 @@
       input.value = "";
 
 
-      await kirimKeAI(pesan);
+      await kirimKeAI(
+        pesan
+      );
 
     }
 
 
 
-    /* =========================
-       KIRIM KE BACKEND AI
-    ========================= */
+    // =================================
+    // KIRIM KE AI
+    // =================================
 
-    async function kirimKeAI(pesan) {
+    async function kirimKeAI(
+      pesan
+    ) {
 
 
-      // Tampilkan pesan user
+      tambahPesanUser(
+        pesan
+      );
 
-      tambahPesanUser(pesan);
 
       scrollChat();
 
 
-      // Nonaktifkan tombol
-
       const button =
-        document.getElementById("sendButton");
+        document.getElementById(
+          "sendButton"
+        );
 
 
-      button.disabled = true;
+      button.disabled =
+        true;
 
-      button.textContent = "...";
 
+      button.textContent =
+        "...";
 
-      // Pesan loading
 
       const loading =
         tambahPesanBot(
@@ -586,45 +910,48 @@
 
 
         const response =
-          await fetch("/chat", {
+          await fetch(
+            "/chat",
+            {
 
-            method: "POST",
+              method:
+                "POST",
 
-            headers: {
+              headers:
+                {
+                  "Content-Type":
+                    "application/json"
+                },
 
-              "Content-Type":
-                "application/json"
+              body:
+                JSON.stringify({
 
-            },
+                  message:
+                    pesan,
 
-            body: JSON.stringify({
+                  customerId:
+                    currentCustomer
 
-              message: pesan
+                })
 
-            })
-
-          });
-
+            }
+          );
 
 
         const data =
           await response.json();
 
 
-
-        // Hapus loading
-
         loading.remove();
 
-
-
-        // Tampilkan jawaban AI
 
         tambahPesanBot(
 
           "🤖 " +
-          (data.reply ||
-          "Maaf, AI tidak memberikan jawaban.")
+          (
+            data.reply ||
+            "Maaf, AI tidak memberikan jawaban."
+          )
 
         );
 
@@ -639,7 +966,7 @@
 
 
         console.error(
-          "Error:",
+          "ERROR:",
           error
         );
 
@@ -648,9 +975,7 @@
 
 
         tambahPesanBot(
-
-          "🤖 Maaf, terjadi masalah saat menghubungi server AI. Silakan coba lagi."
-
+          "🤖 Maaf, terjadi masalah pada server AI."
         );
 
 
@@ -660,7 +985,6 @@
 
 
       finally {
-
 
         button.disabled =
           false;
@@ -675,12 +999,14 @@
 
 
 
-    /* =========================
-       ENTER
-    ========================= */
+    // =================================
+    // ENTER
+    // =================================
 
     document
-      .getElementById("userInput")
+      .getElementById(
+        "userInput"
+      )
       .addEventListener(
         "keydown",
         function(event) {
@@ -702,4 +1028,4 @@
 
 </body>
 
-  </html>
+</html>
