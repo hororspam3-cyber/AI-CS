@@ -9,125 +9,175 @@ app.use(express.static(__dirname));
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
-// ===============================
-// LOAD COMPANY
-// ===============================
-
-let company = {};
-
-try {
-  company = JSON.parse(
-    fs.readFileSync(
-      path.join(__dirname, "company.json"),
-      "utf8"
-    )
-  );
-
-  console.log(
-    "Company berhasil dimuat:",
-    company.company_name
-  );
-
-} catch (error) {
-
-  console.log(
-    "company.json tidak ditemukan"
-  );
-
-  company = {
-    company_name: "ABC Company",
-    description: "AI Customer Service",
-    services: []
-  };
-}
-
-// ===============================
-// LOAD KNOWLEDGE
-// ===============================
+// =====================================
+// LOAD KNOWLEDGE BASE
+// =====================================
 
 let knowledge = {};
 
 try {
-
   knowledge = JSON.parse(
     fs.readFileSync(
       path.join(__dirname, "knowledge.json"),
       "utf8"
     )
   );
-
 } catch (error) {
-
-  console.log(
-    "knowledge.json tidak ditemukan"
-  );
-
+  console.log("knowledge.json tidak ditemukan");
 }
 
-// ===============================
-// LOAD CUSTOMERS
-// ===============================
+// =====================================
+// LOAD CUSTOMER DATABASE
+// =====================================
 
 let customers = {};
 
 try {
-
   customers = JSON.parse(
     fs.readFileSync(
       path.join(__dirname, "customers.json"),
       "utf8"
     )
   );
-
 } catch (error) {
-
-  console.log(
-    "customers.json tidak ditemukan"
-  );
-
+  console.log("customers.json tidak ditemukan");
 }
 
-// ===============================
+// =====================================
+// LOAD CLIENT / COMPANY
+// =====================================
+
+let clients = {};
+
+try {
+  clients = JSON.parse(
+    fs.readFileSync(
+      path.join(__dirname, "clients.json"),
+      "utf8"
+    )
+  );
+} catch (error) {
+  console.log("clients.json tidak ditemukan");
+}
+
+// =====================================
 // HOME
-// ===============================
+// =====================================
 
 app.get("/", (req, res) => {
-
   res.sendFile(
     path.join(__dirname, "index.html")
   );
-
 });
 
-// ===============================
-// FIND CUSTOMER
-// ===============================
+// =====================================
+// API CUSTOMER
+// =====================================
 
-function findCustomer(customerId) {
+app.get(
+  "/api/company/:companyId/customer/:customerId",
+  (req, res) => {
 
-  return customers[customerId];
+    const companyId =
+      String(req.params.companyId)
+        .trim()
+        .toUpperCase();
 
-}
+    const customerId =
+      String(req.params.customerId)
+        .trim()
+        .toUpperCase();
 
-// ===============================
+    // Cek perusahaan
+
+    const company =
+      clients[companyId];
+
+    if (!company) {
+
+      return res.status(404).json({
+        success: false,
+        message: "Perusahaan tidak ditemukan."
+      });
+
+    }
+
+    // Cek status perusahaan
+
+    if (company.status !== "active") {
+
+      return res.status(403).json({
+        success: false,
+        message: "Layanan perusahaan tidak aktif."
+      });
+
+    }
+
+    // Cek customer
+
+    const customer =
+      customers[customerId];
+
+    if (!customer) {
+
+      return res.status(404).json({
+        success: false,
+        message: "Customer tidak ditemukan."
+      });
+
+    }
+
+    // Kirim data customer
+
+    return res.json({
+
+      success: true,
+
+      company: {
+        id: company.company_id,
+        name: company.company_name
+      },
+
+      customer: {
+        id: customerId,
+        ...customer
+      }
+
+    });
+
+  }
+);
+
+// =====================================
 // CHAT
-// ===============================
+// =====================================
 
 app.post("/chat", async (req, res) => {
 
   try {
 
     const message =
-      String(req.body.message || "").trim();
+      String(
+        req.body.message || ""
+      ).trim();
 
-    const customerId =
-      String(req.body.customerId || "")
+    const companyId =
+      String(
+        req.body.companyId || "ABC001"
+      )
         .trim()
         .toUpperCase();
 
-    // ===========================
+    const customerId =
+      String(
+        req.body.customerId || ""
+      )
+        .trim()
+        .toUpperCase();
+
+    // =================================
     // CEK PESAN
-    // ===========================
+    // =================================
 
     if (!message) {
 
@@ -138,40 +188,52 @@ app.post("/chat", async (req, res) => {
 
     }
 
-    // ===========================
-    // CEK GROQ API
-    // ===========================
+    // =================================
+    // CEK GROQ
+    // =================================
 
     if (!GROQ_API_KEY) {
 
       return res.status(500).json({
-
         reply:
           "GROQ_API_KEY belum tersedia di server."
-
       });
 
     }
 
-    // ===========================
-    // CUSTOMER DATA
-    // ===========================
+    // =================================
+    // CEK PERUSAHAAN
+    // =================================
+
+    const company =
+      clients[companyId];
+
+    if (!company) {
+
+      return res.status(404).json({
+        reply:
+          "Perusahaan tidak ditemukan."
+      });
+
+    }
+
+    // =================================
+    // DATA CUSTOMER
+    // =================================
 
     let customerInfo =
-      "Data customer belum tersedia.";
+      "Belum tersedia.";
 
     if (customerId) {
 
       const customer =
-        findCustomer(customerId);
+        customers[customerId];
 
       if (!customer) {
 
         return res.json({
-
           reply:
             "Maaf, akun customer tersebut tidak ditemukan."
-
         });
 
       }
@@ -188,47 +250,24 @@ app.post("/chat", async (req, res) => {
 
     }
 
-    // ===========================
-    // COMPANY INFORMATION
-    // ===========================
-
-    const companyInfo =
-      JSON.stringify(
-        company,
-        null,
-        2
-      );
-
-    // ===========================
-    // AI INSTRUCTION
-    // ===========================
+    // =================================
+    // SYSTEM PROMPT
+    // =================================
 
     const systemPrompt = `
-
 Kamu adalah AI Customer Service
-untuk perusahaan berikut:
-
-NAMA PERUSAHAAN:
-${company.company_name}
-
-INFORMASI PERUSAHAAN:
-${companyInfo}
+untuk ${company.company_name}.
 
 Gunakan bahasa Indonesia.
 
-Kamu adalah customer service resmi
-untuk perusahaan tersebut.
+Jawablah dengan ramah, jelas,
+dan tidak terlalu panjang.
 
-Tugas kamu adalah membantu customer
-dengan ramah, jelas, dan mudah dipahami.
-
-==================================================
-LAYANAN YANG DAPAT DIBANTU
-==================================================
+BANTUAN YANG TERSEDIA:
 
 - Pendaftaran akun
 - Login
-- Akun pelanggan
+- Akun
 - Deposit
 - Withdrawal
 - Pembelian
@@ -238,149 +277,108 @@ LAYANAN YANG DAPAT DIBANTU
 - Password
 - Verifikasi
 - Customer Service
+- Keamanan
 
-==================================================
-DATA CUSTOMER
-==================================================
+PERATURAN:
+
+1. Jika DATA CUSTOMER tersedia,
+   gunakan data tersebut untuk menjawab.
+
+2. Jangan meminta customer mengetik
+   ID customer lagi jika customerId
+   sudah diberikan oleh sistem.
+
+3. Jangan mengarang saldo, bonus,
+   transaksi, withdrawal, atau data
+   customer lainnya.
+
+4. Jika data tertentu tidak tersedia,
+   katakan bahwa data tersebut belum
+   tersedia.
+
+5. Jangan meminta:
+   - password
+   - PIN
+   - OTP
+   - API key
+   - kode keamanan rahasia
+
+6. Gunakan Knowledge Base sebagai
+   panduan layanan perusahaan.
+
+7. Jika pertanyaan tidak dapat dijawab
+   berdasarkan data yang tersedia,
+   arahkan customer ke customer service
+   manusia.
+
+INFORMASI PERUSAHAAN:
+
+${JSON.stringify(company, null, 2)}
+
+KNOWLEDGE BASE:
+
+${JSON.stringify(knowledge, null, 2)}
+
+DATA CUSTOMER:
 
 ${customerInfo}
-
-Jika DATA CUSTOMER tersedia,
-anggap customer tersebut adalah
-orang yang sedang berbicara dengan kamu.
-
-Jangan meminta customer mengetik
-USER ID lagi jika data customer
-sudah tersedia.
-
-Gunakan data customer untuk menjawab
-pertanyaan seperti:
-
-- Nama
-- Status akun
-- Saldo
-- Bonus
-- Deposit
-- Withdrawal
-- Transaksi
-- Verifikasi
-- Status akun
-
-Jangan mengarang data.
-
-Jika informasi yang dibutuhkan
-tidak tersedia dalam DATA CUSTOMER,
-katakan dengan jujur bahwa data tersebut
-belum tersedia.
-
-==================================================
-KNOWLEDGE BASE PERUSAHAAN
-==================================================
-
-${JSON.stringify(
-  knowledge,
-  null,
-  2
-)}
-
-Gunakan Knowledge Base sebagai
-pedoman layanan perusahaan.
-
-Jangan membuat aturan perusahaan
-sendiri.
-
-==================================================
-KEAMANAN
-==================================================
-
-Jangan pernah meminta:
-
-- Password
-- PIN
-- API key
-- OTP
-- Kode keamanan rahasia
-
-Jangan pernah menampilkan
-API key atau informasi rahasia.
-
-==================================================
-GAYA JAWABAN
-==================================================
-
-Jawab dengan bahasa Indonesia.
-
-Gunakan gaya:
-
-- Ramah
-- Profesional
-- Singkat
-- Mudah dipahami
-
-Jika customer bertanya tentang
-cara deposit, withdrawal, daftar akun,
-bonus, pembayaran, atau layanan lainnya,
-jelaskan langkah-langkahnya secara jelas.
-
-Jika customer menanyakan data pribadinya,
-gunakan DATA CUSTOMER yang tersedia.
-
 `;
 
-    // ===========================
-    // GROQ AI
-    // ===========================
+    // =================================
+    // REQUEST KE GROQ
+    // =================================
 
-    const response = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
+    const response =
+      await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
 
-        method: "POST",
+          method: "POST",
 
-        headers: {
+          headers: {
 
-          "Content-Type":
-            "application/json",
+            "Content-Type":
+              "application/json",
 
-          "Authorization":
-            `Bearer ${GROQ_API_KEY}`
+            "Authorization":
+              `Bearer ${GROQ_API_KEY}`
 
-        },
+          },
 
-        body: JSON.stringify({
+          body: JSON.stringify({
 
-          model:
-            "llama-3.3-70b-versatile",
+            model:
+              "llama-3.3-70b-versatile",
 
-          messages: [
+            messages: [
 
-            {
-              role: "system",
-              content: systemPrompt
-            },
+              {
+                role: "system",
+                content: systemPrompt
+              },
 
-            {
-              role: "user",
-              content: message
-            }
+              {
+                role: "user",
+                content: message
+              }
 
-          ],
+            ],
 
-          temperature: 0.3,
+            temperature: 0.3,
 
-          max_tokens: 500
+            max_tokens: 500
 
-        })
+          })
 
-      }
-    );
-
-    // ===========================
-    // GROQ RESPONSE
-    // ===========================
+        }
+      );
 
     const data =
       await response.json();
+
+    // =================================
+    // GROQ ERROR
+    // =================================
 
     if (!response.ok) {
 
@@ -398,9 +396,9 @@ gunakan DATA CUSTOMER yang tersedia.
 
     }
 
-    // ===========================
-    // GET AI ANSWER
-    // ===========================
+    // =================================
+    // AMBIL JAWABAN AI
+    // =================================
 
     const reply =
       data.choices?.[0]?.message?.content;
@@ -416,24 +414,31 @@ gunakan DATA CUSTOMER yang tersedia.
 
     }
 
-    // ===========================
-    // SEND RESPONSE
-    // ===========================
+    // =================================
+    // RESPONSE
+    // =================================
 
-    res.json({
+    return res.json({
 
-      reply: reply
+      reply: reply,
+
+      companyId: companyId,
+
+      customerId:
+        customerId || null
 
     });
 
-  } catch (error) {
+  }
+
+  catch (error) {
 
     console.error(
       "ERROR CHAT:",
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
 
       reply:
         "Maaf, terjadi masalah pada sistem AI."
@@ -444,9 +449,9 @@ gunakan DATA CUSTOMER yang tersedia.
 
 });
 
-// ===============================
+// =====================================
 // SERVER
-// ===============================
+// =====================================
 
 const PORT =
   process.env.PORT || 3000;
@@ -456,7 +461,7 @@ app.listen(
   () => {
 
     console.log(
-      `Server AI Customer Service berjalan pada port ${PORT}`
+      `AI Customer Service berjalan pada port ${PORT}`
     );
 
   }
