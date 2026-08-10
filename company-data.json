@@ -1,0 +1,38 @@
+{
+  "USER001": {
+    "name": "Andi",
+    "accountStatus": "aktif",
+    "verification": "selesai",
+    "balance": 1500000,
+    "withdrawalLimit": 500000,
+    "lastWithdrawal": {
+      "amount": 1000000,
+      "status": "gagal",
+      "reason": "Melebihi batas withdrawal harian"
+    }
+  },
+  "USER002": {
+    "name": "Budi",
+    "accountStatus": "aktif",
+    "verification": "selesai",
+    "balance": 750000,
+    "withdrawalLimit": 500000,
+    "lastWithdrawal": {
+      "amount": 300000,
+      "status": "diproses",
+      "reason": ""
+    }
+  },
+  "USER003": {
+    "name": "Citra",
+    "accountStatus": "aktif",
+    "verification": "belum selesai",
+    "balance": 2000000,
+    "withdrawalLimit": 1000000,
+    "lastWithdrawal": {
+      "amount": 500000,
+      "status": "ditolak",
+      "reason": "Verifikasi akun belum selesai"
+    }
+  }
+}
