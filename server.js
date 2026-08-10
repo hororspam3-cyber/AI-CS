@@ -29,6 +29,7 @@ try {
   console.log("knowledge.json tidak ditemukan");
 }
 
+
 // =====================================
 // LOAD CUSTOMER DATABASE
 // =====================================
@@ -47,6 +48,7 @@ try {
 } catch (error) {
   console.log("customers.json tidak ditemukan");
 }
+
 
 // =====================================
 // LOAD CLIENT / COMPANY
@@ -67,6 +69,7 @@ try {
   console.log("clients.json tidak ditemukan");
 }
 
+
 // =====================================
 // LOAD COMPANY DATA DEMO
 // =====================================
@@ -86,6 +89,7 @@ try {
   console.log("company-data.json tidak ditemukan");
 }
 
+
 // =====================================
 // HOME
 // =====================================
@@ -95,6 +99,7 @@ app.get("/", (req, res) => {
     path.join(__dirname, "index.html")
   );
 });
+
 
 // =====================================
 // API CUSTOMER
@@ -157,6 +162,7 @@ app.get(
   }
 );
 
+
 // =====================================
 // API COMPANY DATA DEMO
 // =====================================
@@ -188,6 +194,7 @@ app.get(
   }
 );
 
+
 // =====================================
 // CHAT
 // =====================================
@@ -209,6 +216,7 @@ app.post("/chat", async (req, res) => {
         .trim()
         .toUpperCase();
 
+
     // =================================
     // CEK PESAN
     // =================================
@@ -219,6 +227,7 @@ app.post("/chat", async (req, res) => {
       });
     }
 
+
     // =================================
     // CEK GROQ
     // =================================
@@ -228,6 +237,7 @@ app.post("/chat", async (req, res) => {
         reply: "GROQ_API_KEY belum tersedia di server."
       });
     }
+
 
     // =================================
     // CEK PERUSAHAAN
@@ -242,11 +252,13 @@ app.post("/chat", async (req, res) => {
       });
     }
 
+
     // =================================
     // DATA CUSTOMER
     // =================================
 
-    let customerInfo = "Belum tersedia.";
+    let customerInfo =
+      "Belum tersedia.";
 
     if (customerId) {
 
@@ -254,9 +266,12 @@ app.post("/chat", async (req, res) => {
         customers[customerId];
 
       if (!customer) {
+
         return res.json({
-          reply: "Maaf, akun customer tersebut tidak ditemukan."
+          reply:
+            "Maaf, akun customer tersebut tidak ditemukan."
         });
+
       }
 
       customerInfo =
@@ -269,6 +284,7 @@ app.post("/chat", async (req, res) => {
           2
         );
     }
+
 
     // =================================
     // DATA OPERASIONAL CUSTOMER
@@ -296,95 +312,81 @@ app.post("/chat", async (req, res) => {
       }
     }
 
+
     // =================================
     // SYSTEM PROMPT
     // =================================
 
-    const systemPrompt = `
-Kamu adalah AI Customer Service untuk ${company.company_name}.
+    const systemPrompt = [
 
-Gunakan bahasa Indonesia.
+      "Kamu adalah AI Customer Service untuk " +
+        company.company_name +
+        ".",
 
-Jawablah dengan ramah, jelas, dan tidak terlalu panjang.
+      "Gunakan bahasa Indonesia.",
 
-TUJUAN UTAMA:
+      "Jawablah dengan ramah, jelas, dan tidak terlalu panjang.",
 
-Kamu bertugas membantu customer menyelesaikan masalah mereka.
+      "Tugas utama kamu adalah membantu customer menyelesaikan masalah mereka.",
 
-Jika DATA CUSTOMER tersedia, gunakan data tersebut.
+      "Jika DATA CUSTOMER tersedia, gunakan data tersebut.",
 
-Jika customer melaporkan masalah seperti withdrawal gagal,
-periksa data yang tersedia untuk mencari penyebabnya.
+      "Jika customer menanyakan masalah withdrawal, periksa status akun, verifikasi, saldo, limit withdrawal, status withdrawal terakhir, dan alasan withdrawal.",
 
-Contoh:
+      "Jika penyebab masalah tersedia di data, jelaskan penyebabnya kepada customer.",
 
-Customer bertanya:
-"Kenapa WD saya gagal?"
+      "Jika ada solusi yang jelas, berikan langkah yang dapat dilakukan customer.",
 
-Periksa:
+      "Jangan mengarang data.",
 
-- Status akun
-- Status verifikasi
-- Saldo
-- Limit withdrawal
-- Status withdrawal terakhir
-- Alasan withdrawal gagal
+      "Jika informasi tidak tersedia, katakan bahwa informasi tersebut belum tersedia.",
 
-Jika penyebab tersedia di data, jelaskan penyebabnya kepada customer.
+      "Jangan meminta password.",
 
-Jika terdapat solusi yang jelas, berikan langkah yang dapat dilakukan customer.
+      "Jangan meminta PIN.",
 
-JANGAN MENGARANG DATA.
+      "Jangan meminta OTP.",
 
-Jika penyebab masalah tidak tersedia,
-katakan bahwa informasi tersebut belum tersedia
-dan arahkan customer kepada customer service manusia.
+      "Jangan meminta API key.",
 
-BANTUAN:
+      "Jangan meminta kode keamanan rahasia.",
 
-- Pendaftaran akun
-- Login
-- Akun
-- Deposit
-- Withdrawal
-- Pembelian
-- Pembayaran
-- Bonus
-- Transaksi
-- Password
-- Verifikasi
-- Customer Service
-- Keamanan
+      "Jangan mengarang saldo.",
 
-PERATURAN KEAMANAN:
+      "Jangan mengarang transaksi.",
 
-1. Jangan meminta password.
-2. Jangan meminta PIN.
-3. Jangan meminta OTP.
-4. Jangan meminta API key.
-5. Jangan meminta kode keamanan rahasia.
-6. Jangan mengarang saldo.
-7. Jangan mengarang transaksi.
-8. Jangan mengarang status withdrawal.
-9. Jangan mengarang bonus.
-10. Jika data tidak tersedia, katakan bahwa data tersebut belum tersedia.
+      "Jangan mengarang status withdrawal.",
 
-INFORMASI PERUSAHAAN:
+      "Jangan mengarang bonus.",
 
-${JSON.stringify(company, null, 2)}
+      "Jika masalah tidak dapat diselesaikan berdasarkan data yang tersedia, arahkan customer kepada customer service manusia.",
 
-KNOWLEDGE BASE:
+      "INFORMASI PERUSAHAAN:",
 
-${JSON.stringify(knowledge, null, 2)}
+      JSON.stringify(
+        company,
+        null,
+        2
+      ),
 
-DATA CUSTOMER:
+      "KNOWLEDGE BASE:",
 
-${customerInfo}
+      JSON.stringify(
+        knowledge,
+        null,
+        2
+      ),
 
-DATA OPERASIONAL CUSTOMER:
+      "DATA CUSTOMER:",
 
-${companyCustomerInfo}
-`;
+      customerInfo,
+
+      "DATA OPERASIONAL CUSTOMER:",
+
+      companyCustomerInfo
+
+    ].join("\n\n");
+
 
     // =================================
     // REQUEST KE GROQ
@@ -397,14 +399,20 @@ ${companyCustomerInfo}
           method: "POST",
 
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${GROQ_API_KEY}`
+            "Content-Type":
+              "application/json",
+
+            "Authorization":
+              "Bearer " + GROQ_API_KEY
           },
 
           body: JSON.stringify({
-            model: "llama-3.3-70b-versatile",
+
+            model:
+              "llama-3.3-70b-versatile",
 
             messages: [
+
               {
                 role: "system",
                 content: systemPrompt
@@ -414,16 +422,21 @@ ${companyCustomerInfo}
                 role: "user",
                 content: message
               }
+
             ],
 
             temperature: 0.3,
+
             max_tokens: 500
+
           })
         }
       );
 
+
     const data =
       await response.json();
+
 
     // =================================
     // GROQ ERROR
@@ -437,9 +450,11 @@ ${companyCustomerInfo}
       );
 
       return res.status(500).json({
-        reply: "Maaf, terjadi masalah pada layanan AI."
+        reply:
+          "Maaf, terjadi masalah pada layanan AI."
       });
     }
+
 
     // =================================
     // AMBIL JAWABAN AI
@@ -448,21 +463,30 @@ ${companyCustomerInfo}
     const reply =
       data.choices?.[0]?.message?.content;
 
+
     if (!reply) {
 
       return res.json({
-        reply: "Maaf, AI tidak memberikan jawaban."
+        reply:
+          "Maaf, AI tidak memberikan jawaban."
       });
     }
+
 
     // =================================
     // RESPONSE
     // =================================
 
     return res.json({
+
       reply: reply,
-      companyId: companyId,
-      customerId: customerId || null
+
+      companyId:
+        companyId,
+
+      customerId:
+        customerId || null
+
     });
 
   } catch (error) {
@@ -473,10 +497,14 @@ ${companyCustomerInfo}
     );
 
     return res.status(500).json({
-      reply: "Maaf, terjadi masalah pada sistem AI."
+      reply:
+        "Maaf, terjadi masalah pada sistem AI."
     });
+
   }
+
 });
+
 
 // =====================================
 // SERVER
@@ -485,12 +513,16 @@ ${companyCustomerInfo}
 const PORT =
   process.env.PORT || 3000;
 
+
 app.listen(
   PORT,
   () => {
+
     console.log(
-      `AI Customer Service berjalan pada port ${PORT}`
+      "AI Customer Service berjalan pada port " +
+      PORT
     );
+
   }
 );
 ```
