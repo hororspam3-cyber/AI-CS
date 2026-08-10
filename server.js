@@ -3,15 +3,12 @@ const path = require("path");
 const fs = require("fs");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(__dirname));
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-// =====================================
-// BACA FILE JSON
-// =====================================
 
 function readJSON(filename) {
   const filePath = path.join(__dirname, filename);
@@ -23,81 +20,73 @@ function readJSON(filename) {
 
   try {
     const text = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(text);
-
-    console.log(filename + " berhasil dimuat");
-
-    return data;
+    return JSON.parse(text);
   } catch (error) {
-    console.log(
-      "Gagal membaca " + filename + ": " + error.message
+    console.error(
+      "Gagal membaca " + filename + ":",
+      error.message
     );
-
     return {};
   }
 }
-
-// =====================================
-// DATABASE
-// =====================================
 
 const knowledge = readJSON("knowledge.json");
 const customers = readJSON("customers.json");
 const clients = readJSON("clients.json");
 
-// =====================================
-// HOME
-// =====================================
-
 app.get("/", function (req, res) {
-  res.sendFile(
-    path.join(__dirname, "index.html")
-  );
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get("/api/company/:companyId/customer/:customerId", function (req, res) {
-  const companyId = String(req.params.companyId || "").trim().toUpperCase();
-  const customerId = String(req.params.customerId || "").trim().toUpperCase();
+app.get(
+  "/api/company/:companyId/customer/:customerId",
+  function (req, res) {
+    const companyId = String(
+      req.params.companyId || ""
+    )
+      .trim()
+      .toUpperCase();
 
-  const company = clients[companyId];
+    const customerId = String(
+      req.params.customerId || ""
+    )
+      .trim()
+      .toUpperCase();
 
-  if (!company) {
-    return res.status(404).json({
-      success: false,
-      message: "Perusahaan tidak ditemukan."
-    });
-  }
+    const company = clients[companyId];
 
-  const customer = customers[customerId];
-
-  if (!customer) {
-    return res.status(404).json({
-      success: false,
-      message: "Customer tidak ditemukan."
-    });
-  }
-
-  return res.json({
-    success: true,
-    company: {
-      id: companyId,
-      name: company.company_name || "ABC Company"
-    },
-    customer: {
-      id: customerId,
-      ...customer
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Perusahaan tidak ditemukan."
+      });
     }
-  });
-});
 
-// =====================================
-// CHAT
-// =====================================
+    const customer = customers[customerId];
+
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer tidak ditemukan."
+      });
+    }
+
+    return res.json({
+      success: true,
+      company: {
+        id: companyId,
+        name: company.company_name || "ABC Company"
+      },
+      customer: {
+        id: customerId,
+        ...customer
+      }
+    });
+  }
+);
 
 app.post("/chat", async function (req, res) {
-
   try {
-
     const message = String(
       req.body.message || ""
     ).trim();
@@ -114,209 +103,112 @@ app.post("/chat", async function (req, res) {
       .trim()
       .toUpperCase();
 
-    // ================================
-    // CEK PESAN
-    // ================================
-
     if (!message) {
-
       return res.json({
-        reply:
-          "Silakan tuliskan pertanyaan Anda."
+        reply: "Silakan tuliskan pertanyaan Anda."
       });
-
     }
 
-    // ================================
-    // CEK API KEY
-    // ================================
-
     if (!GROQ_API_KEY) {
-
-      console.error(
-        "GROQ_API_KEY belum tersedia."
-      );
+      console.error("GROQ_API_KEY belum tersedia.");
 
       return res.status(500).json({
         reply:
           "Layanan AI belum dikonfigurasi dengan benar."
       });
-
     }
 
-    // ================================
-    // PERUSAHAAN
-    // ================================
+    const company = clients[companyId];
 
-    const company =
-      clients[companyId];
-
-    let companyName =
-      "ABC Company";
-
-    if (
-      company &&
-      company.company_name
-    ) {
-
-      companyName =
-        company.company_name;
-
+    if (!company) {
+      return res.status(404).json({
+        reply: "Perusahaan tidak ditemukan."
+      });
     }
 
-    // ================================
-    // CUSTOMER
-    // ================================
+    const companyName =
+      company.company_name || "ABC Company";
 
     let customerInfo =
       "Data customer belum tersedia.";
 
     if (customerId) {
-
-      const customer =
-        customers[customerId];
+      const customer = customers[customerId];
 
       if (!customer) {
-
         return res.json({
           reply:
             "Maaf, data customer tidak ditemukan."
         });
-
       }
 
-      customerInfo =
-        JSON.stringify(
-          {
-            id: customerId,
-            ...customer
-          },
-          null,
-          2
-        );
-
+      customerInfo = JSON.stringify(
+        {
+          id: customerId,
+          ...customer
+        },
+        null,
+        2
+      );
     }
 
-    // ================================
-    // SYSTEM PROMPT
-    // ================================
-
     const systemPrompt =
-
       "Kamu adalah AI Customer Service untuk " +
       companyName +
       ".\n\n" +
-
       "Gunakan bahasa Indonesia.\n" +
-
       "Jawab dengan ramah, jelas, dan singkat.\n\n" +
-
       "DATA CUSTOMER:\n" +
       customerInfo +
       "\n\n" +
-
       "KNOWLEDGE BASE:\n" +
-      JSON.stringify(
-        knowledge,
-        null,
-        2
-      ) +
+      JSON.stringify(knowledge, null, 2) +
       "\n\n" +
-
       "PERATURAN:\n" +
-
       "1. Gunakan data customer jika tersedia.\n" +
-
-      "2. Jangan mengarang saldo, transaksi, " +
-      "bonus, deposit, withdrawal, atau data customer.\n" +
-
-      "3. Jika data yang dibutuhkan tidak tersedia, " +
-      "katakan bahwa data tersebut belum tersedia.\n" +
-
-      "4. Jangan meminta password, PIN, OTP, " +
-      "atau kode keamanan.\n" +
-
+      "2. Jangan mengarang saldo, transaksi, bonus, deposit, withdrawal, atau data customer.\n" +
+      "3. Jika data tidak tersedia, katakan data tersebut belum tersedia.\n" +
+      "4. Jangan meminta password, PIN, OTP, atau kode keamanan.\n" +
       "5. Gunakan Knowledge Base sebagai panduan.\n" +
+      "6. Jika masalah membutuhkan pemeriksaan manusia, arahkan customer ke customer service manusia.";
 
-      "6. Jika masalah membutuhkan data yang tidak tersedia, " +
-      "jelaskan bahwa informasi tersebut belum tersedia.";
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+            "Bearer " + GROQ_API_KEY
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [
+            {
+              role: "system",
+              content: systemPrompt
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ],
+          temperature: 0.2,
+          max_tokens: 500
+        })
+      }
+    );
 
-    // ================================
-    // REQUEST KE GROQ
-    // ================================
-
-    const response =
-      await fetch(
-        "https://api.groq.com/openai/v1/chat/completions",
-        {
-
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-
-            "Authorization":
-              "Bearer " +
-              GROQ_API_KEY
-          },
-
-          body: JSON.stringify({
-
-            model:
-              "llama-3.3-70b-versatile",
-
-            messages: [
-
-              {
-                role: "system",
-                content:
-                  systemPrompt
-              },
-
-              {
-                role: "user",
-                content:
-                  message
-              }
-
-            ],
-
-            temperature:
-              0.2,
-
-            max_tokens:
-              500
-
-          })
-
-        }
-      );
-
-    // ================================
-    // HASIL GROQ
-    // ================================
-
-    const data =
-      await response.json();
+    const data = await response.json();
 
     if (!response.ok) {
-
-      console.error(
-        "GROQ ERROR:",
-        data
-      );
+      console.error("GROQ ERROR:", data);
 
       return res.status(500).json({
         reply:
           "Maaf, layanan AI sedang mengalami masalah."
       });
-
     }
-
-    // ================================
-    // AMBIL JAWABAN
-    // ================================
 
     const reply =
       data.choices &&
@@ -325,64 +217,30 @@ app.post("/chat", async function (req, res) {
       data.choices[0].message.content;
 
     if (!reply) {
-
       return res.json({
         reply:
           "Maaf, AI tidak memberikan jawaban."
       });
-
     }
 
-    // ================================
-    // RESPONSE
-    // ================================
-
     return res.json({
-
-      reply:
-        reply,
-
-      companyId:
-        companyId,
-
-      customerId:
-        customerId || null
-
+      reply: reply,
+      companyId: companyId,
+      customerId: customerId || null
     });
-
   } catch (error) {
-
-    console.error(
-      "CHAT ERROR:",
-      error
-    );
+    console.error("CHAT ERROR:", error);
 
     return res.status(500).json({
-
       reply:
         "Maaf, terjadi masalah pada sistem AI."
-
     });
-
   }
-
 });
 
-// =====================================
-// SERVER
-// =====================================
-
-const PORT =
-  process.env.PORT || 3000;
-
-app.listen(
-  PORT,
-  function () {
-
-    console.log(
-      "AI Customer Service berjalan pada port " +
-      PORT
-    );
-
-  }
-);
+app.listen(PORT, function () {
+  console.log(
+    "AI Customer Service berjalan pada port " +
+    PORT
+  );
+});
