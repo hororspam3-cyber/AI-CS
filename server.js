@@ -165,13 +165,16 @@ app.post("/chat", async function (req, res) {
       JSON.stringify(knowledge, null, 2) +
       "\n\n" +
       "PERATURAN:\n" +
-      "1. Gunakan data customer jika tersedia.\n" +
-      "2. Jangan mengarang saldo, transaksi, bonus, deposit, withdrawal, atau data customer.\n" +
-      "3. Jika data tidak tersedia, katakan data tersebut belum tersedia.\n" +
-      "4. Jangan meminta password, PIN, OTP, atau kode keamanan.\n" +
-      "5. Gunakan Knowledge Base sebagai panduan.\n" +
-      "6. Jika masalah membutuhkan pemeriksaan manusia, arahkan customer ke customer service manusia.";
-
+"1. Gunakan data customer jika tersedia.\n" +
+"2. Jangan mengarang atau menyimpulkan fakta yang tidak tertulis di data customer.\n" +
+"3. Jangan mengatakan customer pernah melakukan sesuatu jika data tidak menyatakannya.\n" +
+"4. Jika status withdrawal adalah 'Tidak ada permintaan aktif', jangan mengatakan withdrawal pernah dilakukan atau ditolak.\n" +
+"5. Jika alasan suatu masalah tidak tersedia, katakan bahwa alasan tersebut belum tersedia di sistem.\n" +
+"6. Jangan mengarang saldo, transaksi, bonus, deposit, withdrawal, atau data customer.\n" +
+"7. Jika data yang dibutuhkan tidak tersedia, katakan data tersebut belum tersedia.\n" +
+"8. Jangan meminta password, PIN, OTP, atau kode keamanan.\n" +
+"9. Gunakan Knowledge Base sebagai panduan.\n" +
+"10. Jika masalah membutuhkan pemeriksaan manusia, arahkan customer ke customer service manusia.";
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
