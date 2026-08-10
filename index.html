@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>ABC Company - AI Customer Service</title>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
+
 
     body {
       margin: 0;
@@ -16,15 +26,22 @@
       background: #eef2f6;
     }
 
+
     .container {
       width: 100%;
       max-width: 650px;
       height: 100vh;
       margin: auto;
       background: white;
+
       display: flex;
       flex-direction: column;
     }
+
+
+    /* =========================
+       HEADER
+    ========================= */
 
     .header {
       background: #1976d2;
@@ -32,106 +49,190 @@
       padding: 20px;
     }
 
+
     .company {
       font-size: 22px;
       font-weight: bold;
     }
+
 
     .title {
       font-size: 18px;
       margin-top: 6px;
     }
 
+
     .status {
       font-size: 13px;
       margin-top: 6px;
     }
 
+
+    /* =========================
+       MENU
+    ========================= */
+
     .menu {
       display: flex;
       gap: 10px;
+
       padding: 14px;
+
       background: white;
+
       border-bottom: 1px solid #e5e5e5;
+
       overflow-x: auto;
     }
 
+
     .menu button {
       border: 1px solid #d8e2ec;
+
       background: #f5f9fd;
+
       padding: 11px 16px;
+
       border-radius: 25px;
+
       white-space: nowrap;
+
       font-size: 14px;
+
       cursor: pointer;
     }
+
 
     .menu button:hover {
       background: #e3f2fd;
     }
 
+
+    /* =========================
+       CHAT
+    ========================= */
+
     .chat {
       flex: 1;
+
       padding: 20px;
+
       overflow-y: auto;
+
       background: #f7f9fb;
     }
 
+
     .bot-message {
       max-width: 85%;
+
       background: white;
+
       padding: 14px 16px;
+
       border-radius: 15px;
+
       margin-bottom: 15px;
+
       line-height: 1.5;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.05);
     }
+
 
     .user-message {
       max-width: 85%;
+
       margin-left: auto;
+
       background: #1976d2;
+
       color: white;
+
       padding: 14px 16px;
+
       border-radius: 15px;
+
       margin-bottom: 15px;
+
       line-height: 1.5;
     }
 
+
+    /* =========================
+       INPUT
+    ========================= */
+
     .input-area {
       display: flex;
+
       gap: 10px;
+
       padding: 14px;
+
       background: white;
+
       border-top: 1px solid #ddd;
     }
 
+
     .input-area input {
       flex: 1;
+
       padding: 14px 18px;
+
       border: 1px solid #d0d7de;
+
       border-radius: 25px;
+
       font-size: 15px;
+
       outline: none;
     }
+
 
     .input-area input:focus {
       border-color: #1976d2;
     }
 
+
     .input-area button {
       background: #1976d2;
+
       color: white;
+
       border: none;
+
       padding: 0 22px;
+
       border-radius: 25px;
+
       font-size: 15px;
+
       cursor: pointer;
     }
+
 
     .input-area button:hover {
       background: #125ca8;
     }
+
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    .loading {
+      color: #666;
+
+      font-style: italic;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
 
     @media (max-width: 500px) {
 
@@ -139,35 +240,47 @@
         padding: 16px;
       }
 
+
       .company {
         font-size: 20px;
       }
+
 
       .title {
         font-size: 16px;
       }
 
+
       .chat {
         padding: 15px;
       }
 
+
       .input-area {
         padding: 10px;
       }
+
 
       .input-area button {
         padding: 0 18px;
       }
 
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <div class="container">
 
-    <!-- HEADER -->
+
+    <!-- =========================
+         HEADER
+    ========================= -->
 
     <div class="header">
 
@@ -175,9 +288,11 @@
         🏢 ABC Company
       </div>
 
+
       <div class="title">
         🤖 AI Customer Service
       </div>
+
 
       <div class="status">
         ● Online • Siap membantu
@@ -186,7 +301,9 @@
     </div>
 
 
-    <!-- MENU -->
+    <!-- =========================
+         MENU
+    ========================= -->
 
     <div class="menu">
 
@@ -194,13 +311,16 @@
         👤 Akun
       </button>
 
+
       <button onclick="pilihKategori('Pembelian')">
         🛒 Pembelian
       </button>
 
+
       <button onclick="pilihKategori('Pembayaran')">
         💳 Pembayaran
       </button>
+
 
       <button onclick="pilihKategori('Transaksi')">
         📄 Transaksi
@@ -209,9 +329,14 @@
     </div>
 
 
-    <!-- CHAT -->
+    <!-- =========================
+         CHAT
+    ========================= -->
 
-    <div class="chat" id="chat">
+    <div
+      class="chat"
+      id="chat"
+    >
 
       <div class="bot-message">
 
@@ -224,19 +349,22 @@
 
         <br><br>
 
-        Saya siap membantu kamu.
+        Saya adalah AI Customer Service.
 
         <br><br>
 
-        Kamu bisa menanyakan tentang
-        <b>akun, pembelian, pembayaran, atau transaksi.</b>
+        Silakan tanyakan apa saja mengenai
+        akun, pembelian, pembayaran,
+        transaksi, atau layanan kami.
 
       </div>
 
     </div>
 
 
-    <!-- INPUT -->
+    <!-- =========================
+         INPUT
+    ========================= -->
 
     <div class="input-area">
 
@@ -244,19 +372,26 @@
         type="text"
         id="userInput"
         placeholder="Ketik pertanyaan kamu..."
-        onkeydown="tekanEnter(event)"
+        autocomplete="off"
       >
 
-      <button onclick="kirimPesan()">
+
+      <button
+        id="sendButton"
+        onclick="kirimPesan()"
+      >
         Kirim
       </button>
 
     </div>
 
+
   </div>
 
 
+
   <script>
+
 
     /* =========================
        TAMBAH PESAN USER
@@ -264,36 +399,74 @@
 
     function tambahPesanUser(pesan) {
 
-      const chat = document.getElementById("chat");
+      const chat =
+        document.getElementById("chat");
 
-      const div = document.createElement("div");
 
-      div.className = "user-message";
+      const div =
+        document.createElement("div");
 
-      div.textContent = pesan;
+
+      div.className =
+        "user-message";
+
+
+      div.textContent =
+        pesan;
+
 
       chat.appendChild(div);
 
     }
 
 
+
     /* =========================
-       TAMBAH PESAN AI
+       TAMBAH PESAN BOT
     ========================= */
 
     function tambahPesanBot(pesan) {
 
-      const chat = document.getElementById("chat");
+      const chat =
+        document.getElementById("chat");
 
-      const div = document.createElement("div");
 
-      div.className = "bot-message";
+      const div =
+        document.createElement("div");
 
-      div.innerHTML = pesan;
+
+      div.className =
+        "bot-message";
+
+
+      div.textContent =
+        pesan;
+
 
       chat.appendChild(div);
 
+
+      return div;
+
     }
+
+
+
+    /* =========================
+       SCROLL CHAT
+    ========================= */
+
+    function scrollChat() {
+
+      const chat =
+        document.getElementById("chat");
+
+
+      chat.scrollTop =
+        chat.scrollHeight;
+
+    }
+
 
 
     /* =========================
@@ -302,71 +475,56 @@
 
     function pilihKategori(kategori) {
 
-      let jawaban = "";
+      let pertanyaan = "";
 
 
       if (kategori === "Akun") {
 
-        jawaban =
-          "Tentu 👍 Saya bisa membantu masalah akun.<br><br>" +
-          "Silakan jelaskan masalahnya, misalnya:<br>" +
-          "• Lupa password<br>" +
-          "• Tidak bisa login<br>" +
-          "• Ingin mengubah data akun";
+        pertanyaan =
+          "Saya ingin mendapatkan bantuan mengenai akun saya.";
 
       }
 
 
       else if (kategori === "Pembelian") {
 
-        jawaban =
-          "Tentu 🛒 Saya bisa membantu masalah pembelian.<br><br>" +
-          "Kamu bisa menanyakan tentang:<br>" +
-          "• Cara membeli produk<br>" +
-          "• Status pesanan<br>" +
-          "• Pesanan belum diterima";
+        pertanyaan =
+          "Saya ingin mendapatkan bantuan mengenai pembelian.";
 
       }
 
 
       else if (kategori === "Pembayaran") {
 
-        jawaban =
-          "Tentu 💳 Saya bisa membantu masalah pembayaran.<br><br>" +
-          "Kamu bisa menanyakan tentang:<br>" +
-          "• Pembayaran gagal<br>" +
-          "• Metode pembayaran<br>" +
-          "• Pembayaran belum masuk";
+        pertanyaan =
+          "Saya ingin mendapatkan bantuan mengenai pembayaran.";
 
       }
 
 
       else if (kategori === "Transaksi") {
 
-        jawaban =
-          "Tentu 📄 Saya bisa membantu masalah transaksi.<br><br>" +
-          "Silakan berikan nomor transaksi atau jelaskan masalah transaksi kamu.";
+        pertanyaan =
+          "Saya ingin mendapatkan bantuan mengenai transaksi.";
 
       }
 
 
-      tambahPesanUser(kategori);
-
-      tambahPesanBot("🤖 " + jawaban);
-
-      scrollChat();
+      kirimKeAI(pertanyaan);
 
     }
+
 
 
     /* =========================
        KIRIM PESAN
     ========================= */
 
-    function kirimPesan() {
+    async function kirimPesan() {
 
       const input =
         document.getElementById("userInput");
+
 
       const pesan =
         input.value.trim();
@@ -379,256 +537,169 @@
       }
 
 
-      tambahPesanUser(pesan);
-
-
-      const jawaban =
-        cariJawaban(pesan);
-
-
-      setTimeout(function() {
-
-        tambahPesanBot(
-          "🤖 " + jawaban
-        );
-
-        scrollChat();
-
-      }, 500);
-
-
       input.value = "";
 
-      scrollChat();
+
+      await kirimKeAI(pesan);
 
     }
+
 
 
     /* =========================
-       MESIN JAWABAN
+       KIRIM KE BACKEND AI
     ========================= */
 
-    function cariJawaban(pesan) {
-
-      const teks =
-        pesan.toLowerCase();
+    async function kirimKeAI(pesan) {
 
 
-      /* AKUN */
+      // Tampilkan pesan user
 
-      if (
-        teks.includes("lupa password") ||
-        teks.includes("lupa kata sandi") ||
-        teks.includes("password") ||
-        teks.includes("kata sandi")
-      ) {
+      tambahPesanUser(pesan);
 
-        return (
-          "Jika kamu lupa password 🔐, " +
-          "silakan gunakan fitur <b>Lupa Password</b> " +
-          "pada halaman login.<br><br>" +
-          "Ikuti instruksi yang diberikan untuk membuat password baru."
+      scrollChat();
+
+
+      // Nonaktifkan tombol
+
+      const button =
+        document.getElementById("sendButton");
+
+
+      button.disabled = true;
+
+      button.textContent = "...";
+
+
+      // Pesan loading
+
+      const loading =
+        tambahPesanBot(
+          "🤖 Sedang berpikir..."
         );
+
+
+      scrollChat();
+
+
+      try {
+
+
+        const response =
+          await fetch("/chat", {
+
+            method: "POST",
+
+            headers: {
+
+              "Content-Type":
+                "application/json"
+
+            },
+
+            body: JSON.stringify({
+
+              message: pesan
+
+            })
+
+          });
+
+
+
+        const data =
+          await response.json();
+
+
+
+        // Hapus loading
+
+        loading.remove();
+
+
+
+        // Tampilkan jawaban AI
+
+        tambahPesanBot(
+
+          "🤖 " +
+          (data.reply ||
+          "Maaf, AI tidak memberikan jawaban.")
+
+        );
+
+
+        scrollChat();
+
 
       }
 
 
-      if (
-        teks.includes("tidak bisa login") ||
-        teks.includes("gagal login") ||
-        teks.includes("tidak dapat login") ||
-        teks.includes("gabisa login")
-      ) {
+      catch (error) {
 
-        return (
-          "Saya bantu cek masalah login kamu. 🔐<br><br>" +
-          "Pastikan email/nomor akun dan password sudah benar. " +
-          "Jika masih tidak bisa login, gunakan fitur <b>Lupa Password</b>."
+
+        console.error(
+          "Error:",
+          error
         );
+
+
+        loading.remove();
+
+
+        tambahPesanBot(
+
+          "🤖 Maaf, terjadi masalah saat menghubungi server AI. Silakan coba lagi."
+
+        );
+
+
+        scrollChat();
 
       }
 
 
-      /* PEMBELIAN */
+      finally {
 
-      if (
-        teks.includes("cara membeli") ||
-        teks.includes("cara beli") ||
-        teks.includes("mau membeli") ||
-        teks.includes("ingin membeli")
-      ) {
 
-        return (
-          "Untuk melakukan pembelian 🛒:<br><br>" +
-          "1. Pilih produk yang kamu inginkan.<br>" +
-          "2. Masukkan ke keranjang.<br>" +
-          "3. Lanjutkan ke pembayaran.<br>" +
-          "4. Pilih metode pembayaran.<br>" +
-          "5. Selesaikan pembayaran."
-        );
+        button.disabled =
+          false;
+
+
+        button.textContent =
+          "Kirim";
 
       }
-
-
-      if (
-        teks.includes("pesanan") ||
-        teks.includes("order")
-      ) {
-
-        return (
-          "Untuk mengecek pesanan 📦, " +
-          "silakan buka menu <b>Pembelian</b> " +
-          "dan pilih pesanan yang ingin kamu periksa."
-        );
-
-      }
-
-
-      /* PEMBAYARAN */
-
-      if (
-  teks.includes("pembayaran gagal") ||
-  teks.includes("pembayaran saya gagal") ||
-  teks.includes("pembayaran tidak berhasil") ||
-  teks.includes("pembayaran gagal") ||
-  teks.includes("gagal bayar") ||
-  teks.includes("saya gagal bayar") ||
-  teks.includes("bayar gagal") ||
-  teks.includes("tidak bisa bayar") ||
-  teks.includes("tidak bisa melakukan pembayaran") ||
-  teks.includes("tidak dapat melakukan pembayaran")
-) {
-
-  return (
-    "Mohon maaf atas kendalanya. 💳<br><br>" +
-    "Jika pembayaran gagal, pastikan saldo mencukupi " +
-    "dan metode pembayaran masih aktif.<br><br>" +
-    "Jika tetap gagal, silakan coba metode pembayaran lainnya."
-  );
-
-}
-
-
-      if (
-        teks.includes("metode pembayaran") ||
-        teks.includes("cara pembayaran") ||
-        teks.includes("bayar dengan")
-      ) {
-
-        return (
-          "Metode pembayaran yang tersedia dapat dilihat " +
-          "pada halaman pembayaran saat melakukan pembelian. 💳"
-        );
-
-      }
-
-
-      /* TRANSAKSI */
-
-      if (
-        teks.includes("cek transaksi") ||
-        teks.includes("status transaksi") ||
-        teks.includes("transaksi saya")
-      ) {
-
-        return (
-          "Untuk mengecek transaksi 📄, " +
-          "silakan buka menu <b>Transaksi</b> " +
-          "dan pilih transaksi yang ingin kamu lihat."
-        );
-
-      }
-
-
-      /* CUSTOMER SERVICE */
-
-      if (
-        teks.includes("customer service") ||
-        teks.includes("cs") ||
-        teks.includes("admin") ||
-        teks.includes("operator")
-      ) {
-
-        return (
-          "Tentu 😊 Jika masalah kamu belum bisa saya bantu, " +
-          "kamu dapat meminta bantuan customer service manusia."
-        );
-
-      }
-
-
-      /* SAPAAN */
-
-      if (
-        teks.includes("halo") ||
-        teks.includes("hai") ||
-        teks.includes("hi") ||
-        teks.includes("hello")
-      ) {
-
-        return (
-          "Halo 👋 Selamat datang di <b>ABC Company</b>.<br><br>" +
-          "Ada yang bisa saya bantu hari ini?"
-        );
-
-      }
-
-
-      /* TERIMA KASIH */
-
-      if (
-        teks.includes("terima kasih") ||
-        teks.includes("makasih") ||
-        teks.includes("thanks")
-      ) {
-
-        return (
-          "Sama-sama 😊 Senang bisa membantu."
-        );
-
-      }
-
-
-      /* JAWABAN DEFAULT */
-
-      return (
-        "Saya belum memahami pertanyaan tersebut. 🤔<br><br>" +
-        "Coba tanyakan tentang <b>akun, pembelian, pembayaran, atau transaksi</b>."
-      );
 
     }
+
 
 
     /* =========================
        ENTER
     ========================= */
 
-    function tekanEnter(event) {
+    document
+      .getElementById("userInput")
+      .addEventListener(
+        "keydown",
+        function(event) {
 
-      if (event.key === "Enter") {
+          if (
+            event.key === "Enter"
+          ) {
 
-        kirimPesan();
+            kirimPesan();
 
-      }
+          }
 
-    }
+        }
+      );
 
-
-    /* =========================
-       SCROLL CHAT
-    ========================= */
-
-    function scrollChat() {
-
-      const chat =
-        document.getElementById("chat");
-
-      chat.scrollTop =
-        chat.scrollHeight;
-
-    }
 
   </script>
 
+
 </body>
-</html>
+
+  </html>
