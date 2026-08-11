@@ -1237,7 +1237,6 @@ const customer =
 
 app.get(
   "/api/test-company-chat",
-  authenticateServer,
   async function (req, res) {
     try {
       const companyId = "ABC001";
