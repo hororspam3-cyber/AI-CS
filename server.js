@@ -287,7 +287,6 @@ app.post("/login", function (req, res) {
     token +
     "; HttpOnly; Path=/; SameSite=None; Secure"
 );
-    );
 
     return res.json({
       success: true,
