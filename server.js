@@ -370,7 +370,6 @@ app.post("/logout", function (req, res) {
   "Set-Cookie",
   "ai_cs_session=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure"
 );
-  );
 
   return res.json({
     success: true,
