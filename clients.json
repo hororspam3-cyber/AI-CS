@@ -3,13 +3,23 @@
     "company_name": "ABC Company",
     "company_id": "ABC001",
     "status": "active",
-    "ai_enabled": true
+    "ai_enabled": true,
+    "integration": {
+      "type": "demo",
+      "api_url": null,
+      "api_enabled": false
+    }
   },
 
   "XYZ001": {
     "company_name": "XYZ Company",
     "company_id": "XYZ001",
     "status": "active",
-    "ai_enabled": true
+    "ai_enabled": true,
+    "integration": {
+      "type": "demo",
+      "api_url": null,
+      "api_enabled": false
+    }
   }
 }
