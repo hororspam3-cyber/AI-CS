@@ -315,6 +315,16 @@
         await response.json();
 
       if (!response.ok || !data.success) {
+
+        messages.innerHTML = `
+  <div
+    class="ai-cs-message ai-cs-bot"
+    id="ai-cs-welcome"
+  >
+    🤖 Menghubungkan ke akun Anda...
+  </div>
+`;
+        
         currentCustomer = null;
         currentCompany = null;
 
