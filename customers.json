@@ -97,4 +97,38 @@
       "last_transaction": "TRX003"
     }
   }
+}, 
+
+
+"XYZ001": {
+  "name": "Dina",
+  "company_id": "XYZ001",
+  "account_status": "Aktif",
+  "account_detail": "Akun aktif dan dapat digunakan.",
+  "verification": "Terverifikasi",
+  "balance": 2500000,
+
+  "deposit": {
+    "status": "Berhasil",
+    "last_amount": 1000000,
+    "last_status": "Berhasil"
+  },
+
+  "withdrawal": {
+    "status": "Tidak ada permintaan aktif",
+    "last_amount": 0,
+    "reason": "Belum ada withdrawal terbaru"
+  },
+
+  "bonus": {
+    "available": true,
+    "amount": 150000,
+    "status": "Belum diambil",
+    "description": "Bonus tersedia sesuai ketentuan program."
+  },
+
+  "transaction": {
+    "status": "Tidak ada masalah",
+    "last_transaction": "XYZTRX001"
+  }
 }
