@@ -1,0 +1,41 @@
+{
+  "ABC001": {
+    "company_name": "ABC Company",
+    "faq": [
+      {
+        "question": "Bagaimana cara daftar?",
+        "answer": "Untuk mendaftar, pilih menu Daftar dan lengkapi data yang diperlukan."
+      },
+      {
+        "question": "Bagaimana cara deposit?",
+        "answer": "Masuk ke menu Deposit, pilih metode pembayaran, masukkan jumlah deposit, lalu ikuti instruksi pembayaran."
+      },
+      {
+        "question": "Bagaimana cara withdrawal?",
+        "answer": "Masuk ke menu Withdrawal, pilih metode pencairan, masukkan jumlah, lalu konfirmasi permintaan."
+      },
+      {
+        "question": "Berapa lama withdrawal diproses?",
+        "answer": "Waktu pemrosesan withdrawal mengikuti metode pembayaran dan ketentuan perusahaan."
+      }
+    ]
+  },
+
+  "XYZ001": {
+    "company_name": "XYZ Company",
+    "faq": [
+      {
+        "question": "Bagaimana cara daftar?",
+        "answer": "Pilih menu Daftar dan ikuti seluruh langkah pendaftaran."
+      },
+      {
+        "question": "Bagaimana cara deposit?",
+        "answer": "Pilih menu Deposit, pilih metode pembayaran, kemudian ikuti instruksi yang diberikan."
+      },
+      {
+        "question": "Bagaimana cara withdrawal?",
+        "answer": "Pilih menu Withdrawal dan ikuti langkah pencairan yang tersedia."
+      }
+    ]
+  }
+}
