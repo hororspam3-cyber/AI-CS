@@ -7,6 +7,10 @@ const {
   getCustomerFromCompany
 } = require("./companyAdapter");
 
+const {
+  getCompanyKnowledge
+} = require("./companyKnowledgeAdapter");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -827,6 +831,11 @@ const customer =
       const companyName =
         company.company_name ||
         "ABC Company";
+
+      const companyKnowledge =
+  await getCompanyKnowledge(
+    session.companyId
+  );
 
       const customerInfo =
         JSON.stringify(
