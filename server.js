@@ -13,53 +13,9 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const AI_CS_API_KEY = process.env.AI_CS_API_KEY;
 
 /*
-  ==========================================
-  SECURITY
-  ==========================================
-*/
-
-function authenticate(req, res, next) {
-  if (!AI_CS_API_KEY) {
-    console.error("AI_CS_API_KEY belum tersedia.");
-
-    return res.status(500).json({
-      success: false,
-      message: "Security AI-CS belum dikonfigurasi."
-    });
-  }
-
-  const providedKey = req.headers["x-ai-cs-key"];
-
-  if (!providedKey) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized."
-    });
-  }
-
-  const providedBuffer = Buffer.from(String(providedKey));
-  const expectedBuffer = Buffer.from(String(AI_CS_API_KEY));
-
-  if (
-    providedBuffer.length !== expectedBuffer.length ||
-    !crypto.timingSafeEqual(
-      providedBuffer,
-      expectedBuffer
-    )
-  ) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized."
-    });
-  }
-
-  next();
-}
-
-/*
-  ==========================================
-  JSON FILE READER
-  ==========================================
+========================================
+DATA
+========================================
 */
 
 function readJSON(filename) {
@@ -83,48 +39,196 @@ function readJSON(filename) {
   }
 }
 
-/*
-  ==========================================
-  DATA
-  ==========================================
-*/
-
 const knowledge = readJSON("knowledge.json");
 const customers = readJSON("customers.json");
 const clients = readJSON("clients.json");
 
 /*
-  ==========================================
-  HOME
-  ==========================================
+========================================
+DEMO SESSION
+========================================
+
+Session disimpan sementara di memory server.
+
+Untuk production nanti akan diganti
+dengan sistem authentication perusahaan.
+*/
+
+const sessions = new Map();
+
+function createSession(customerId, companyId) {
+  const token = crypto.randomBytes(32).toString("hex");
+
+  sessions.set(token, {
+    customerId: customerId,
+    companyId: companyId,
+    createdAt: Date.now()
+  });
+
+  return token;
+}
+
+function getSessionToken(req) {
+  const cookieHeader = req.headers.cookie || "";
+
+  const cookies = cookieHeader
+    .split(";")
+    .map(function (item) {
+      return item.trim();
+    });
+
+  for (const cookie of cookies) {
+    const parts = cookie.split("=");
+
+    if (parts[0] === "ai_cs_session") {
+      return parts.slice(1).join("=");
+    }
+  }
+
+  return null;
+}
+
+function getSession(req) {
+  const token = getSessionToken(req);
+
+  if (!token) {
+    return null;
+  }
+
+  return sessions.get(token) || null;
+}
+
+/*
+========================================
+AI-CS API KEY SECURITY
+========================================
+
+Digunakan untuk komunikasi server-to-server.
+
+Jangan pernah memasukkan key ini
+ke index.html.
+*/
+
+function authenticateServer(req, res, next) {
+  if (!AI_CS_API_KEY) {
+    console.error(
+      "AI_CS_API_KEY belum tersedia."
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Security AI-CS belum dikonfigurasi."
+    });
+  }
+
+  const providedKey = req.headers["x-ai-cs-key"];
+
+  if (!providedKey) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized."
+    });
+  }
+
+  const providedBuffer = Buffer.from(
+    String(providedKey)
+  );
+
+  const expectedBuffer = Buffer.from(
+    String(AI_CS_API_KEY)
+  );
+
+  if (
+    providedBuffer.length !== expectedBuffer.length ||
+    !crypto.timingSafeEqual(
+      providedBuffer,
+      expectedBuffer
+    )
+  ) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized."
+    });
+  }
+
+  next();
+}
+
+/*
+========================================
+CUSTOMER SESSION SECURITY
+========================================
+*/
+
+function authenticateCustomer(req, res, next) {
+  const session = getSession(req);
+
+  if (!session) {
+    return res.status(401).json({
+      success: false,
+      message: "Silakan login terlebih dahulu."
+    });
+  }
+
+  const customer = customers[session.customerId];
+
+  if (!customer) {
+    return res.status(401).json({
+      success: false,
+      message: "Session customer tidak valid."
+    });
+  }
+
+  req.customerSession = session;
+  req.customer = customer;
+
+  next();
+}
+
+/*
+========================================
+HOME
+========================================
 */
 
 app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(
+    path.join(__dirname, "index.html")
+  );
 });
 
 /*
-  ==========================================
-  COMPANY + CUSTOMER
-  Protected by AI-CS API Key
-  ==========================================
+========================================
+DEMO LOGIN
+========================================
+
+Untuk demo saja.
+
+Nanti perusahaan sungguhan akan
+menggantikan endpoint ini dengan
+authentication mereka sendiri.
 */
 
-app.get(
-  "/api/company/:companyId/customer/:customerId",
-  authenticate,
-  function (req, res) {
-    const companyId = String(
-      req.params.companyId || ""
+app.post("/login", function (req, res) {
+  try {
+    const customerId = String(
+      req.body.customerId || ""
     )
       .trim()
       .toUpperCase();
 
-    const customerId = String(
-      req.params.customerId || ""
+    const companyId = String(
+      req.body.companyId || "ABC001"
     )
       .trim()
       .toUpperCase();
+
+    if (!customerId) {
+      return res.status(400).json({
+        success: false,
+        message: "Customer ID diperlukan."
+      });
+    }
 
     const company = clients[companyId];
 
@@ -138,6 +242,173 @@ app.get(
     const customer = customers[customerId];
 
     if (!customer) {
+      return res.status(401).json({
+        success: false,
+        message: "Customer tidak ditemukan."
+      });
+    }
+
+    const token = createSession(
+      customerId,
+      companyId
+    );
+
+    res.setHeader(
+      "Set-Cookie",
+      "ai_cs_session=" +
+        token +
+        "; HttpOnly; Path=/; SameSite=Lax" +
+        (process.env.NODE_ENV === "production"
+          ? "; Secure"
+          : "")
+    );
+
+    return res.json({
+      success: true,
+      message: "Login berhasil.",
+      customer: {
+        id: customerId,
+        name: customer.name || null
+      },
+      company: {
+        id: companyId,
+        name:
+          company.company_name ||
+          "ABC Company"
+      }
+    });
+
+  } catch (error) {
+    console.error(
+      "LOGIN ERROR:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi masalah saat login."
+    });
+  }
+});
+
+/*
+========================================
+CURRENT CUSTOMER
+========================================
+*/
+
+app.get(
+  "/me",
+  authenticateCustomer,
+  function (req, res) {
+    const session =
+      req.customerSession;
+
+    const customer =
+      req.customer;
+
+    const company =
+      clients[session.companyId];
+
+    return res.json({
+      success: true,
+
+      company: {
+        id: session.companyId,
+        name:
+          company.company_name ||
+          "ABC Company"
+      },
+
+      customer: {
+        id: session.customerId,
+        ...customer
+      }
+    });
+  }
+);
+
+/*
+========================================
+LOGOUT
+========================================
+*/
+
+app.post("/logout", function (req, res) {
+  const token = getSessionToken(req);
+
+  if (token) {
+    sessions.delete(token);
+  }
+
+  res.setHeader(
+    "Set-Cookie",
+    "ai_cs_session=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax" +
+      (process.env.NODE_ENV === "production"
+        ? "; Secure"
+        : "")
+  );
+
+  return res.json({
+    success: true,
+    message: "Logout berhasil."
+  });
+});
+
+/*
+========================================
+CUSTOMER DATA
+========================================
+
+Sekarang browser menggunakan session.
+Tidak lagi mengirim customerId untuk
+menentukan akun.
+*/
+
+app.get(
+  "/api/company/:companyId/customer/:customerId",
+  authenticateCustomer,
+  function (req, res) {
+    const companyId = String(
+      req.params.companyId || ""
+    )
+      .trim()
+      .toUpperCase();
+
+    const customerId = String(
+      req.params.customerId || ""
+    )
+      .trim()
+      .toUpperCase();
+
+    const session =
+      req.customerSession;
+
+    if (
+      companyId !== session.companyId ||
+      customerId !== session.customerId
+    ) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Akses data customer ditolak."
+      });
+    }
+
+    const company =
+      clients[session.companyId];
+
+    const customer =
+      customers[session.customerId];
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Perusahaan tidak ditemukan."
+      });
+    }
+
+    if (!customer) {
       return res.status(404).json({
         success: false,
         message: "Customer tidak ditemukan."
@@ -148,12 +419,14 @@ app.get(
       success: true,
 
       company: {
-        id: companyId,
-        name: company.company_name || "ABC Company"
+        id: session.companyId,
+        name:
+          company.company_name ||
+          "ABC Company"
       },
 
       customer: {
-        id: customerId,
+        id: session.customerId,
         ...customer
       }
     });
@@ -161,32 +434,19 @@ app.get(
 );
 
 /*
-  ==========================================
-  CHAT
-  Protected by AI-CS API Key
-  ==========================================
+========================================
+CHAT
+========================================
 */
 
 app.post(
   "/chat",
-  authenticate,
+  authenticateCustomer,
   async function (req, res) {
     try {
       const message = String(
         req.body.message || ""
       ).trim();
-
-      const companyId = String(
-        req.body.companyId || "ABC001"
-      )
-        .trim()
-        .toUpperCase();
-
-      const customerId = String(
-        req.body.customerId || ""
-      )
-        .trim()
-        .toUpperCase();
 
       if (!message) {
         return res.json({
@@ -206,7 +466,14 @@ app.post(
         });
       }
 
-      const company = clients[companyId];
+      const session =
+        req.customerSession;
+
+      const customer =
+        req.customer;
+
+      const company =
+        clients[session.companyId];
 
       if (!company) {
         return res.status(404).json({
@@ -219,29 +486,15 @@ app.post(
         company.company_name ||
         "ABC Company";
 
-      let customerInfo =
-        "Data customer belum tersedia.";
-
-      if (customerId) {
-        const customer =
-          customers[customerId];
-
-        if (!customer) {
-          return res.json({
-            reply:
-              "Maaf, data customer tidak ditemukan."
-          });
-        }
-
-        customerInfo = JSON.stringify(
+      const customerInfo =
+        JSON.stringify(
           {
-            id: customerId,
+            id: session.customerId,
             ...customer
           },
           null,
           2
         );
-      }
 
       const systemPrompt =
         "Kamu adalah AI Customer Service untuk " +
@@ -291,9 +544,12 @@ app.post(
           method: "POST",
 
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
+
             "Authorization":
-              "Bearer " + GROQ_API_KEY
+              "Bearer " +
+              GROQ_API_KEY
           },
 
           body: JSON.stringify({
@@ -303,12 +559,13 @@ app.post(
             messages: [
               {
                 role: "system",
-                content: systemPrompt
+                content:
+                  systemPrompt
               },
-
               {
                 role: "user",
-                content: message
+                content:
+                  message
               }
             ],
 
@@ -318,7 +575,8 @@ app.post(
         }
       );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (!response.ok) {
         console.error(
@@ -347,9 +605,12 @@ app.post(
 
       return res.json({
         reply: reply,
-        companyId: companyId,
+
+        companyId:
+          session.companyId,
+
         customerId:
-          customerId || null
+          session.customerId
       });
 
     } catch (error) {
@@ -367,9 +628,9 @@ app.post(
 );
 
 /*
-  ==========================================
-  START SERVER
-  ==========================================
+========================================
+SERVER
+========================================
 */
 
 app.listen(PORT, function () {
