@@ -702,6 +702,77 @@ app.get(
   }
 );
 /*
+ * ==============================
+ * DEMO COMPANY KNOWLEDGE API
+ * ==============================
+ */
+
+app.get(
+  "/api/demo-company/knowledge/:companyId",
+  authenticateServer,
+  function (req, res) {
+    try {
+      const companyId =
+        String(
+          req.params.companyId || ""
+        )
+          .trim()
+          .toUpperCase();
+
+      const company =
+        clients[companyId];
+
+      if (!company) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Perusahaan tidak ditemukan."
+        });
+      }
+
+      const knowledgeData =
+        readJSON("companyKnowledge.json");
+
+      const companyKnowledge =
+        knowledgeData[companyId];
+
+      if (!companyKnowledge) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Knowledge Base perusahaan tidak ditemukan."
+        });
+      }
+
+      return res.json({
+        success: true,
+
+        company: {
+          id: companyId,
+          name:
+            company.company_name ||
+            "Perusahaan"
+        },
+
+        knowledge:
+          companyKnowledge.faq || []
+      });
+
+    } catch (error) {
+      console.error(
+        "DEMO KNOWLEDGE API ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Gagal mengambil Knowledge Base."
+      });
+    }
+  }
+);
+/*
 ========================================
 CHAT
 ========================================
