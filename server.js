@@ -464,6 +464,72 @@ app.get(
 
 /*
  * ==============================
+ * COMPANY DATA ADAPTER
+ * ==============================
+ *
+ * Menyamakan format data dari
+ * berbagai API perusahaan.
+ */
+
+async function getCompanyCustomerData(
+  companyId,
+  customerId
+) {
+  /*
+   * DEMO:
+   * Saat ini data masih berasal
+   * dari customers.json.
+   *
+   * Nanti untuk perusahaan sungguhan,
+   * bagian ini akan mengambil data
+   * dari API perusahaan.
+   */
+
+  const customer =
+    customers[customerId];
+
+  if (!customer) {
+    return null;
+  }
+
+  if (
+    customer.company_id &&
+    customer.company_id !== companyId
+  ) {
+    return null;
+  }
+
+  return {
+    id: customerId,
+    name: customer.name || null,
+
+    account_status:
+      customer.account_status || null,
+
+    account_detail:
+      customer.account_detail || null,
+
+    verification:
+      customer.verification || null,
+
+    balance:
+      customer.balance ?? null,
+
+    deposit:
+      customer.deposit || null,
+
+    withdrawal:
+      customer.withdrawal || null,
+
+    bonus:
+      customer.bonus || null,
+
+    transaction:
+      customer.transaction || null
+  };
+}
+/*
+ * ==============================
  * COMPANY API INTEGRATION
  * ==============================
  *
