@@ -342,6 +342,19 @@
       currentCustomer =
         data.customer;
 
+      messages.innerHTML = "";
+
+const newWelcome =
+  document.createElement("div");
+
+newWelcome.className =
+  "ai-cs-message ai-cs-bot";
+
+newWelcome.id =
+  "ai-cs-welcome";
+
+messages.appendChild(newWelcome);
+
       currentCompany =
         data.company;
 
