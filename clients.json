@@ -4,5 +4,12 @@
     "company_id": "ABC001",
     "status": "active",
     "ai_enabled": true
+  },
+
+  "XYZ001": {
+    "company_name": "XYZ Company",
+    "company_id": "XYZ001",
+    "status": "active",
+    "ai_enabled": true
   }
 }
