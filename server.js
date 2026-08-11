@@ -777,6 +777,258 @@ app.get(
   }
 );
 /*
+ * ==============================
+ * COMPANY CHAT API
+ * ==============================
+ *
+ * Endpoint untuk sistem Live Chat
+ * perusahaan mengirim pesan ke AI-CS.
+ */
+
+app.post(
+  "/api/company/chat",
+  authenticateServer,
+  async function (req, res) {
+    try {
+      const companyId = String(
+        req.body.companyId || ""
+      )
+        .trim()
+        .toUpperCase();
+
+      const customerId = String(
+        req.body.customerId || ""
+      )
+        .trim()
+        .toUpperCase();
+
+      const message = String(
+        req.body.message || ""
+      ).trim();
+
+      if (
+        !companyId ||
+        !customerId ||
+        !message
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "companyId, customerId, dan message diperlukan."
+        });
+      }
+
+      /*
+       * Pastikan perusahaan terdaftar.
+       */
+
+      const company =
+        clients[companyId];
+
+      if (!company) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Perusahaan tidak ditemukan."
+        });
+      }
+
+      /*
+       * Ambil data customer melalui
+       * Company API Adapter.
+       */
+
+      const customer =
+        await getCustomerFromCompany(
+          companyId,
+          customerId
+        );
+
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Customer tidak ditemukan."
+        });
+      }
+
+      /*
+       * Ambil Knowledge Base perusahaan.
+       */
+
+      const companyKnowledge =
+        await getCompanyKnowledge(
+          companyId
+        );
+
+      const companyName =
+        company.company_name ||
+        "Perusahaan";
+
+      const customerInfo =
+        JSON.stringify(
+          customer,
+          null,
+          2
+        );
+
+      const knowledgeInfo =
+        JSON.stringify(
+          companyKnowledge,
+          null,
+          2
+        );
+
+      /*
+       * Instruksi AI.
+       */
+
+      const systemPrompt =
+        "Kamu adalah AI Customer Service untuk " +
+        companyName +
+        ".\n\n" +
+
+        "Gunakan bahasa Indonesia.\n" +
+        "Jawab dengan ramah, jelas, dan singkat.\n\n" +
+
+        "DATA CUSTOMER:\n" +
+        customerInfo +
+        "\n\n" +
+
+        "KNOWLEDGE BASE PERUSAHAAN:\n" +
+        knowledgeInfo +
+        "\n\n" +
+
+        "PERATURAN:\n" +
+
+        "1. Gunakan data customer jika tersedia.\n" +
+
+        "2. Gunakan Knowledge Base perusahaan untuk pertanyaan tentang layanan perusahaan.\n" +
+
+        "3. Jangan mengarang data customer.\n" +
+
+        "4. Jangan memberikan data customer lain.\n" +
+
+        "5. Jika informasi tidak tersedia, katakan bahwa informasi tersebut belum tersedia.\n" +
+
+        "6. Jangan meminta password, PIN, OTP, atau kode keamanan.\n" +
+
+        "7. Jangan mengungkapkan data internal perusahaan.\n";
+
+      /*
+       * Kirim ke AI.
+       */
+
+      if (!GROQ_API_KEY) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "GROQ_API_KEY belum tersedia."
+        });
+      }
+
+      const response =
+        await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                "Bearer " +
+                GROQ_API_KEY
+            },
+
+            body: JSON.stringify({
+              model:
+                "llama-3.3-70b-versatile",
+
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    systemPrompt
+                },
+                {
+                  role: "user",
+                  content:
+                    message
+                }
+              ],
+
+              temperature: 0.2,
+
+              max_tokens: 500
+            })
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!response.ok) {
+        console.error(
+          "COMPANY CHAT GROQ ERROR:",
+          data
+        );
+
+        return res.status(500).json({
+          success: false,
+          message:
+            "Layanan AI sedang mengalami masalah."
+        });
+      }
+
+      const reply =
+        data.choices &&
+        data.choices[0] &&
+        data.choices[0].message &&
+        data.choices[0].message.content;
+
+      if (!reply) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "AI tidak memberikan jawaban."
+        });
+      }
+
+      /*
+       * Jawaban dikembalikan ke
+       * Live Chat perusahaan.
+       */
+
+      return res.json({
+        success: true,
+
+        companyId:
+          companyId,
+
+        customerId:
+          customerId,
+
+        reply:
+          reply
+      });
+
+    } catch (error) {
+      console.error(
+        "COMPANY CHAT API ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Terjadi masalah pada Company Chat API."
+      });
+    }
+  }
+);
+/*
 ========================================
 CHAT
 ========================================
