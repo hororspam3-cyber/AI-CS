@@ -1,6 +1,7 @@
 {
   "USER001": {
     "name": "Andi",
+    "company_id": "ABC001",
     "account_status": "Aktif",
     "account_detail": "Akun aktif dan dapat digunakan.",
     "verification": "Terverifikasi",
@@ -33,6 +34,7 @@
 
   "USER002": {
     "name": "Budi",
+    "company_id": "ABC001",
     "account_status": "Aktif",
     "account_detail": "Akun aktif tetapi membutuhkan pemeriksaan tambahan.",
     "verification": "Terverifikasi",
@@ -65,6 +67,7 @@
 
   "USER003": {
     "name": "Citra",
+    "company_id": "ABC001",
     "account_status": "Dibatasi",
     "account_detail": "Akun sedang dibatasi dan membutuhkan pemeriksaan.",
     "verification": "Belum terverifikasi",
