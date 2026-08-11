@@ -6,6 +6,34 @@ const crypto = require("crypto");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(function (req, res, next) {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://hororspam3-cyber.github.io"
+  );
+
+  res.header(
+    "Access-Control-Allow-Credentials",
+    "true"
+  );
+
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
+
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,OPTIONS"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 app.use(express.json());
 app.use(express.static(__dirname));
 
@@ -254,13 +282,11 @@ app.post("/login", function (req, res) {
     );
 
     res.setHeader(
-      "Set-Cookie",
-      "ai_cs_session=" +
-        token +
-        "; HttpOnly; Path=/; SameSite=Lax" +
-        (process.env.NODE_ENV === "production"
-          ? "; Secure"
-          : "")
+  "Set-Cookie",
+  "ai_cs_session=" +
+    token +
+    "; HttpOnly; Path=/; SameSite=None; Secure"
+);
     );
 
     return res.json({
@@ -342,11 +368,9 @@ app.post("/logout", function (req, res) {
   }
 
   res.setHeader(
-    "Set-Cookie",
-    "ai_cs_session=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax" +
-      (process.env.NODE_ENV === "production"
-        ? "; Secure"
-        : "")
+  "Set-Cookie",
+  "ai_cs_session=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure"
+);
   );
 
   return res.json({
