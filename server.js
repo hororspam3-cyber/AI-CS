@@ -269,12 +269,19 @@ app.post("/login", function (req, res) {
 
     const customer = customers[customerId];
 
-    if (!customer) {
-      return res.status(401).json({
-        success: false,
-        message: "Customer tidak ditemukan."
-      });
-    }
+if (!customer) {
+  return res.status(401).json({
+    success: false,
+    message: "Customer tidak ditemukan."
+  });
+}
+
+if (customer.company_id !== companyId) {
+  return res.status(403).json({
+    success: false,
+    message: "Customer tidak terdaftar pada perusahaan ini."
+  });
+}
 
     const token = createSession(
       customerId,
