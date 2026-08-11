@@ -617,6 +617,91 @@ app.get(
   }
 );
 /*
+ * ==============================
+ * DEMO COMPANY API
+ * ==============================
+ *
+ * Simulator API perusahaan.
+ * Nanti bagian ini tidak diperlukan
+ * ketika memakai API perusahaan asli.
+ */
+
+app.get(
+  "/api/demo-company/customer/:customerId",
+  authenticateServer,
+  function (req, res) {
+    try {
+      const customerId =
+        String(
+          req.params.customerId || ""
+        )
+          .trim()
+          .toUpperCase();
+
+      const customer =
+        customers[customerId];
+
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Customer tidak ditemukan."
+        });
+      }
+
+      return res.json({
+        success: true,
+
+        customer: {
+          id: customerId,
+
+          name:
+            customer.name || null,
+
+          company_id:
+            customer.company_id || null,
+
+          account_status:
+            customer.account_status || null,
+
+          account_detail:
+            customer.account_detail || null,
+
+          verification:
+            customer.verification || null,
+
+          balance:
+            customer.balance ?? null,
+
+          deposit:
+            customer.deposit || null,
+
+          withdrawal:
+            customer.withdrawal || null,
+
+          bonus:
+            customer.bonus || null,
+
+          transaction:
+            customer.transaction || null
+        }
+      });
+
+    } catch (error) {
+      console.error(
+        "DEMO COMPANY API ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Gagal mengambil data customer."
+      });
+    }
+  }
+);
+/*
 ========================================
 CHAT
 ========================================
