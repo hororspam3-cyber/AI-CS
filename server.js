@@ -3,6 +3,10 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
+const {
+  getCustomerFromCompany
+} = require("./companyAdapter");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
