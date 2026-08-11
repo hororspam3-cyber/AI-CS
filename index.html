@@ -85,6 +85,11 @@
       cursor: pointer;
     }
 
+    .login-row button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     .account-info {
       display: none;
       margin-top: 8px;
@@ -121,6 +126,11 @@
       border-radius: 18px;
       font-size: 13px;
       cursor: pointer;
+    }
+
+    .menu button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .chat {
@@ -181,6 +191,11 @@
       border-radius: 20px;
       font-size: 14px;
       cursor: pointer;
+    }
+
+    .input-area button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     @media (max-width: 480px) {
@@ -247,7 +262,7 @@
   </div>
 
 
-  <!-- LOGIN DEMO -->
+  <!-- LOGIN -->
 
   <div class="login-area">
 
@@ -273,7 +288,10 @@
 
       </select>
 
-      <button onclick="loginDemo()">
+      <button
+        id="loginButton"
+        onclick="loginDemo()"
+      >
         Login
       </button>
 
@@ -305,25 +323,41 @@
 
   <!-- MENU -->
 
-<div class="menu">
+  <div class="menu">
 
-  <button onclick="pilihKategori('Akun')">
-    👤 Akun
-  </button>
+    <button
+      id="menuAkun"
+      onclick="pilihKategori('Akun')"
+      disabled
+    >
+      👤 Akun
+    </button>
 
-  <button onclick="pilihKategori('Deposit')">
-    💰 Deposit
-  </button>
+    <button
+      id="menuDeposit"
+      onclick="pilihKategori('Deposit')"
+      disabled
+    >
+      💰 Deposit
+    </button>
 
-  <button onclick="pilihKategori('Withdraw')">
-    💸 Withdraw
-  </button>
+    <button
+      id="menuWithdraw"
+      onclick="pilihKategori('Withdraw')"
+      disabled
+    >
+      💸 Withdraw
+    </button>
 
-  <button onclick="pilihKategori('Bonus')">
-    🎁 Bonus
-  </button>
+    <button
+      id="menuBonus"
+      onclick="pilihKategori('Bonus')"
+      disabled
+    >
+      🎁 Bonus
+    </button>
 
-</div>
+  </div>
 
 
   <!-- CHAT -->
@@ -359,12 +393,17 @@
     <input
       type="text"
       id="userInput"
-      placeholder="Ketik pertanyaan..."
+      placeholder="Login terlebih dahulu..."
       autocomplete="off"
+      disabled
       onkeydown="tekanEnter(event)"
     >
 
-    <button onclick="kirimPesan()">
+    <button
+      id="sendButton"
+      onclick="kirimPesan()"
+      disabled
+    >
       Kirim
     </button>
 
@@ -376,16 +415,63 @@
 <script>
 
 let currentCustomerId = "";
+let currentCompanyId = "ABC001";
 
 
 /* =====================================
-   LOGIN DEMO
+   BANTUAN UI
 ===================================== */
 
-function loginDemo() {
+function setLoggedInState(loggedIn) {
+
+  document.getElementById(
+    "userInput"
+  ).disabled = !loggedIn;
+
+  document.getElementById(
+    "sendButton"
+  ).disabled = !loggedIn;
+
+  document.getElementById(
+    "menuAkun"
+  ).disabled = !loggedIn;
+
+  document.getElementById(
+    "menuDeposit"
+  ).disabled = !loggedIn;
+
+  document.getElementById(
+    "menuWithdraw"
+  ).disabled = !loggedIn;
+
+  document.getElementById(
+    "menuBonus"
+  ).disabled = !loggedIn;
+
+  document.getElementById(
+    "userInput"
+  ).placeholder =
+    loggedIn
+      ? "Ketik pertanyaan..."
+      : "Login terlebih dahulu...";
+}
+
+
+/* =====================================
+   LOGIN
+===================================== */
+
+async function loginDemo() {
 
   const select =
-    document.getElementById("customerSelect");
+    document.getElementById(
+      "customerSelect"
+    );
+
+  const loginButton =
+    document.getElementById(
+      "loginButton"
+    );
 
   const customerId =
     select.value;
@@ -399,81 +485,160 @@ function loginDemo() {
     return;
   }
 
-  aktifkanCustomer(customerId);
+  loginButton.disabled = true;
+  loginButton.textContent = "Login...";
 
-}
+  try {
 
+    const response =
+      await fetch(
+        "/login",
+        {
+          method: "POST",
 
-/* =====================================
-   AKTIFKAN CUSTOMER
-===================================== */
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-function aktifkanCustomer(customerId) {
+          body: JSON.stringify({
+            customerId:
+              customerId,
 
-  currentCustomerId =
-    customerId
-      .trim()
-      .toUpperCase();
+            companyId:
+              currentCompanyId
+          })
+        }
+      );
 
-  document.getElementById(
-    "accountInfo"
-  ).style.display = "block";
+    const data =
+      await response.json();
 
-  document.getElementById(
-    "loggedUser"
-  ).textContent =
-    currentCustomerId;
+    if (!response.ok || !data.success) {
 
-  tambahPesanBot(
-    "Login berhasil sebagai " +
-    currentCustomerId +
-    ". Saya siap membantu Anda."
-  );
+      tambahPesanBot(
+        data.message ||
+        "Login gagal."
+      );
 
-}
+      return;
+    }
 
+    currentCustomerId =
+      data.customer.id;
 
-/* =====================================
-   OTOMATIS BACA CUSTOMER DARI URL
-===================================== */
+    currentCompanyId =
+      data.company.id;
 
-function cekCustomerOtomatis() {
+    document.getElementById(
+      "accountInfo"
+    ).style.display = "block";
 
-  const params =
-    new URLSearchParams(
-      window.location.search
+    document.getElementById(
+      "loggedUser"
+    ).textContent =
+      data.customer.id +
+      " - " +
+      (data.customer.name || "");
+
+    setLoggedInState(true);
+
+    tambahPesanBot(
+      "Login berhasil sebagai " +
+      data.customer.id +
+      ". Saya siap membantu Anda."
     );
 
-  const customerId =
-    params.get("customer");
+  } catch (error) {
 
-  if (!customerId) {
-    return;
+    console.error(
+      "LOGIN ERROR:",
+      error
+    );
+
+    tambahPesanBot(
+      "⚠️ Tidak dapat terhubung ke server."
+    );
+
+  } finally {
+
+    loginButton.disabled = false;
+    loginButton.textContent = "Login";
+
   }
+}
 
-  const id =
-    customerId
-      .trim()
-      .toUpperCase();
 
-  const customerSelect =
+/* =====================================
+   CEK SESSION SAAT HALAMAN DIBUKA
+===================================== */
+
+async function cekSession() {
+
+  try {
+
+    const response =
+      await fetch(
+        "/me"
+      );
+
+    if (!response.ok) {
+
+      setLoggedInState(false);
+
+      return;
+    }
+
+    const data =
+      await response.json();
+
+    if (!data.success) {
+
+      setLoggedInState(false);
+
+      return;
+    }
+
+    currentCustomerId =
+      data.customer.id;
+
+    currentCompanyId =
+      data.company.id;
+
     document.getElementById(
       "customerSelect"
+    ).value =
+      currentCustomerId;
+
+    document.getElementById(
+      "accountInfo"
+    ).style.display = "block";
+
+    document.getElementById(
+      "loggedUser"
+    ).textContent =
+      data.customer.id +
+      " - " +
+      (data.customer.name || "");
+
+    setLoggedInState(true);
+
+    tambahPesanBot(
+      "Session login ditemukan. Selamat datang kembali, " +
+      (data.customer.name ||
+        data.customer.id) +
+      "."
     );
 
-  const option =
-    customerSelect.querySelector(
-      'option[value="' + id + '"]'
+  } catch (error) {
+
+    console.error(
+      "SESSION ERROR:",
+      error
     );
 
-  if (option) {
-
-    customerSelect.value = id;
-
-    aktifkanCustomer(id);
-
+    setLoggedInState(false);
   }
-
 }
 
 
@@ -481,22 +646,50 @@ function cekCustomerOtomatis() {
    LOGOUT
 ===================================== */
 
-function logoutDemo() {
+async function logoutDemo() {
 
-  currentCustomerId = "";
+  try {
 
-  document.getElementById(
-    "accountInfo"
-  ).style.display = "none";
+    const response =
+      await fetch(
+        "/logout",
+        {
+          method: "POST"
+        }
+      );
 
-  document.getElementById(
-    "customerSelect"
-  ).value = "";
+    const data =
+      await response.json();
 
-  tambahPesanBot(
-    "Anda telah logout."
-  );
+    currentCustomerId = "";
+    currentCompanyId = "ABC001";
 
+    document.getElementById(
+      "accountInfo"
+    ).style.display = "none";
+
+    document.getElementById(
+      "customerSelect"
+    ).value = "";
+
+    setLoggedInState(false);
+
+    tambahPesanBot(
+      data.message ||
+      "Anda telah logout."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "LOGOUT ERROR:",
+      error
+    );
+
+    tambahPesanBot(
+      "⚠️ Gagal melakukan logout."
+    );
+  }
 }
 
 
@@ -507,35 +700,82 @@ function logoutDemo() {
 function pilihKategori(kategori) {
 
   if (!currentCustomerId) {
+
     tambahPesanBot(
       "Silakan login terlebih dahulu untuk menggunakan menu " +
       kategori +
       "."
     );
+
     return;
   }
 
   if (kategori === "Akun") {
+
     tampilkanDataAkun();
+
     return;
   }
 
   if (kategori === "Deposit") {
+
     tampilkanDataDeposit();
+
     return;
   }
 
   if (kategori === "Withdraw") {
+
     tampilkanDataWithdraw();
+
     return;
   }
 
   if (kategori === "Bonus") {
+
     tampilkanDataBonus();
+
     return;
   }
 }
 
+
+/* =====================================
+   DATA CUSTOMER
+===================================== */
+
+async function ambilDataCustomer() {
+
+  const response =
+    await fetch(
+      "/api/company/" +
+      encodeURIComponent(
+        currentCompanyId
+      ) +
+      "/customer/" +
+      encodeURIComponent(
+        currentCustomerId
+      )
+    );
+
+  const data =
+    await response.json();
+
+  if (!response.ok || !data.success) {
+
+    throw new Error(
+      data.message ||
+      "Data customer tidak tersedia."
+    );
+  }
+
+  return data;
+}
+
+
+/* =====================================
+   AKUN
+===================================== */
 
 async function tampilkanDataAkun() {
 
@@ -546,30 +786,18 @@ async function tampilkanDataAkun() {
 
   try {
 
-    const response =
-      await fetch(
-        "/api/company/ABC001/customer/" +
-        currentCustomerId
-      );
-
     const data =
-      await response.json();
+      await ambilDataCustomer();
 
     loading.remove();
-
-    if (!response.ok || !data.success) {
-      tambahPesanBot(
-        "Maaf, data akun tidak ditemukan."
-      );
-      return;
-    }
 
     const customer =
       data.customer;
 
     const saldo =
-      Number(customer.balance || 0)
-        .toLocaleString("id-ID");
+      Number(
+        customer.balance || 0
+      ).toLocaleString("id-ID");
 
     const informasi =
       "👤 INFORMASI AKUN\n\n" +
@@ -577,18 +805,23 @@ async function tampilkanDataAkun() {
       (customer.name || "-") +
       "\n" +
       "ID: " +
-      (customer.id || currentCustomerId) +
+      (customer.id ||
+        currentCustomerId) +
       "\n" +
       "Status akun: " +
-      (customer.account_status || "-") +
+      (customer.account_status ||
+        "-") +
       "\n" +
       "Verifikasi: " +
-      (customer.verification || "-") +
+      (customer.verification ||
+        "-") +
       "\n" +
       "Saldo: Rp " +
       saldo;
 
-    tambahPesanBot(informasi);
+    tambahPesanBot(
+      informasi
+    );
 
   } catch (error) {
 
@@ -600,11 +833,16 @@ async function tampilkanDataAkun() {
     loading.remove();
 
     tambahPesanBot(
-      "⚠️ Gagal mengambil data akun."
+      "⚠️ " +
+      error.message
     );
   }
 }
 
+
+/* =====================================
+   DEPOSIT
+===================================== */
 
 async function tampilkanDataDeposit() {
 
@@ -615,30 +853,18 @@ async function tampilkanDataDeposit() {
 
   try {
 
-    const response =
-      await fetch(
-        "/api/company/ABC001/customer/" +
-        currentCustomerId
-      );
-
     const data =
-      await response.json();
+      await ambilDataCustomer();
 
     loading.remove();
 
-    if (!response.ok || !data.success) {
-      tambahPesanBot(
-        "Maaf, data deposit tidak ditemukan."
-      );
-      return;
-    }
-
     const deposit =
-      data.customer.deposit;
+      data.customer.deposit || {};
 
     const nominal =
-      Number(deposit.last_amount || 0)
-        .toLocaleString("id-ID");
+      Number(
+        deposit.last_amount || 0
+      ).toLocaleString("id-ID");
 
     const informasi =
       "💰 INFORMASI DEPOSIT\n\n" +
@@ -649,9 +875,12 @@ async function tampilkanDataDeposit() {
       nominal +
       "\n" +
       "Status terakhir: " +
-      (deposit.last_status || "-");
+      (deposit.last_status ||
+        "-");
 
-    tambahPesanBot(informasi);
+    tambahPesanBot(
+      informasi
+    );
 
   } catch (error) {
 
@@ -663,11 +892,16 @@ async function tampilkanDataDeposit() {
     loading.remove();
 
     tambahPesanBot(
-      "⚠️ Gagal mengambil data deposit."
+      "⚠️ " +
+      error.message
     );
   }
 }
 
+
+/* =====================================
+   WITHDRAW
+===================================== */
 
 async function tampilkanDataWithdraw() {
 
@@ -678,30 +912,18 @@ async function tampilkanDataWithdraw() {
 
   try {
 
-    const response =
-      await fetch(
-        "/api/company/ABC001/customer/" +
-        currentCustomerId
-      );
-
     const data =
-      await response.json();
+      await ambilDataCustomer();
 
     loading.remove();
 
-    if (!response.ok || !data.success) {
-      tambahPesanBot(
-        "Maaf, data withdrawal tidak ditemukan."
-      );
-      return;
-    }
-
     const withdrawal =
-      data.customer.withdrawal;
+      data.customer.withdrawal || {};
 
     const nominal =
-      Number(withdrawal.last_amount || 0)
-        .toLocaleString("id-ID");
+      Number(
+        withdrawal.last_amount || 0
+      ).toLocaleString("id-ID");
 
     const informasi =
       "💸 INFORMASI WITHDRAWAL\n\n" +
@@ -712,9 +934,12 @@ async function tampilkanDataWithdraw() {
       nominal +
       "\n" +
       "Keterangan: " +
-      (withdrawal.reason || "-");
+      (withdrawal.reason ||
+        "-");
 
-    tambahPesanBot(informasi);
+    tambahPesanBot(
+      informasi
+    );
 
   } catch (error) {
 
@@ -726,11 +951,16 @@ async function tampilkanDataWithdraw() {
     loading.remove();
 
     tambahPesanBot(
-      "⚠️ Gagal mengambil data withdrawal."
+      "⚠️ " +
+      error.message
     );
   }
 }
 
+
+/* =====================================
+   BONUS
+===================================== */
 
 async function tampilkanDataBonus() {
 
@@ -741,30 +971,18 @@ async function tampilkanDataBonus() {
 
   try {
 
-    const response =
-      await fetch(
-        "/api/company/ABC001/customer/" +
-        currentCustomerId
-      );
-
     const data =
-      await response.json();
+      await ambilDataCustomer();
 
     loading.remove();
 
-    if (!response.ok || !data.success) {
-      tambahPesanBot(
-        "Maaf, data bonus tidak ditemukan."
-      );
-      return;
-    }
-
     const bonus =
-      data.customer.bonus;
+      data.customer.bonus || {};
 
     const nominal =
-      Number(bonus.amount || 0)
-        .toLocaleString("id-ID");
+      Number(
+        bonus.amount || 0
+      ).toLocaleString("id-ID");
 
     const tersedia =
       bonus.available
@@ -783,9 +1001,12 @@ async function tampilkanDataBonus() {
       (bonus.status || "-") +
       "\n" +
       "Keterangan: " +
-      (bonus.description || "-");
+      (bonus.description ||
+        "-");
 
-    tambahPesanBot(informasi);
+    tambahPesanBot(
+      informasi
+    );
 
   } catch (error) {
 
@@ -797,11 +1018,11 @@ async function tampilkanDataBonus() {
     loading.remove();
 
     tambahPesanBot(
-      "⚠️ Gagal mengambil data bonus."
+      "⚠️ " +
+      error.message
     );
   }
 }
-  
 
 
 /* =====================================
@@ -810,9 +1031,23 @@ async function tampilkanDataBonus() {
 
 async function kirimPesan() {
 
+  if (!currentCustomerId) {
+
+    tambahPesanBot(
+      "Silakan login terlebih dahulu."
+    );
+
+    return;
+  }
+
   const input =
     document.getElementById(
       "userInput"
+    );
+
+  const sendButton =
+    document.getElementById(
+      "sendButton"
     );
 
   const pesan =
@@ -822,15 +1057,18 @@ async function kirimPesan() {
     return;
   }
 
-  tambahPesanUser(pesan);
+  tambahPesanUser(
+    pesan
+  );
 
   input.value = "";
+
+  sendButton.disabled = true;
 
   const loading =
     tambahPesanBot(
       "🤖 Sedang memeriksa..."
     );
-
 
   try {
 
@@ -838,7 +1076,6 @@ async function kirimPesan() {
       await fetch(
         "/chat",
         {
-
           method: "POST",
 
           headers: {
@@ -847,37 +1084,42 @@ async function kirimPesan() {
           },
 
           body: JSON.stringify({
-
-            message:
-              pesan,
-
-            customerId:
-              currentCustomerId,
-
-            companyId:
-              "ABC001"
-
+            message: pesan
           })
-
         }
       );
-
 
     const data =
       await response.json();
 
     loading.remove();
 
+    if (
+      response.status === 401
+    ) {
+
+      currentCustomerId = "";
+
+      setLoggedInState(false);
+
+      tambahPesanBot(
+        "Session login sudah berakhir. Silakan login kembali."
+      );
+
+      return;
+    }
+
     tambahPesanBot(
       data.reply ||
       "Maaf, AI tidak memberikan jawaban."
     );
 
-  }
+  } catch (error) {
 
-  catch (error) {
-
-    console.error(error);
+    console.error(
+      "CHAT ERROR:",
+      error
+    );
 
     loading.remove();
 
@@ -885,8 +1127,13 @@ async function kirimPesan() {
       "⚠️ Terjadi masalah saat menghubungkan ke AI."
     );
 
-  }
+  } finally {
 
+    if (currentCustomerId) {
+      sendButton.disabled = false;
+    }
+
+  }
 }
 
 
@@ -896,12 +1143,15 @@ async function kirimPesan() {
 
 function tekanEnter(event) {
 
-  if (event.key === "Enter") {
+  if (
+    event.key === "Enter"
+  ) {
+
+    event.preventDefault();
 
     kirimPesan();
 
   }
-
 }
 
 
@@ -912,10 +1162,14 @@ function tekanEnter(event) {
 function tambahPesanUser(pesan) {
 
   const chat =
-    document.getElementById("chat");
+    document.getElementById(
+      "chat"
+    );
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   div.className =
     "user-message";
@@ -927,7 +1181,6 @@ function tambahPesanUser(pesan) {
 
   chat.scrollTop =
     chat.scrollHeight;
-
 }
 
 
@@ -938,10 +1191,14 @@ function tambahPesanUser(pesan) {
 function tambahPesanBot(pesan) {
 
   const chat =
-    document.getElementById("chat");
+    document.getElementById(
+      "chat"
+    );
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   div.className =
     "bot-message";
@@ -955,25 +1212,25 @@ function tambahPesanBot(pesan) {
     chat.scrollHeight;
 
   return div;
-
 }
 
 
 /* =====================================
-   JALANKAN OTOMATIS
+   START
 ===================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
   function() {
 
-    cekCustomerOtomatis();
+    setLoggedInState(false);
+
+    cekSession();
 
   }
 );
 
 </script>
-
 
 </body>
 
