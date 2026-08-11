@@ -6,26 +6,22 @@
     "account_detail": "Akun aktif dan dapat digunakan.",
     "verification": "Terverifikasi",
     "balance": 1500000,
-
     "deposit": {
       "status": "Berhasil",
       "last_amount": 500000,
       "last_status": "Berhasil"
     },
-
     "withdrawal": {
       "status": "Tidak ada permintaan aktif",
       "last_amount": 0,
       "reason": "Belum ada withdrawal terbaru"
     },
-
     "bonus": {
       "available": true,
       "amount": 100000,
       "status": "Belum diambil",
       "description": "Bonus tersedia sesuai ketentuan program."
     },
-
     "transaction": {
       "status": "Tidak ada masalah",
       "last_transaction": "TRX001"
@@ -39,26 +35,22 @@
     "account_detail": "Akun aktif tetapi membutuhkan pemeriksaan tambahan.",
     "verification": "Terverifikasi",
     "balance": 750000,
-
     "deposit": {
       "status": "Berhasil",
       "last_amount": 250000,
       "last_status": "Berhasil"
     },
-
     "withdrawal": {
       "status": "Sedang diproses",
       "last_amount": 300000,
       "reason": "Permintaan withdrawal sedang diproses."
     },
-
     "bonus": {
       "available": false,
       "amount": 0,
       "status": "Tidak tersedia",
       "description": "Saat ini tidak ada bonus yang tersedia."
     },
-
     "transaction": {
       "status": "Sedang diproses",
       "last_transaction": "TRX002"
@@ -72,63 +64,54 @@
     "account_detail": "Akun sedang dibatasi dan membutuhkan pemeriksaan.",
     "verification": "Belum terverifikasi",
     "balance": 300000,
-
     "deposit": {
       "status": "Tidak ada deposit aktif",
       "last_amount": 0,
       "last_status": "Tidak ada"
     },
-
     "withdrawal": {
       "status": "Ditolak",
       "last_amount": 200000,
       "reason": "Akun membutuhkan pemeriksaan lebih lanjut."
     },
-
     "bonus": {
       "available": false,
       "amount": 0,
       "status": "Tidak tersedia",
       "description": "Bonus belum tersedia untuk akun ini."
     },
-
     "transaction": {
       "status": "Perlu pemeriksaan",
       "last_transaction": "TRX003"
     }
-  }
-}, 
-
-
-"XYZ001": {
-  "name": "Dina",
-  "company_id": "XYZ001",
-  "account_status": "Aktif",
-  "account_detail": "Akun aktif dan dapat digunakan.",
-  "verification": "Terverifikasi",
-  "balance": 2500000,
-
-  "deposit": {
-    "status": "Berhasil",
-    "last_amount": 1000000,
-    "last_status": "Berhasil"
   },
 
-  "withdrawal": {
-    "status": "Tidak ada permintaan aktif",
-    "last_amount": 0,
-    "reason": "Belum ada withdrawal terbaru"
-  },
-
-  "bonus": {
-    "available": true,
-    "amount": 150000,
-    "status": "Belum diambil",
-    "description": "Bonus tersedia sesuai ketentuan program."
-  },
-
-  "transaction": {
-    "status": "Tidak ada masalah",
-    "last_transaction": "XYZTRX001"
+  "XYZ001": {
+    "name": "Dina",
+    "company_id": "XYZ001",
+    "account_status": "Aktif",
+    "account_detail": "Akun aktif dan dapat digunakan.",
+    "verification": "Terverifikasi",
+    "balance": 2500000,
+    "deposit": {
+      "status": "Berhasil",
+      "last_amount": 1000000,
+      "last_status": "Berhasil"
+    },
+    "withdrawal": {
+      "status": "Tidak ada permintaan aktif",
+      "last_amount": 0,
+      "reason": "Belum ada withdrawal terbaru"
+    },
+    "bonus": {
+      "available": true,
+      "amount": 150000,
+      "status": "Belum diambil",
+      "description": "Bonus tersedia sesuai ketentuan program."
+    },
+    "transaction": {
+      "status": "Tidak ada masalah",
+      "last_transaction": "XYZTRX001"
+    }
   }
 }
