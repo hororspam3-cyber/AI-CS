@@ -650,20 +650,23 @@ app.post(
       }
 
       const session =
-        req.customerSession;
+  req.customerSession;
 
-      const customer =
-        req.customer;
+const company =
+  clients[session.companyId];
 
-      const company =
-        clients[session.companyId];
+if (!company) {
+  return res.status(404).json({
+    reply:
+      "Perusahaan tidak ditemukan."
+  });
+}
 
-      if (!company) {
-        return res.status(404).json({
-          reply:
-            "Perusahaan tidak ditemukan."
-        });
-      }
+const customer =
+  await getCustomerFromCompany(
+    session.companyId,
+    session.customerId
+  );
 
       const companyName =
         company.company_name ||
