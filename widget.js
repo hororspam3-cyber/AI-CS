@@ -18,6 +18,9 @@
     window.AI_CS_SERVER ||
     window.location.origin;
 
+  let currentCustomer = null;
+  let currentCompany = null;
+
   /*
    * ==============================
    * STYLE
@@ -138,6 +141,11 @@
       cursor: pointer;
     }
 
+    #ai-cs-send:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     #ai-cs-close {
       float: right;
       border: none;
@@ -187,17 +195,18 @@
         </div>
 
         <div id="ai-cs-status">
-          ● Online • Siap membantu
+          ● Memeriksa akun...
         </div>
 
       </div>
 
       <div id="ai-cs-messages">
 
-        <div class="ai-cs-message ai-cs-bot">
-          Halo 👋
-          
-          Ada yang bisa saya bantu?
+        <div
+          class="ai-cs-message ai-cs-bot"
+          id="ai-cs-welcome"
+        >
+          🤖 Menghubungkan ke akun Anda...
         </div>
 
       </div>
@@ -253,20 +262,11 @@
   const messages =
     document.getElementById("ai-cs-messages");
 
-  /*
-   * ==============================
-   * OPEN / CLOSE
-   * ==============================
-   */
+  const status =
+    document.getElementById("ai-cs-status");
 
-  button.addEventListener("click", function () {
-    chatWindow.style.display = "block";
-    input.focus();
-  });
-
-  closeButton.addEventListener("click", function () {
-    chatWindow.style.display = "none";
-  });
+  const welcome =
+    document.getElementById("ai-cs-welcome");
 
   /*
    * ==============================
@@ -296,6 +296,126 @@
 
   /*
    * ==============================
+   * CEK SESSION CUSTOMER
+   * ==============================
+   */
+
+  async function cekSession() {
+    try {
+      const response =
+        await fetch(
+          AI_CS_SERVER + "/me",
+          {
+            method: "GET",
+            credentials: "include"
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!response.ok || !data.success) {
+        currentCustomer = null;
+        currentCompany = null;
+
+        status.textContent =
+          "● Belum login";
+
+        welcome.textContent =
+          "Halo 👋\n\n" +
+          "Silakan login terlebih dahulu " +
+          "di akun perusahaan Anda.";
+
+        return;
+      }
+
+      currentCustomer =
+        data.customer;
+
+      currentCompany =
+        data.company;
+
+      const customerName =
+        currentCustomer.name ||
+        "Customer";
+
+      const companyName =
+        currentCompany.name ||
+        "Perusahaan";
+
+      status.textContent =
+        "● Online • " +
+        customerName;
+
+      welcome.textContent =
+        "Halo 👋\n\n" +
+        "Selamat datang, " +
+        customerName +
+        "! Ada yang bisa saya bantu hari ini?";
+
+      console.log(
+        "AI-CS SESSION:",
+        currentCustomer
+      );
+
+      console.log(
+        "AI-CS COMPANY:",
+        currentCompany
+      );
+
+    } catch (error) {
+
+      console.error(
+        "SESSION ERROR:",
+        error
+      );
+
+      currentCustomer = null;
+      currentCompany = null;
+
+      status.textContent =
+        "● Gagal memeriksa akun";
+
+      welcome.textContent =
+        "⚠️ Tidak dapat memeriksa " +
+        "session akun Anda.";
+    }
+  }
+
+  /*
+   * ==============================
+   * OPEN / CLOSE
+   * ==============================
+   */
+
+  button.addEventListener(
+    "click",
+    async function () {
+
+      chatWindow.style.display =
+        "block";
+
+      input.focus();
+
+      /*
+       * Cek session setiap kali
+       * widget dibuka.
+       */
+
+      await cekSession();
+    }
+  );
+
+  closeButton.addEventListener(
+    "click",
+    function () {
+      chatWindow.style.display =
+        "none";
+    }
+  );
+
+  /*
+   * ==============================
    * SEND MESSAGE
    * ==============================
    */
@@ -309,7 +429,31 @@
       return;
     }
 
-    addMessage(message, "user");
+    /*
+     * Pastikan session customer
+     * sudah diketahui.
+     */
+
+    if (!currentCustomer) {
+
+      await cekSession();
+
+      if (!currentCustomer) {
+
+        addMessage(
+          "Silakan login terlebih dahulu " +
+          "di akun perusahaan Anda.",
+          "bot"
+        );
+
+        return;
+      }
+    }
+
+    addMessage(
+      message,
+      "user"
+    );
 
     input.value = "";
 
@@ -369,7 +513,7 @@
     } catch (error) {
 
       console.error(
-        "AI-CS WIDGET ERROR:",
+        "AI-CS CHAT ERROR:",
         error
       );
 
