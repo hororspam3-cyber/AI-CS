@@ -463,6 +463,90 @@ app.get(
 );
 
 /*
+ * ==============================
+ * COMPANY API INTEGRATION
+ * ==============================
+ *
+ * Ini adalah API internal AI-CS
+ * untuk mengambil data customer.
+ *
+ * Nanti pada perusahaan sungguhan,
+ * bagian ini akan diganti/diadaptasi
+ * agar mengambil data dari API perusahaan.
+ */
+
+app.get(
+  "/api/integration/customer",
+  authenticateCustomer,
+  function (req, res) {
+    try {
+      const session = req.customerSession;
+
+      const company =
+        clients[session.companyId];
+
+      const customer =
+        customers[session.customerId];
+
+      if (!company) {
+        return res.status(404).json({
+          success: false,
+          message: "Perusahaan tidak ditemukan."
+        });
+      }
+
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: "Customer tidak ditemukan."
+        });
+      }
+
+      return res.json({
+        success: true,
+
+        company: {
+          id: session.companyId,
+          name:
+            company.company_name ||
+            "Perusahaan"
+        },
+
+        customer: {
+          id: session.customerId,
+          name: customer.name || null,
+          account_status:
+            customer.account_status || null,
+          verification:
+            customer.verification || null,
+          balance:
+            customer.balance ?? null,
+          deposit:
+            customer.deposit || null,
+          withdrawal:
+            customer.withdrawal || null,
+          bonus:
+            customer.bonus || null,
+          transaction:
+            customer.transaction || null
+        }
+      });
+
+    } catch (error) {
+      console.error(
+        "COMPANY API ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Gagal mengambil data customer."
+      });
+    }
+  }
+);
+/*
 ========================================
 CHAT
 ========================================
