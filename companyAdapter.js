@@ -1,4 +1,3 @@
-const customers = require("./customers.json");
 const clients = require("./clients.json");
 
 async function getCustomerFromCompany(
@@ -14,61 +13,104 @@ async function getCustomerFromCompany(
     );
   }
 
-  const customer =
-    customers[customerId];
+  /*
+   * DEMO:
+   * Menggunakan simulator API perusahaan.
+   *
+   * Nanti URL ini diganti dengan
+   * API perusahaan sungguhan.
+   */
 
-  if (!customer) {
+  const apiUrl =
+    "https://ai-cs-pt47.onrender.com/api/demo-company/customer/" +
+    encodeURIComponent(customerId);
+
+  const apiKey =
+    process.env.AI_CS_API_KEY;
+
+  if (!apiKey) {
     throw new Error(
-      "Customer tidak ditemukan."
+      "AI_CS_API_KEY belum tersedia."
+    );
+  }
+
+  const response =
+    await fetch(apiUrl, {
+      method: "GET",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+
+        "x-ai-cs-key":
+          apiKey
+      }
+    });
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+      "Gagal mengambil data dari API perusahaan."
     );
   }
 
   if (
-    customer.company_id &&
-    customer.company_id !== companyId
+    !data.success ||
+    !data.customer
+  ) {
+    throw new Error(
+      "Format data API perusahaan tidak valid."
+    );
+  }
+
+  /*
+   * Pastikan customer memang
+   * berasal dari perusahaan
+   * yang sedang login.
+   */
+
+  if (
+    data.customer.company_id &&
+    data.customer.company_id !== companyId
   ) {
     throw new Error(
       "Customer tidak terdaftar pada perusahaan ini."
     );
   }
 
-  /*
-   * MODE DEMO
-   *
-   * Nanti bagian ini diganti
-   * dengan request ke API perusahaan.
-   */
-
   return {
-    customerId: customerId,
-    companyId: companyId,
+    id:
+      data.customer.id,
 
     name:
-      customer.name || null,
+      data.customer.name || null,
 
     account_status:
-      customer.account_status || null,
+      data.customer.account_status || null,
 
     account_detail:
-      customer.account_detail || null,
+      data.customer.account_detail || null,
 
     verification:
-      customer.verification || null,
+      data.customer.verification || null,
 
     balance:
-      customer.balance ?? null,
+      data.customer.balance ?? null,
 
     deposit:
-      customer.deposit || null,
+      data.customer.deposit || null,
 
     withdrawal:
-      customer.withdrawal || null,
+      data.customer.withdrawal || null,
 
     bonus:
-      customer.bonus || null,
+      data.customer.bonus || null,
 
     transaction:
-      customer.transaction || null
+      data.customer.transaction || null
   };
 }
 
