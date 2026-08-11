@@ -859,11 +859,11 @@ const customer =
         customerInfo +
         "\n\n" +
 
-        "KNOWLEDGE BASE:\n" +
+        "KNOWLEDGE BASE PERUSAHAAN:\n" +
         JSON.stringify(
-          knowledge,
-          null,
-          2
+        companyKnowledge,
+        null,
+        2
         ) +
         "\n\n" +
 
