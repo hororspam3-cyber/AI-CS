@@ -1,40 +1,7 @@
 const express = require("express");
+const customers = require("./customers.json");
 
 const router = express.Router();
-
-/*
- * ==============================
- * DEMO COMPANY DATABASE
- * ==============================
- */
-
-const customers = {
-  USER001: {
-    id: "USER001",
-    name: "Andi",
-    account_status: "active",
-    balance: 1500000,
-    deposit: {
-      status: "available"
-    },
-    withdrawal: {
-      status: "available"
-    }
-  },
-
-  USER002: {
-    id: "USER002",
-    name: "Budi",
-    account_status: "active",
-    balance: 750000,
-    deposit: {
-      status: "available"
-    },
-    withdrawal: {
-      status: "available"
-    }
-  }
-};
 
 /*
  * ==============================
