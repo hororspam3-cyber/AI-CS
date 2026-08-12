@@ -343,6 +343,23 @@ let currentCompany = null;
         return;
       }
 
+            if (
+        AI_CS_COMPANY_ID &&
+        data.company &&
+        data.company.id !== AI_CS_COMPANY_ID
+      ) {
+        currentCustomer = null;
+        currentCompany = null;
+
+        status.textContent =
+          "● Perusahaan tidak sesuai";
+
+        welcome.textContent =
+          "⚠️ Widget perusahaan tidak sesuai dengan akun Anda.";
+
+        return;
+      }
+
       currentCustomer =
         data.customer;
 
