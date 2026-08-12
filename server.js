@@ -1565,7 +1565,89 @@ const customer =
     }
   }
 );
+/*
+ * ==============================
+ * ABC COMPANY CHAT TEST
+ * ==============================
+ */
 
+app.get(
+  "/api/test-abc-chat",
+  async function (req, res) {
+    try {
+      const companyId = "ABC001";
+      const customerId = "USER001";
+
+      const message = String(
+        req.query.message ||
+          "Berapa saldo saya?"
+      ).trim();
+
+      const companyApiKey =
+        process.env.ABC001_API_KEY;
+
+      if (!companyApiKey) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "ABC001_API_KEY belum tersedia."
+        });
+      }
+
+      const response =
+        await fetch(
+          "http://localhost:" +
+            PORT +
+            "/api/company/chat",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "x-company-id":
+                companyId,
+
+              "x-ai-cs-key":
+                companyApiKey
+            },
+
+            body: JSON.stringify({
+              companyId:
+                companyId,
+
+              customerId:
+                customerId,
+
+              message:
+                message
+            })
+          }
+        );
+
+      const data =
+        await response.json();
+
+      return res.status(
+        response.status
+      ).json(data);
+
+    } catch (error) {
+      console.error(
+        "ABC TEST ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.message ||
+          "Tester ABC mengalami masalah."
+      });
+    }
+  }
+);
 /*
 ========================================
 SERVER
