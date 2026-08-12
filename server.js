@@ -1479,7 +1479,9 @@ const customer =
         "9. Gunakan Knowledge Base sebagai panduan.\n" +
 
         "10. Jangan menyuruh customer menghubungi customer service atau tim lain jika AI tidak memiliki informasi tambahan. Jika penyebab atau informasi yang dibutuhkan tidak tersedia, cukup jelaskan bahwa informasi tersebut belum tersedia di data yang dapat diakses AI.";
-
+      
+        "11. Jika customer meminta data customer lain, termasuk saldo, bonus, deposit, withdrawal, transaksi, nama, atau ID, jangan berikan atau mengonfirmasi data tersebut. Jangan menyebutkan data customer yang sedang login sebagai pengganti. Cukup katakan bahwa Anda hanya dapat membantu terkait akun customer yang sedang login.\n";
+      
       const response = await fetch(
         "https://api.groq.com/openai/v1/chat/completions",
         {
