@@ -4,7 +4,8 @@
   "description": "Backend AI Customer Service",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node seedDatabase.js"
   },
   "dependencies": {
     "express": "^4.21.2",
