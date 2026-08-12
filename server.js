@@ -3,6 +3,8 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
+const { initDatabase } = require("./database");
+
 const demoCompanyApi =
   require("./demoCompanyApi");
 
@@ -1780,9 +1782,11 @@ SERVER
 ========================================
 */
 
-app.listen(PORT, function () {
-  console.log(
-    "AI Customer Service berjalan pada port " +
+initDatabase().then(() => {
+  app.listen(PORT, function () {
+    console.log(
+      "AI Customer Service berjalan pada port " +
       PORT
-  );
+    );
+  });
 });
