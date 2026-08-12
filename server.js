@@ -1177,6 +1177,164 @@ app.get(
   }
 );
 /*
+ * ==============================
+ * XYZ COMPANY CHAT TESTER
+ * ==============================
+ */
+
+app.get(
+  "/api/test-xyz-chat",
+  async function (req, res) {
+    try {
+      const companyId = "XYZ001";
+      const customerId = "XYZ001";
+
+      const message = String(
+        req.query.message ||
+          "Berapa saldo saya?"
+      ).trim();
+
+      const company =
+        clients[companyId];
+
+      if (!company) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Perusahaan XYZ tidak ditemukan."
+        });
+      }
+
+      const customer =
+        await getCustomerFromCompany(
+          companyId,
+          customerId
+        );
+
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Customer XYZ tidak ditemukan."
+        });
+      }
+
+      const companyKnowledge =
+        await getCompanyKnowledge(
+          companyId
+        );
+
+      const companyName =
+        company.company_name ||
+        "XYZ Company";
+
+      const systemPrompt =
+        "Kamu adalah AI Customer Service untuk " +
+        companyName +
+        ".\n\n" +
+
+        "Gunakan bahasa Indonesia.\n" +
+        "Jawab dengan ramah, jelas, dan singkat.\n\n" +
+
+        "DATA CUSTOMER:\n" +
+        JSON.stringify(
+          customer,
+          null,
+          2
+        ) +
+        "\n\n" +
+
+        "KNOWLEDGE BASE PERUSAHAAN:\n" +
+        JSON.stringify(
+          companyKnowledge,
+          null,
+          2
+        ) +
+        "\n\n" +
+
+        "Jangan mengarang data.\n" +
+        "Jangan memberikan data customer lain.";
+
+      const response =
+        await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                "Bearer " +
+                GROQ_API_KEY
+            },
+
+            body: JSON.stringify({
+              model:
+                "llama-3.3-70b-versatile",
+
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    systemPrompt
+                },
+                {
+                  role: "user",
+                  content:
+                    message
+                }
+              ],
+
+              temperature: 0.2,
+              max_tokens: 500
+            })
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!response.ok) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "AI mengalami masalah."
+        });
+      }
+
+      const reply =
+        data.choices &&
+        data.choices[0] &&
+        data.choices[0].message &&
+        data.choices[0].message.content;
+
+      return res.json({
+        success: true,
+        companyId:
+          companyId,
+        customerId:
+          customerId,
+        reply:
+          reply
+      });
+
+    } catch (error) {
+      console.error(
+        "XYZ CHAT TEST ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Tester XYZ mengalami masalah."
+      });
+    }
+  }
+);
+/*
 ========================================
 CHAT
 ========================================
