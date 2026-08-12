@@ -3,6 +3,9 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
+const demoCompanyApi =
+  require("./demoCompanyApi");
+
 const {
   getCustomerFromCompany
 } = require("./companyAdapter");
@@ -12,6 +15,11 @@ const {
 } = require("./companyKnowledgeAdapter");
 
 const app = express();
+
+app.use(
+  "/api/demo-company",
+  demoCompanyApi
+);
 const PORT = process.env.PORT || 3000;
 
 app.use(function (req, res, next) {
