@@ -6,8 +6,9 @@
     "ai_enabled": true,
     "integration": {
       "type": "demo",
+      "api_enabled": false,
       "api_url": null,
-      "api_enabled": false
+      "api_key_env": "ABC001_API_KEY"
     }
   },
 
@@ -18,8 +19,9 @@
     "ai_enabled": true,
     "integration": {
       "type": "demo",
+      "api_enabled": false,
       "api_url": null,
-      "api_enabled": false
+      "api_key_env": "XYZ001_API_KEY"
     }
   }
 }
