@@ -8,6 +8,9 @@ const { initDatabase } = require("./database");
 const demoCompanyApi =
   require("./demoCompanyApi");
 
+const companyApi =
+require("./company-api");
+
 const {
   getCustomerFromCompany
 } = require("./companyAdapter");
@@ -22,6 +25,12 @@ app.use(
   "/api/demo-company",
   demoCompanyApi
 );
+
+app.use(
+"/api/ai-cs",
+companyApi
+);
+
 const PORT = process.env.PORT || 3000;
 
 app.use(function (req, res, next) {
