@@ -153,49 +153,78 @@ Jangan pernah memasukkan key ini
 ke index.html.
 */
 
+function getCompanyApiKey(companyId) {
+  const keys = {
+    ABC001:
+      process.env.ABC001_API_KEY,
+
+    XYZ001:
+      process.env.XYZ001_API_KEY
+  };
+
+  return keys[companyId] || null;
+}
+
 function authenticateServer(req, res, next) {
+  const companyId = String(
+    req.headers["x-company-id"] || ""
+  )
+    .trim()
+    .toUpperCase();
+
   const providedKey =
     req.headers["x-ai-cs-key"];
+
+  if (!companyId) {
+    return res.status(400).json({
+      success: false,
+      message:
+        "Company ID diperlukan."
+    });
+  }
 
   if (!providedKey) {
     return res.status(401).json({
       success: false,
-      message: "Unauthorized."
+      message:
+        "Unauthorized."
     });
   }
 
-  const companyKey =
-    process.env.ABC001_API_KEY;
+  const expectedKey =
+    getCompanyApiKey(companyId);
 
-  const validKeys = [
-    AI_CS_API_KEY,
-    companyKey
-  ].filter(Boolean);
+  if (!expectedKey) {
+    return res.status(401).json({
+      success: false,
+      message:
+        "API perusahaan tidak tersedia."
+    });
+  }
+
+  const providedBuffer =
+    Buffer.from(String(providedKey));
+
+  const expectedBuffer =
+    Buffer.from(String(expectedKey));
 
   const isValid =
-    validKeys.some(function (key) {
-      const providedBuffer =
-        Buffer.from(String(providedKey));
-
-      const expectedBuffer =
-        Buffer.from(String(key));
-
-      return (
-        providedBuffer.length ===
-          expectedBuffer.length &&
-        crypto.timingSafeEqual(
-          providedBuffer,
-          expectedBuffer
-        )
-      );
-    });
+    providedBuffer.length ===
+      expectedBuffer.length &&
+    crypto.timingSafeEqual(
+      providedBuffer,
+      expectedBuffer
+    );
 
   if (!isValid) {
     return res.status(401).json({
       success: false,
-      message: "Unauthorized."
+      message:
+        "Unauthorized."
     });
   }
+
+  req.companyId = companyId;
 
   next();
 }
