@@ -12,9 +12,10 @@
       "last_status": "Berhasil"
     },
     "withdrawal": {
-      "status": "Tidak ada permintaan aktif",
-      "last_amount": 0,
-      "reason": "Belum ada withdrawal terbaru"
+      "status": "Gagal",
+      "last_amount": 1000000,
+      "reason": "Melebihi batas withdrawal harian",
+      "limit": 500000
     },
     "bonus": {
       "available": true,
@@ -43,7 +44,8 @@
     "withdrawal": {
       "status": "Sedang diproses",
       "last_amount": 300000,
-      "reason": "Permintaan withdrawal sedang diproses."
+      "reason": "Permintaan withdrawal sedang diproses.",
+      "limit": 500000
     },
     "bonus": {
       "available": false,
@@ -72,7 +74,8 @@
     "withdrawal": {
       "status": "Ditolak",
       "last_amount": 200000,
-      "reason": "Akun membutuhkan pemeriksaan lebih lanjut."
+      "reason": "Akun membutuhkan pemeriksaan lebih lanjut.",
+      "limit": 1000000
     },
     "bonus": {
       "available": false,
@@ -101,7 +104,8 @@
     "withdrawal": {
       "status": "Tidak ada permintaan aktif",
       "last_amount": 0,
-      "reason": "Belum ada withdrawal terbaru"
+      "reason": "Belum ada withdrawal terbaru",
+      "limit": 500000
     },
     "bonus": {
       "available": true,
