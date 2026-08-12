@@ -1782,7 +1782,32 @@ SERVER
 ========================================
 */
 
-initDatabase().then(() => {
+const { execFile } = require("child_process");
+
+initDatabase().then(async () => {
+  try {
+    await new Promise((resolve, reject) => {
+      execFile("node", ["seedDatabase.js"], (error, stdout, stderr) => {
+        if (stdout) console.log(stdout);
+        if (stderr) console.error(stderr);
+
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+
+    console.log("Seed database selesai.");
+
+  } catch (error) {
+    console.error(
+      "Seed database gagal:",
+      error.message
+    );
+  }
+
   app.listen(PORT, function () {
     console.log(
       "AI Customer Service berjalan pada port " +
