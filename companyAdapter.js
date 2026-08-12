@@ -4,8 +4,15 @@ async function getCustomerFromCompany(
   companyId,
   customerId
 ) {
-  const company =
-    clients[companyId];
+  companyId = String(companyId || "")
+    .trim()
+    .toUpperCase();
+
+  customerId = String(customerId || "")
+    .trim()
+    .toUpperCase();
+
+  const company = clients[companyId];
 
   if (!company) {
     throw new Error(
@@ -13,136 +20,264 @@ async function getCustomerFromCompany(
     );
   }
 
+  const integration =
+    company.integration || {};
+
   /*
-   * ==============================
-   * DEMO COMPANY API
-   * ==============================
+   * =====================================
+   * DEMO MODE
+   * =====================================
    *
-   * Untuk sekarang menggunakan
-   * API simulator.
-   *
-   * Nanti URL ini diganti dengan
-   * API perusahaan sungguhan.
-   */
-
-  const apiUrl =
-    "https://ai-cs-pt47.onrender.com/api/demo-company/customer/" +
-    encodeURIComponent(customerId);
-
-  /*
-   * Gunakan API key perusahaan.
-   */
-
-  let apiKey = null;
-
-if (companyId === "ABC001") {
-  apiKey =
-    process.env.ABC001_API_KEY;
-}
-
-if (companyId === "XYZ001") {
-  apiKey =
-    process.env.XYZ001_API_KEY;
-}
-
-  if (!apiKey) {
-    throw new Error(
-      "API key perusahaan belum tersedia."
-    );
-  }
-
-  const response =
-    await fetch(apiUrl, {
-      method: "GET",
-
-      headers: {
-  "Content-Type":
-    "application/json",
-
-  "x-company-id":
-    companyId,
-
-  "x-ai-cs-key":
-    apiKey
-}
-    });
-
-  const data =
-    await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-      "Gagal mengambil data dari API perusahaan."
-    );
-  }
-
-  if (
-    !data.success ||
-    !data.customer
-  ) {
-    throw new Error(
-      "Format data API perusahaan tidak valid."
-    );
-  }
-
-  /*
-   * Pastikan customer memang
-   * berasal dari perusahaan
-   * yang sedang digunakan.
+   * Tetap menggunakan Demo Company API
+   * yang sekarang sudah berhasil.
    */
 
   if (
-    data.customer.company_id &&
-    data.customer.company_id !==
-      companyId
+    integration.type === "demo" ||
+    integration.api_enabled !== true
   ) {
-    throw new Error(
-      "Customer tidak terdaftar pada perusahaan ini."
+    const apiUrl =
+      "https://ai-cs-pt47.onrender.com/api/demo-company/customer/" +
+      encodeURIComponent(customerId);
+
+    const apiKeyEnv =
+      integration.api_key_env;
+
+    if (!apiKeyEnv) {
+      throw new Error(
+        "Environment API key perusahaan belum dikonfigurasi."
+      );
+    }
+
+    const apiKey =
+      process.env[apiKeyEnv];
+
+    if (!apiKey) {
+      throw new Error(
+        "API key perusahaan belum tersedia."
+      );
+    }
+
+    const response =
+      await fetch(apiUrl, {
+        method: "GET",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+
+          "x-company-id":
+            companyId,
+
+          "x-ai-cs-key":
+            apiKey
+        }
+      });
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        "Gagal mengambil data customer dari API perusahaan."
+      );
+    }
+
+    if (
+      !data.success ||
+      !data.customer
+    ) {
+      throw new Error(
+        "Format data API perusahaan tidak valid."
+      );
+    }
+
+    /*
+     * Pastikan customer benar-benar
+     * berasal dari perusahaan tersebut.
+     */
+
+    if (
+      data.customer.company_id &&
+      String(
+        data.customer.company_id
+      ).toUpperCase() !== companyId
+    ) {
+      throw new Error(
+        "Customer tidak terdaftar pada perusahaan ini."
+      );
+    }
+
+    return normalizeCustomer(
+      data.customer,
+      customerId
     );
   }
 
+  /*
+   * =====================================
+   * PRODUCTION MODE
+   * =====================================
+   *
+   * Nanti digunakan ketika perusahaan
+   * memiliki API sungguhan.
+   */
+
+  if (
+    integration.type === "production" &&
+    integration.api_enabled === true
+  ) {
+    const apiUrl =
+      integration.api_url;
+
+    if (!apiUrl) {
+      throw new Error(
+        "API URL perusahaan belum dikonfigurasi."
+      );
+    }
+
+    const apiKeyEnv =
+      integration.api_key_env;
+
+    if (!apiKeyEnv) {
+      throw new Error(
+        "Environment API key perusahaan belum dikonfigurasi."
+      );
+    }
+
+    const apiKey =
+      process.env[apiKeyEnv];
+
+    if (!apiKey) {
+      throw new Error(
+        "API key perusahaan belum tersedia."
+      );
+    }
+
+    const response =
+      await fetch(apiUrl, {
+        method: "GET",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+
+          "Authorization":
+            "Bearer " + apiKey,
+
+          "X-Customer-ID":
+            customerId
+        }
+      });
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        "Gagal mengambil data dari API perusahaan."
+      );
+    }
+
+    if (
+      !data.success ||
+      !data.customer
+    ) {
+      throw new Error(
+        "Format API perusahaan tidak valid."
+      );
+    }
+
+    /*
+     * Pastikan API perusahaan
+     * mengembalikan customer yang benar.
+     */
+
+    if (
+      data.customer.id &&
+      String(
+        data.customer.id
+      ).toUpperCase() !== customerId
+    ) {
+      throw new Error(
+        "API perusahaan mengembalikan customer yang tidak sesuai."
+      );
+    }
+
+    return normalizeCustomer(
+      data.customer,
+      customerId
+    );
+  }
+
+  throw new Error(
+    "Konfigurasi integration perusahaan tidak valid."
+  );
+}
+
+
+/*
+ * =====================================
+ * NORMALIZE CUSTOMER
+ * =====================================
+ *
+ * Menyamakan format data dari
+ * perusahaan yang berbeda.
+ */
+
+function normalizeCustomer(
+  customer,
+  customerId
+) {
   return {
     id:
-      data.customer.id,
+      customer.id ||
+      customerId,
 
     name:
-      data.customer.name ||
+      customer.name ||
+      null,
+
+    company_id:
+      customer.company_id ||
       null,
 
     account_status:
-      data.customer.account_status ||
+      customer.account_status ||
       null,
 
     account_detail:
-      data.customer.account_detail ||
+      customer.account_detail ||
       null,
 
     verification:
-      data.customer.verification ||
+      customer.verification ||
       null,
 
     balance:
-      data.customer.balance ??
+      customer.balance ??
       null,
 
     deposit:
-      data.customer.deposit ||
+      customer.deposit ||
       null,
 
     withdrawal:
-      data.customer.withdrawal ||
+      customer.withdrawal ||
       null,
 
     bonus:
-      data.customer.bonus ||
+      customer.bonus ||
       null,
 
     transaction:
-      data.customer.transaction ||
+      customer.transaction ||
       null
   };
 }
+
 
 module.exports = {
   getCustomerFromCompany
