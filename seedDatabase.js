@@ -1,8 +1,40 @@
 const { pool } = require("./database");
 const customers = require("./customers.json");
+const clients = require("./clients.json");
 
-async function seedCustomers() {
+async function seedDatabase() {
   try {
+    // =========================
+    // SEED COMPANIES
+    // =========================
+
+    for (const [id, company] of Object.entries(clients)) {
+      await pool.query(
+        `
+        INSERT INTO companies (
+          id,
+          name
+        )
+        VALUES ($1, $2)
+        ON CONFLICT (id)
+        DO UPDATE SET
+          name = EXCLUDED.name
+        `,
+        [
+          id,
+          company.company_name || "Perusahaan"
+        ]
+      );
+    }
+
+    console.log(
+      "Semua perusahaan berhasil dimasukkan ke PostgreSQL."
+    );
+
+    // =========================
+    // SEED CUSTOMERS
+    // =========================
+
     for (const [id, customer] of Object.entries(customers)) {
       await pool.query(
         `
@@ -51,10 +83,13 @@ async function seedCustomers() {
       );
     }
 
-    console.log("Semua customer berhasil dimasukkan ke PostgreSQL.");
+    console.log(
+      "Semua customer berhasil dimasukkan ke PostgreSQL."
+    );
+
   } catch (error) {
     console.error(
-      "Gagal memasukkan customer:",
+      "Gagal melakukan seed:",
       error.message
     );
   } finally {
@@ -62,4 +97,4 @@ async function seedCustomers() {
   }
 }
 
-seedCustomers();
+seedDatabase();
