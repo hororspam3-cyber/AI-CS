@@ -1494,8 +1494,8 @@ const customer =
         "11. Jika customer meminta data customer lain, termasuk saldo, bonus, deposit, withdrawal, transaksi, nama, atau ID, jangan berikan atau mengonfirmasi data tersebut. Jangan menyebutkan data customer yang sedang login sebagai pengganti. Cukup katakan bahwa Anda hanya dapat membantu terkait akun customer yang sedang login.\n";
 
 const otherCustomerPattern =
-  /\b(user\d+|customer\s*\d+|andi|budi|citra|dina)\b/i;
-
+  /\b(user\d+|customer\s*\d+|budi|citra|dina)\b/i;
+      
 if (
   otherCustomerPattern.test(message) &&
   !message.toLowerCase().includes(
