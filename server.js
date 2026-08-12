@@ -1329,7 +1329,8 @@ app.get(
       return res.status(500).json({
         success: false,
         message:
-          "Tester XYZ mengalami masalah."
+  error.message ||
+  "Tester XYZ mengalami masalah."
       });
     }
   }
