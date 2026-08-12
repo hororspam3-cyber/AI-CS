@@ -14,8 +14,12 @@ async function getCustomerFromCompany(
   }
 
   /*
-   * DEMO:
-   * Menggunakan simulator API perusahaan.
+   * ==============================
+   * DEMO COMPANY API
+   * ==============================
+   *
+   * Untuk sekarang menggunakan
+   * API simulator.
    *
    * Nanti URL ini diganti dengan
    * API perusahaan sungguhan.
@@ -25,12 +29,20 @@ async function getCustomerFromCompany(
     "https://ai-cs-pt47.onrender.com/api/demo-company/customer/" +
     encodeURIComponent(customerId);
 
-  const apiKey =
-    process.env.AI_CS_API_KEY;
+  /*
+   * Gunakan API key perusahaan.
+   */
+
+  let apiKey = null;
+
+  if (companyId === "ABC001") {
+    apiKey =
+      process.env.ABC001_API_KEY;
+  }
 
   if (!apiKey) {
     throw new Error(
-      "AI_CS_API_KEY belum tersedia."
+      "API key perusahaan belum tersedia."
     );
   }
 
@@ -69,12 +81,13 @@ async function getCustomerFromCompany(
   /*
    * Pastikan customer memang
    * berasal dari perusahaan
-   * yang sedang login.
+   * yang sedang digunakan.
    */
 
   if (
     data.customer.company_id &&
-    data.customer.company_id !== companyId
+    data.customer.company_id !==
+      companyId
   ) {
     throw new Error(
       "Customer tidak terdaftar pada perusahaan ini."
@@ -86,31 +99,40 @@ async function getCustomerFromCompany(
       data.customer.id,
 
     name:
-      data.customer.name || null,
+      data.customer.name ||
+      null,
 
     account_status:
-      data.customer.account_status || null,
+      data.customer.account_status ||
+      null,
 
     account_detail:
-      data.customer.account_detail || null,
+      data.customer.account_detail ||
+      null,
 
     verification:
-      data.customer.verification || null,
+      data.customer.verification ||
+      null,
 
     balance:
-      data.customer.balance ?? null,
+      data.customer.balance ??
+      null,
 
     deposit:
-      data.customer.deposit || null,
+      data.customer.deposit ||
+      null,
 
     withdrawal:
-      data.customer.withdrawal || null,
+      data.customer.withdrawal ||
+      null,
 
     bonus:
-      data.customer.bonus || null,
+      data.customer.bonus ||
+      null,
 
     transaction:
-      data.customer.transaction || null
+      data.customer.transaction ||
+      null
   };
 }
 
