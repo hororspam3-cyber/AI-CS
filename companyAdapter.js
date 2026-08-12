@@ -35,10 +35,15 @@ async function getCustomerFromCompany(
 
   let apiKey = null;
 
-  if (companyId === "ABC001") {
-    apiKey =
-      process.env.ABC001_API_KEY;
-  }
+if (companyId === "ABC001") {
+  apiKey =
+    process.env.ABC001_API_KEY;
+}
+
+if (companyId === "XYZ001") {
+  apiKey =
+    process.env.XYZ001_API_KEY;
+}
 
   if (!apiKey) {
     throw new Error(
