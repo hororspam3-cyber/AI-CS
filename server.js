@@ -1031,6 +1031,96 @@ app.post(
   }
 );
 /*
+ * ==============================
+ * COMPANY CHAT DEMO PROXY
+ * ==============================
+ */
+
+app.post(
+  "/api/company-chat-demo",
+  async function (req, res) {
+    try {
+      const companyId = "ABC001";
+      const customerId = "USER001";
+
+      const message = String(
+        req.body.message || ""
+      ).trim();
+
+      if (!message) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Pesan diperlukan."
+        });
+      }
+
+      const companyApiKey =
+        process.env.ABC001_API_KEY;
+
+      if (!companyApiKey) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "ABC001_API_KEY belum tersedia."
+        });
+      }
+
+      const baseUrl =
+        "http://localhost:" +
+        PORT;
+
+      const response =
+        await fetch(
+          baseUrl +
+            "/api/company/chat",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "x-ai-cs-key":
+                companyApiKey
+            },
+
+            body:
+              JSON.stringify({
+                companyId:
+                  companyId,
+
+                customerId:
+                  customerId,
+
+                message:
+                  message
+              })
+          }
+        );
+
+      const data =
+        await response.json();
+
+      return res.status(
+        response.status
+      ).json(data);
+
+    } catch (error) {
+      console.error(
+        "COMPANY CHAT DEMO PROXY ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Gagal menghubungkan Company Chat."
+      });
+    }
+  }
+);
+/*
 ========================================
 CHAT
 ========================================
