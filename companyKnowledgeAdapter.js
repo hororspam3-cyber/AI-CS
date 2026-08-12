@@ -11,24 +11,34 @@ async function getCompanyKnowledge(companyId) {
   }
 
   /*
-   * DEMO:
-   * Mengambil Knowledge Base
-   * melalui API perusahaan.
-   *
-   * Nanti URL ini diganti
-   * dengan API perusahaan asli.
+   * ==============================
+   * DEMO COMPANY KNOWLEDGE API
+   * ==============================
    */
 
   const apiUrl =
     "https://ai-cs-pt47.onrender.com/api/demo-company/knowledge/" +
     encodeURIComponent(companyId);
 
-  const apiKey =
-    process.env.AI_CS_API_KEY;
+  /*
+   * Gunakan API key perusahaan.
+   */
+
+  let apiKey = null;
+
+  if (companyId === "ABC001") {
+    apiKey =
+      process.env.ABC001_API_KEY;
+  }
+
+  if (companyId === "XYZ001") {
+    apiKey =
+      process.env.XYZ001_API_KEY;
+  }
 
   if (!apiKey) {
     throw new Error(
-      "AI_CS_API_KEY belum tersedia."
+      "API key perusahaan belum tersedia."
     );
   }
 
@@ -39,6 +49,9 @@ async function getCompanyKnowledge(companyId) {
       headers: {
         "Content-Type":
           "application/json",
+
+        "x-company-id":
+          companyId,
 
         "x-ai-cs-key":
           apiKey
@@ -51,7 +64,7 @@ async function getCompanyKnowledge(companyId) {
   if (!response.ok) {
     throw new Error(
       data.message ||
-      "Gagal mengambil Knowledge Base perusahaan."
+        "Gagal mengambil Knowledge Base perusahaan."
     );
   }
 
