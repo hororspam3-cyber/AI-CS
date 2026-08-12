@@ -1129,6 +1129,54 @@ app.post(
   }
 );
 /*
+ * ==============================
+ * SECURITY TESTER
+ * ==============================
+ */
+
+app.get(
+  "/api/test-company-security",
+  async function (req, res) {
+    try {
+      const companyId = "ABC001";
+
+      /*
+       * Sengaja meminta customer
+       * milik perusahaan XYZ.
+       */
+
+      const customerId = "XYZ001";
+
+      const customer =
+        await getCustomerFromCompany(
+          companyId,
+          customerId
+        );
+
+      return res.json({
+        success: true,
+        message:
+          "PERINGATAN: Customer perusahaan lain berhasil diakses.",
+        customer: customer
+      });
+
+    } catch (error) {
+      console.error(
+        "SECURITY TEST:",
+        error.message
+      );
+
+      return res.status(403).json({
+        success: false,
+        message:
+          "Customer perusahaan lain berhasil ditolak.",
+        detail:
+          error.message
+      });
+    }
+  }
+);
+/*
 ========================================
 CHAT
 ========================================
