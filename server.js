@@ -146,18 +146,8 @@ ke index.html.
 */
 
 function authenticateServer(req, res, next) {
-  if (!AI_CS_API_KEY) {
-    console.error(
-      "AI_CS_API_KEY belum tersedia."
-    );
-
-    return res.status(500).json({
-      success: false,
-      message: "Security AI-CS belum dikonfigurasi."
-    });
-  }
-
-  const providedKey = req.headers["x-ai-cs-key"];
+  const providedKey =
+    req.headers["x-ai-cs-key"];
 
   if (!providedKey) {
     return res.status(401).json({
@@ -166,21 +156,33 @@ function authenticateServer(req, res, next) {
     });
   }
 
-  const providedBuffer = Buffer.from(
-    String(providedKey)
-  );
+  const companyKey =
+    process.env.ABC001_API_KEY;
 
-  const expectedBuffer = Buffer.from(
-    String(AI_CS_API_KEY)
-  );
+  const validKeys = [
+    AI_CS_API_KEY,
+    companyKey
+  ].filter(Boolean);
 
-  if (
-    providedBuffer.length !== expectedBuffer.length ||
-    !crypto.timingSafeEqual(
-      providedBuffer,
-      expectedBuffer
-    )
-  ) {
+  const isValid =
+    validKeys.some(function (key) {
+      const providedBuffer =
+        Buffer.from(String(providedKey));
+
+      const expectedBuffer =
+        Buffer.from(String(key));
+
+      return (
+        providedBuffer.length ===
+          expectedBuffer.length &&
+        crypto.timingSafeEqual(
+          providedBuffer,
+          expectedBuffer
+        )
+      );
+    });
+
+  if (!isValid) {
     return res.status(401).json({
       success: false,
       message: "Unauthorized."
