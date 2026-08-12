@@ -11,4 +11,39 @@ pool.on("error", (err) => {
   console.error("PostgreSQL error:", err);
 });
 
-module.exports = pool;
+async function initDatabase() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS companies (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS customers (
+        id TEXT PRIMARY KEY,
+        company_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        account_status TEXT,
+        account_detail TEXT,
+        verification TEXT,
+        balance NUMERIC DEFAULT 0,
+        deposit JSONB,
+        withdrawal JSONB,
+        bonus JSONB,
+        transaction_data JSONB
+      );
+    `);
+
+    console.log("PostgreSQL: tabel berhasil dibuat.");
+  } catch (error) {
+    console.error(
+      "PostgreSQL: gagal membuat tabel:",
+      error.message
+    );
+  }
+}
+
+module.exports = {
+  pool,
+  initDatabase
+};
