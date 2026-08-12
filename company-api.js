@@ -3,9 +3,9 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
-const app = express();
+const router = express.Router();
 
-app.use(express.json());
+router.use(express.json());
 
 /*
  * =====================================
@@ -30,11 +30,8 @@ try {
 
 /*
  * =====================================
- * API KEY
+ * API KEY ABC COMPANY
  * =====================================
- *
- * API key perusahaan disimpan di
- * environment variable.
  */
 
 function getCompanyApiKey() {
@@ -105,16 +102,35 @@ function authenticateCompany(
 
 /*
  * =====================================
- * GET CUSTOMER
+ * HEALTH CHECK
  * =====================================
  *
- * Standar API perusahaan:
+ * GET /api/ai-cs/health
+ */
+
+router.get(
+  "/health",
+  function (req, res) {
+    return res.json({
+      success: true,
+      companyId: "ABC001",
+      companyName:
+        "ABC Company",
+      status: "online"
+    });
+  }
+);
+
+/*
+ * =====================================
+ * GET CUSTOMER
+ * =====================================
  *
  * GET /api/ai-cs/customer/:customerId
  */
 
-app.get(
-  "/api/ai-cs/customer/:customerId",
+router.get(
+  "/customer/:customerId",
   authenticateCompany,
   function (req, res) {
     try {
@@ -145,8 +161,8 @@ app.get(
       }
 
       /*
-       * Pastikan customer memang
-       * milik ABC Company.
+       * Pastikan customer milik
+       * ABC Company.
        */
 
       if (
@@ -160,11 +176,6 @@ app.get(
             "Customer tidak terdaftar pada perusahaan ini."
         });
       }
-
-      /*
-       * Format response standar
-       * untuk AI-CS.
-       */
 
       return res.json({
         success: true,
@@ -229,40 +240,4 @@ app.get(
   }
 );
 
-/*
- * =====================================
- * HEALTH CHECK
- * =====================================
- */
-
-app.get(
-  "/api/ai-cs/health",
-  function (req, res) {
-    return res.json({
-      success: true,
-      companyId: "ABC001",
-      companyName:
-        "ABC Company",
-      status: "online"
-    });
-  }
-);
-
-/*
- * =====================================
- * SERVER
- * =====================================
- */
-
-const PORT =
-  process.env.API_PORT || 4000;
-
-app.listen(
-  PORT,
-  function () {
-    console.log(
-      "ABC Company API berjalan pada port " +
-        PORT
-    );
-  }
-);
+module.exports = router;
