@@ -56,12 +56,15 @@ if (companyId === "XYZ001") {
       method: "GET",
 
       headers: {
-        "Content-Type":
-          "application/json",
+  "Content-Type":
+    "application/json",
 
-        "x-ai-cs-key":
-          apiKey
-      }
+  "x-company-id":
+    companyId,
+
+  "x-ai-cs-key":
+    apiKey
+}
     });
 
   const data =
