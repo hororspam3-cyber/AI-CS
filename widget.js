@@ -15,11 +15,15 @@
    */
 
   const AI_CS_SERVER =
-    window.AI_CS_SERVER ||
-    window.location.origin;
+  window.AI_CS_SERVER ||
+  window.location.origin;
 
-  let currentCustomer = null;
-  let currentCompany = null;
+const AI_CS_COMPANY_ID =
+  window.AI_CS_COMPANY_ID ||
+  null;
+
+let currentCustomer = null;
+let currentCompany = null;
 
   /*
    * ==============================
