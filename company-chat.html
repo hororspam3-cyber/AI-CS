@@ -113,7 +113,7 @@
 
   <script>
     const API_URL =
-  "/api/test-company-chat";
+  "/api/company-chat-demo";
 
     const COMPANY_ID =
       "ABC001";
@@ -177,9 +177,21 @@
       try {
         const response =
   await fetch(
-    API_URL +
-      "?message=" +
-      encodeURIComponent(message)
+    API_URL,
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json"
+      },
+
+      body:
+        JSON.stringify({
+          message:
+            message
+        })
+    }
   );
 
         const data =
