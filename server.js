@@ -1115,12 +1115,15 @@ app.post(
             method: "POST",
 
             headers: {
-              "Content-Type":
-                "application/json",
+  "Content-Type":
+    "application/json",
 
-              "x-ai-cs-key":
-                companyApiKey
-            },
+  "x-company-id":
+    companyId,
+
+  "x-ai-cs-key":
+    companyApiKey
+},
 
             body:
               JSON.stringify({
