@@ -65,9 +65,42 @@ router.get(
       }
 
       return res.json({
-        success: true,
-        customer: customer
-      });
+  success: true,
+
+  customer: {
+    id: customerId,
+
+    name:
+      customer.name || null,
+
+    company_id:
+      customer.company_id || null,
+
+    account_status:
+      customer.account_status || null,
+
+    account_detail:
+      customer.account_detail || null,
+
+    verification:
+      customer.verification || null,
+
+    balance:
+      customer.balance ?? null,
+
+    deposit:
+      customer.deposit || null,
+
+    withdrawal:
+      customer.withdrawal || null,
+
+    bonus:
+      customer.bonus || null,
+
+    transaction:
+      customer.transaction || null
+  }
+});
 
     } catch (error) {
       console.error(
