@@ -1649,6 +1649,112 @@ app.get(
   }
 );
 /*
+ * ==============================
+ * API KEY SECURITY TESTER
+ * ==============================
+ */
+
+app.get(
+  "/api/test-api-key-security",
+  async function (req, res) {
+    try {
+      const companyId = String(
+        req.query.companyId || ""
+      )
+        .trim()
+        .toUpperCase();
+
+      const apiKeyType = String(
+        req.query.key || ""
+      )
+        .trim()
+        .toUpperCase();
+
+      if (!companyId || !apiKeyType) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Gunakan companyId dan key."
+        });
+      }
+
+      let testKey = null;
+
+      if (apiKeyType === "ABC") {
+        testKey =
+          process.env.ABC001_API_KEY;
+      }
+
+      if (apiKeyType === "XYZ") {
+        testKey =
+          process.env.XYZ001_API_KEY;
+      }
+
+      if (!testKey) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "API key untuk test belum tersedia."
+        });
+      }
+
+      const expectedKey =
+        getCompanyApiKey(companyId);
+
+      if (!expectedKey) {
+        return res.status(401).json({
+          success: false,
+          message:
+            "API perusahaan tidak tersedia."
+        });
+      }
+
+      const providedBuffer =
+        Buffer.from(String(testKey));
+
+      const expectedBuffer =
+        Buffer.from(String(expectedKey));
+
+      const isValid =
+        providedBuffer.length ===
+          expectedBuffer.length &&
+        crypto.timingSafeEqual(
+          providedBuffer,
+          expectedBuffer
+        );
+
+      if (!isValid) {
+        return res.status(401).json({
+          success: false,
+          companyId: companyId,
+          keyUsed: apiKeyType,
+          message: "Unauthorized."
+        });
+      }
+
+      return res.json({
+        success: true,
+        companyId: companyId,
+        keyUsed: apiKeyType,
+        message:
+          "API key valid untuk perusahaan ini."
+      });
+
+    } catch (error) {
+      console.error(
+        "API KEY SECURITY TEST ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Security tester mengalami masalah."
+      });
+    }
+  }
+);
+/*
 ========================================
 SERVER
 ========================================
