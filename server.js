@@ -5,6 +5,11 @@ const crypto = require("crypto");
 
 const { initDatabase } = require("./database");
 
+const {
+  saveCompany,
+  getCompany
+} = require("./companyRepository");
+
 const demoCompanyApi =
   require("./demoCompanyApi");
 
