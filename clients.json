@@ -13,14 +13,15 @@
   },
 
   "XYZ001": {
-  "company_name": "XYZ Company",
-  "company_id": "XYZ001",
-  "status": "active",
-  "ai_enabled": true,
-  "integration": {
-    "type": "demo",
-    "api_enabled": true,
-    "api_url": null,
-    "api_key_env": "XYZ001_API_KEY"
+    "company_name": "XYZ Company",
+    "company_id": "XYZ001",
+    "status": "active",
+    "ai_enabled": true,
+    "integration": {
+      "type": "demo",
+      "api_enabled": true,
+      "api_url": null,
+      "api_key_env": "XYZ001_API_KEY"
+    }
   }
 }
