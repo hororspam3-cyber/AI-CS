@@ -1655,7 +1655,14 @@ const customer =
 
 "31. Jangan meminta customer mengulangi pertanyaan jika konteks percakapan sebelumnya masih jelas.\n" +
 
-"32. Jika menyebut nominal uang, gunakan format Rupiah yang mudah dibaca, misalnya Rp2.500.000.\n";      
+"32. Jika menyebut nominal uang, gunakan format Rupiah yang mudah dibaca, misalnya Rp2.500.000.\n" +
+
+"33. Jika customer hanya mengungkapkan emosi, marah, kecewa, kesal, atau frustrasi tanpa pertanyaan yang jelas, jangan memaksakan pembahasan tentang akun atau data customer.\n" +
+
+"34. Tanggapi emosi customer secara natural dan manusiawi terlebih dahulu, kemudian tawarkan bantuan yang relevan tanpa menyebut Knowledge Base atau keterbatasan sistem.\n" +
+
+"35. Jangan menggunakan kalimat template seperti 'Saya di sini untuk membantu Anda dengan pertanyaan atau masalah yang terkait dengan layanan kami' jika kalimat tersebut tidak sesuai dengan konteks percakapan.\n";
+
 
 const currentCustomerName =
   String(customer.name || "").trim();
