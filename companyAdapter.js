@@ -1,4 +1,12 @@
-const clients = require("./clients.json");
+const {
+  getCompany
+} = require("./companyRepository");
+
+/*
+=====================================
+GET CUSTOMER FROM COMPANY API
+=====================================
+*/
 
 async function getCustomerFromCompany(
   companyId,
@@ -12,36 +20,49 @@ async function getCustomerFromCompany(
     .trim()
     .toUpperCase();
 
-  const company = clients[companyId];
-
-  if (!company) {
+  if (!companyId) {
     throw new Error(
-      "Perusahaan tidak ditemukan."
+      "Company ID diperlukan."
     );
   }
 
-  const integration =
-    company.integration || {};
+  if (!customerId) {
+    throw new Error(
+      "Customer ID diperlukan."
+    );
+  }
 
   /*
-   * =====================================
-   * DEMO MODE
-   * =====================================
-   *
-   * Tetap menggunakan Demo Company API
-   * yang sekarang sudah berhasil.
-   */
+  =====================================
+  AMBIL KONFIGURASI PERUSAHAAN
+  =====================================
+  */
+
+  const company =
+    await getCompany(companyId);
+
+  if (!company) {
+    throw new Error(
+      "Perusahaan tidak ditemukan di database."
+    );
+  }
+
+  /*
+  =====================================
+  DEMO MODE
+  =====================================
+  */
 
   if (
-    integration.type === "demo" ||
-    integration.api_enabled !== true
+    company.integration_type === "demo" ||
+    company.api_enabled !== true
   ) {
     const apiUrl =
       "https://ai-cs-pt47.onrender.com/api/demo-company/customer/" +
       encodeURIComponent(customerId);
 
     const apiKeyEnv =
-      integration.api_key_env;
+      company.api_key_env;
 
     if (!apiKeyEnv) {
       throw new Error(
@@ -80,7 +101,7 @@ async function getCustomerFromCompany(
     if (!response.ok) {
       throw new Error(
         data.message ||
-        "Gagal mengambil data customer dari API perusahaan."
+        "Gagal mengambil data customer dari API demo."
       );
     }
 
@@ -92,11 +113,6 @@ async function getCustomerFromCompany(
         "Format data API perusahaan tidak valid."
       );
     }
-
-    /*
-     * Pastikan customer benar-benar
-     * berasal dari perusahaan tersebut.
-     */
 
     if (
       data.customer.company_id &&
@@ -116,20 +132,18 @@ async function getCustomerFromCompany(
   }
 
   /*
-   * =====================================
-   * PRODUCTION MODE
-   * =====================================
-   *
-   * Nanti digunakan ketika perusahaan
-   * memiliki API sungguhan.
-   */
+  =====================================
+  PRODUCTION MODE
+  =====================================
+  */
 
   if (
-    integration.type === "production" &&
-    integration.api_enabled === true
+    company.integration_type ===
+      "production" &&
+    company.api_enabled === true
   ) {
     const apiUrl =
-      integration.api_url;
+      company.api_url;
 
     if (!apiUrl) {
       throw new Error(
@@ -138,7 +152,7 @@ async function getCustomerFromCompany(
     }
 
     const apiKeyEnv =
-      integration.api_key_env;
+      company.api_key_env;
 
     if (!apiKeyEnv) {
       throw new Error(
@@ -154,6 +168,12 @@ async function getCustomerFromCompany(
         "API key perusahaan belum tersedia."
       );
     }
+
+    /*
+    =====================================
+    PANGGIL API PERUSAHAAN
+    =====================================
+    */
 
     const response =
       await fetch(apiUrl, {
@@ -191,9 +211,10 @@ async function getCustomerFromCompany(
     }
 
     /*
-     * Pastikan API perusahaan
-     * mengembalikan customer yang benar.
-     */
+    =====================================
+    PASTIKAN CUSTOMER SESUAI
+    =====================================
+    */
 
     if (
       data.customer.id &&
@@ -219,13 +240,10 @@ async function getCustomerFromCompany(
 
 
 /*
- * =====================================
- * NORMALIZE CUSTOMER
- * =====================================
- *
- * Menyamakan format data dari
- * perusahaan yang berbeda.
- */
+=====================================
+NORMALIZE CUSTOMER
+=====================================
+*/
 
 function normalizeCustomer(
   customer,
