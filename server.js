@@ -364,12 +364,9 @@ app.get(
         await saveCompany({
           id: "XYZ001",
           name: "XYZ Company",
-          api_url:
-            "https://api.xyz.com/customer",
-          api_key_env:
-            "XYZ001_API_KEY",
-          integration_type:
-            "production",
+          api_url: null,
+          api_key_env: "XYZ001_API_KEY",
+          integration_type: "demo",
           api_enabled: true
         });
 
