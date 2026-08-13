@@ -16,7 +16,11 @@ async function initDatabase() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS companies (
         id TEXT PRIMARY KEY,
-        name TEXT NOT NULL
+        name TEXT NOT NULL,
+        api_url TEXT,
+        api_key_env TEXT,
+        integration_type TEXT DEFAULT 'demo',
+        api_enabled BOOLEAN DEFAULT false
       );
 
       CREATE TABLE IF NOT EXISTS customers (
@@ -34,7 +38,9 @@ async function initDatabase() {
       );
     `);
 
-    console.log("PostgreSQL: tabel berhasil dibuat.");
+    console.log(
+      "PostgreSQL: tabel berhasil dibuat."
+    );
   } catch (error) {
     console.error(
       "PostgreSQL: gagal membuat tabel:",
