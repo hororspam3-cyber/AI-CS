@@ -351,6 +351,50 @@ app.post(
   }
 );
 /*
+==============================
+TEST REGISTER XYZ
+==============================
+*/
+
+app.get(
+  "/api/admin/test-xyz",
+  async function (req, res) {
+    try {
+      const company =
+        await saveCompany({
+          id: "XYZ001",
+          name: "XYZ Company",
+          api_url:
+            "https://api.xyz.com/customer",
+          api_key_env:
+            "XYZ001_API_KEY",
+          integration_type:
+            "production",
+          api_enabled: true
+        });
+
+      return res.json({
+        success: true,
+        message:
+          "XYZ berhasil disimpan ke database.",
+        company: company
+      });
+
+    } catch (error) {
+      console.error(
+        "TEST XYZ ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.message
+      });
+    }
+  }
+);
+/*
 ========================================
 HOME
 ========================================
