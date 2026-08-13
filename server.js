@@ -275,7 +275,81 @@ function authenticateCustomer(req, res, next) {
 
   next();
 }
+/*
+==============================
+REGISTER COMPANY
+==============================
+*/
 
+app.post(
+  "/api/admin/company",
+  async function (req, res) {
+    try {
+      const companyId = String(
+        req.body.companyId || ""
+      )
+        .trim()
+        .toUpperCase();
+
+      const companyName = String(
+        req.body.companyName || ""
+      ).trim();
+
+      const apiUrl = String(
+        req.body.apiUrl || ""
+      ).trim();
+
+      const apiKeyEnv = String(
+        req.body.apiKeyEnv || ""
+      ).trim();
+
+      if (
+        !companyId ||
+        !companyName
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Company ID dan nama perusahaan diperlukan."
+        });
+      }
+
+      const company =
+        await saveCompany({
+          id: companyId,
+          name: companyName,
+          api_url: apiUrl || null,
+          api_key_env:
+            apiKeyEnv || null,
+          integration_type:
+            apiUrl
+              ? "production"
+              : "demo",
+          api_enabled:
+            Boolean(apiUrl)
+        });
+
+      return res.json({
+        success: true,
+        message:
+          "Perusahaan berhasil disimpan.",
+        company: company
+      });
+
+    } catch (error) {
+      console.error(
+        "REGISTER COMPANY ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Gagal menyimpan perusahaan."
+      });
+    }
+  }
+);
 /*
 ========================================
 HOME
