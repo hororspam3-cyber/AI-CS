@@ -23,6 +23,18 @@ async function initDatabase() {
         api_enabled BOOLEAN DEFAULT false
       );
 
+      ALTER TABLE companies
+      ADD COLUMN IF NOT EXISTS api_url TEXT;
+
+      ALTER TABLE companies
+      ADD COLUMN IF NOT EXISTS api_key_env TEXT;
+
+      ALTER TABLE companies
+      ADD COLUMN IF NOT EXISTS integration_type TEXT DEFAULT 'demo';
+
+      ALTER TABLE companies
+      ADD COLUMN IF NOT EXISTS api_enabled BOOLEAN DEFAULT false;
+
       CREATE TABLE IF NOT EXISTS customers (
         id TEXT PRIMARY KEY,
         company_id TEXT NOT NULL,
@@ -39,7 +51,7 @@ async function initDatabase() {
     `);
 
     console.log(
-      "PostgreSQL: tabel berhasil dibuat."
+      "PostgreSQL: tabel berhasil dibuat/diperbarui."
     );
   } catch (error) {
     console.error(
