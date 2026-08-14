@@ -2010,6 +2010,169 @@ app.get(
     }
   }
 );
+```js
+/*
+========================================
+TEST PLAYZONE AI-CS
+========================================
+*/
+
+app.get(
+  "/api/test-playzone-chat",
+  async function (req, res) {
+    try {
+      const companyId = "PZ001";
+      const customerId = "NX-4721";
+
+      const message = String(
+        req.query.message ||
+        "Berapa saldo saya?"
+      ).trim();
+
+      const customer =
+        await getCustomerFromCompany(
+          companyId,
+          customerId
+        );
+
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Customer PLAYZONE tidak ditemukan."
+        });
+      }
+
+      const company =
+        await getCompany(companyId);
+
+      if (!company) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "PLAYZONE tidak ditemukan."
+        });
+      }
+
+      const companyKnowledge =
+        await getCompanyKnowledge(
+          companyId
+        );
+
+      if (!GROQ_API_KEY) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "GROQ_API_KEY belum tersedia."
+        });
+      }
+
+      const systemPrompt =
+        "Kamu adalah AI Customer Service untuk PLAYZONE.\n\n" +
+
+        "Gunakan bahasa Indonesia.\n" +
+        "Jawab dengan ramah, jelas, singkat, dan natural.\n\n" +
+
+        "DATA CUSTOMER:\n" +
+        JSON.stringify(
+          customer,
+          null,
+          2
+        ) +
+        "\n\n" +
+
+        "INFORMASI PLAYZONE:\n" +
+        JSON.stringify(
+          companyKnowledge,
+          null,
+          2
+        ) +
+        "\n\n" +
+
+        "ATURAN:\n" +
+        "1. Gunakan data customer yang tersedia.\n" +
+        "2. Jangan mengarang data.\n" +
+        "3. Jangan memberikan data customer lain.\n" +
+        "4. Jangan meminta password, PIN, atau OTP.";
+
+      const response =
+        await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                "Bearer " +
+                GROQ_API_KEY
+            },
+
+            body: JSON.stringify({
+              model:
+                "llama-3.3-70b-versatile",
+
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    systemPrompt
+                },
+                {
+                  role: "user",
+                  content:
+                    message
+                }
+              ],
+
+              temperature: 0.2,
+              max_tokens: 300
+            })
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!response.ok) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "AI mengalami masalah."
+        });
+      }
+
+      const reply =
+        data.choices &&
+        data.choices[0] &&
+        data.choices[0].message &&
+        data.choices[0].message.content;
+
+      return res.json({
+        success: true,
+        companyId: companyId,
+        customerId: customerId,
+        customer: customer,
+        reply: reply
+      });
+
+    } catch (error) {
+      console.error(
+        "PLAYZONE TEST ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.message ||
+          "Tester PLAYZONE mengalami masalah."
+      });
+    }
+  }
+);
 /*
 ========================================
 SERVER
