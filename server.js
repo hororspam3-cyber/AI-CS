@@ -2175,6 +2175,48 @@ app.get(
 );
 /*
 ========================================
+TEST DATABASE PLAYZONE
+========================================
+*/
+
+app.get(
+  "/api/test-playzone-db",
+  async function (req, res) {
+    try {
+      const company =
+        await getCompany("PZ001");
+
+      if (!company) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "PZ001 tidak ditemukan di PostgreSQL."
+        });
+      }
+
+      return res.json({
+        success: true,
+        message:
+          "PZ001 ditemukan di PostgreSQL.",
+        company: company
+      });
+
+    } catch (error) {
+      console.error(
+        "TEST PLAYZONE DB ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.message
+      });
+    }
+  }
+);
+/*
+========================================
 SERVER
 ========================================
 */
