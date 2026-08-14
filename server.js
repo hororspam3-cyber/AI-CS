@@ -2248,6 +2248,41 @@ app.get(
   }
 );
 /*
+=====================================
+DEBUG PLAYZONE CUSTOMER
+=====================================
+*/
+
+app.get(
+  "/api/debug-playzone-customer",
+  async function (req, res) {
+    try {
+      const customer =
+        await getCustomerFromCompany(
+          "PZ001",
+          "NX-4721"
+        );
+
+      return res.json({
+        success: true,
+        customer: customer
+      });
+
+    } catch (error) {
+      console.error(
+        "DEBUG PLAYZONE CUSTOMER ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.message
+      });
+    }
+  }
+);
+/*
 ========================================
 SERVER
 ========================================
