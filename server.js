@@ -171,13 +171,15 @@ ke index.html.
 
 function getCompanyApiKey(companyId) {
   const keys = {
-    ABC001:
-      process.env.ABC001_API_KEY,
+  ABC001:
+    process.env.ABC001_API_KEY,
 
-    XYZ001:
-      process.env.XYZ001_API_KEY
-  };
+  XYZ001:
+    process.env.XYZ001_API_KEY,
 
+  PZ001:
+    process.env.PLAYZONE_API_KEY
+};
   return keys[companyId] || null;
 }
 
@@ -380,6 +382,51 @@ app.get(
     } catch (error) {
       console.error(
         "TEST XYZ ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.message
+      });
+    }
+  }
+);
+/*
+==============================
+TEST REGISTER PLAYZONE
+==============================
+*/
+
+app.get(
+  "/api/admin/test-playzone",
+  async function (req, res) {
+    try {
+      const company =
+        await saveCompany({
+          id: "PZ001",
+          name: "PLAYZONE",
+          api_url:
+            "https://playzone-api.onrender.com/api/customer/{customerId}",
+          api_key_env:
+            "PLAYZONE_API_KEY",
+          integration_type:
+            "production",
+          api_enabled:
+            true
+        });
+
+      return res.json({
+        success: true,
+        message:
+          "PLAYZONE berhasil disimpan ke database.",
+        company: company
+      });
+
+    } catch (error) {
+      console.error(
+        "TEST PLAYZONE ERROR:",
         error
       );
 
