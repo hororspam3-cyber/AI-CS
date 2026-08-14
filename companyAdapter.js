@@ -2,10 +2,9 @@ const {
   getCompany
 } = require("./companyRepository");
 
-
 /*
 =====================================
-GET CUSTOMER FROM COMPANY API
+GET CUSTOMER FROM COMPANY
 =====================================
 */
 
@@ -13,7 +12,6 @@ async function getCustomerFromCompany(
   companyId,
   customerId
 ) {
-
   companyId = String(companyId || "")
     .trim()
     .toUpperCase();
@@ -22,13 +20,11 @@ async function getCustomerFromCompany(
     .trim()
     .toUpperCase();
 
-
   if (!companyId) {
     throw new Error(
       "Company ID diperlukan."
     );
   }
-
 
   if (!customerId) {
     throw new Error(
@@ -36,16 +32,14 @@ async function getCustomerFromCompany(
     );
   }
 
-
   /*
   =====================================
-  AMBIL KONFIGURASI PERUSAHAAN
+  AMBIL DATA PERUSAHAAN DARI DATABASE
   =====================================
   */
 
   const company =
     await getCompany(companyId);
-
 
   if (!company) {
     throw new Error(
@@ -53,48 +47,48 @@ async function getCustomerFromCompany(
     );
   }
 
-
   /*
   =====================================
-  DEMO MODE
+  DEMO COMPANY
   =====================================
   */
 
   if (
-    company.integration_type === "demo" ||
-    company.api_enabled !== true
+    company.integration_type === "demo"
   ) {
-
-    const apiUrl =
-      "https://ai-cs-pt47.onrender.com/api/demo-company/customer/" +
-      encodeURIComponent(customerId);
-
-
     const apiKeyEnv =
-      company.api_key_env;
-
+      String(
+        company.api_key_env || ""
+      ).trim();
 
     if (!apiKeyEnv) {
       throw new Error(
-        "Environment API key perusahaan belum dikonfigurasi."
+        "API key perusahaan belum dikonfigurasi."
       );
     }
-
 
     const apiKey =
       process.env[apiKeyEnv];
 
-
     if (!apiKey) {
       throw new Error(
-        "API key perusahaan belum tersedia."
+        "API key perusahaan belum tersedia: " +
+        apiKeyEnv
       );
     }
 
+    /*
+     * Gunakan endpoint Demo API
+     * yang sudah ada di server AI-CS.
+     */
+
+    const apiUrl =
+      "https://ai-cs-pt47.onrender.com" +
+      "/api/demo-company/customer/" +
+      encodeURIComponent(customerId);
 
     const response =
       await fetch(apiUrl, {
-
         method: "GET",
 
         headers: {
@@ -107,43 +101,91 @@ async function getCustomerFromCompany(
           "x-ai-cs-key":
             apiKey
         }
-
       });
 
+    const text =
+      await response.text();
 
-    const data =
-      await response.json();
+    let data;
 
+    try {
+      data = JSON.parse(text);
+    } catch (error) {
+      throw new Error(
+        "API Demo mengembalikan response yang bukan JSON."
+      );
+    }
 
     if (!response.ok) {
       throw new Error(
         data.message ||
-        "Gagal mengambil data customer dari API demo."
+        "Gagal mengambil data customer dari API Demo."
       );
     }
-
 
     if (
       !data.success ||
       !data.customer
     ) {
       throw new Error(
-        "Format data API perusahaan tidak valid."
+        "Format data customer dari API Demo tidak valid."
       );
     }
 
+    /*
+     * Pastikan customer memang
+     * milik perusahaan yang diminta.
+     */
+
+    const returnedCustomer =
+      data.customer;
+
+    const returnedCompanyId =
+      String(
+        returnedCustomer.company_id ||
+        returnedCustomer.companyId ||
+        ""
+      )
+        .trim()
+        .toUpperCase();
+
+    if (
+      returnedCompanyId &&
+      returnedCompanyId !== companyId
+    ) {
+      throw new Error(
+        "Customer bukan milik perusahaan ini."
+      );
+    }
+
+    const returnedCustomerId =
+      String(
+        returnedCustomer.id ||
+        returnedCustomer.customerId ||
+        ""
+      )
+        .trim()
+        .toUpperCase();
+
+    if (
+      returnedCustomerId &&
+      returnedCustomerId !== customerId
+    ) {
+      throw new Error(
+        "API perusahaan mengembalikan customer yang tidak sesuai."
+      );
+    }
 
     return normalizeCustomer(
-      data.customer,
+      returnedCustomer,
       customerId,
       companyId
     );
   }
 
-
   /*
   =====================================
-  PRODUCTION MODE
+  PRODUCTION COMPANY
   =====================================
   */
 
@@ -152,14 +194,10 @@ async function getCustomerFromCompany(
       "production" &&
     company.api_enabled === true
   ) {
-
-    const apiUrl =
-  String(company.api_url || "")
-    .replace(
-      "{customerId}",
-      encodeURIComponent(customerId)
-    );
-
+    let apiUrl =
+      String(
+        company.api_url || ""
+      ).trim();
 
     if (!apiUrl) {
       throw new Error(
@@ -167,10 +205,16 @@ async function getCustomerFromCompany(
       );
     }
 
+    apiUrl =
+      apiUrl.replace(
+        "{customerId}",
+        encodeURIComponent(customerId)
+      );
 
     const apiKeyEnv =
-      company.api_key_env;
-
+      String(
+        company.api_key_env || ""
+      ).trim();
 
     if (!apiKeyEnv) {
       throw new Error(
@@ -178,10 +222,8 @@ async function getCustomerFromCompany(
       );
     }
 
-
     const apiKey =
       process.env[apiKeyEnv];
-
 
     if (!apiKey) {
       throw new Error(
@@ -189,20 +231,11 @@ async function getCustomerFromCompany(
       );
     }
 
-
-    /*
-    =====================================
-    PANGGIL API PERUSAHAAN
-    =====================================
-    */
-
     const response =
       await fetch(apiUrl, {
-
         method: "GET",
 
         headers: {
-
           "Content-Type":
             "application/json",
 
@@ -211,15 +244,21 @@ async function getCustomerFromCompany(
 
           "X-Customer-ID":
             customerId
-
         }
-
       });
 
+    const text =
+      await response.text();
 
-    const data =
-      await response.json();
+    let data;
 
+    try {
+      data = JSON.parse(text);
+    } catch (error) {
+      throw new Error(
+        "API perusahaan mengembalikan response yang bukan JSON."
+      );
+    }
 
     if (!response.ok) {
       throw new Error(
@@ -227,7 +266,6 @@ async function getCustomerFromCompany(
         "Gagal mengambil data dari API perusahaan."
       );
     }
-
 
     if (
       !data.success ||
@@ -238,32 +276,25 @@ async function getCustomerFromCompany(
       );
     }
 
-
-    /*
-    =====================================
-    PASTIKAN CUSTOMER SESUAI
-    =====================================
-    */
-
     const returnedCustomer =
       data.customer;
 
-
     const returnedId =
-      returnedCustomer.id ||
-      returnedCustomer.customerId ||
-      customerId;
-
+      String(
+        returnedCustomer.id ||
+        returnedCustomer.customerId ||
+        customerId
+      )
+        .trim()
+        .toUpperCase();
 
     if (
-      String(returnedId)
-        .toUpperCase() !== customerId
+      returnedId !== customerId
     ) {
       throw new Error(
         "API perusahaan mengembalikan customer yang tidak sesuai."
       );
     }
-
 
     return normalizeCustomer(
       returnedCustomer,
@@ -271,7 +302,6 @@ async function getCustomerFromCompany(
       companyId
     );
   }
-
 
   throw new Error(
     "Konfigurasi integration perusahaan tidak valid."
@@ -290,70 +320,56 @@ function normalizeCustomer(
   customerId,
   companyId
 ) {
-
   return {
-
     id:
       customer.id ||
       customer.customerId ||
       customerId,
 
-
     name:
       customer.name ||
       null,
 
-
     company_id:
       customer.company_id ||
       customer.companyId ||
-      companyId ||
-      null,
-
+      companyId,
 
     account_status:
       customer.account_status ||
       customer.status ||
       null,
 
-
     account_detail:
       customer.account_detail ||
       customer.membership ||
       null,
 
-
     verification:
       customer.verification ||
       null,
-
 
     balance:
       customer.balance ??
       null,
 
-
     deposit:
       customer.deposit ||
       null,
-
 
     withdrawal:
       customer.withdrawal ||
       customer.withdrawalStatus ||
       null,
 
-
     bonus:
       customer.bonus ??
       null,
-
 
     transaction:
       customer.transaction ||
       customer.transactions ||
       null
-
   };
 }
 
