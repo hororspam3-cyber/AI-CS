@@ -154,7 +154,11 @@ async function getCustomerFromCompany(
   ) {
 
     const apiUrl =
-      company.api_url;
+  String(company.api_url || "")
+    .replace(
+      "{customerId}",
+      encodeURIComponent(customerId)
+    );
 
 
     if (!apiUrl) {
