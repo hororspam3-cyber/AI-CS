@@ -2050,7 +2050,7 @@ app.get(
         return res.status(404).json({
           success: false,
           message:
-            "PLAYZONE tidak ditemukan."
+            "PLAYZONE tidak ditemukan di database."
         });
       }
 
@@ -2093,7 +2093,8 @@ app.get(
         "1. Gunakan data customer yang tersedia.\n" +
         "2. Jangan mengarang data.\n" +
         "3. Jangan memberikan data customer lain.\n" +
-        "4. Jangan meminta password, PIN, atau OTP.";
+        "4. Jangan meminta password, PIN, atau OTP.\n" +
+        "5. Gunakan format Rupiah yang mudah dibaca.";
 
       const response =
         await fetch(
@@ -2149,6 +2150,14 @@ app.get(
         data.choices[0] &&
         data.choices[0].message &&
         data.choices[0].message.content;
+
+      if (!reply) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "AI tidak memberikan jawaban."
+        });
+      }
 
       return res.json({
         success: true,
