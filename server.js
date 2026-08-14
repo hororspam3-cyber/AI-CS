@@ -2216,6 +2216,38 @@ app.get(
   }
 );
 /*
+=====================================
+DEBUG PLAYZONE DATABASE
+=====================================
+*/
+
+app.get(
+  "/api/debug-playzone",
+  async function (req, res) {
+    try {
+      const company =
+        await getCompany("PZ001");
+
+      return res.json({
+        success: true,
+        company: company
+      });
+
+    } catch (error) {
+      console.error(
+        "DEBUG PLAYZONE ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.message
+      });
+    }
+  }
+);
+/*
 ========================================
 SERVER
 ========================================
