@@ -38,4 +38,26 @@
       }
     ]
   }
+}, 
+
+"PZ001": {
+  "company_name": "PLAYZONE",
+  "faq": [
+    {
+      "question": "Bagaimana cara daftar?",
+      "answer": "Silakan mengikuti proses pendaftaran yang tersedia di PLAYZONE."
+    },
+    {
+      "question": "Bagaimana cara deposit?",
+      "answer": "Pilih menu Deposit dan ikuti metode pembayaran yang tersedia."
+    },
+    {
+      "question": "Bagaimana cara withdrawal?",
+      "answer": "Pilih menu Withdrawal dan ikuti langkah pencairan yang tersedia."
+    },
+    {
+      "question": "Berapa saldo saya?",
+      "answer": "Saldo akan ditampilkan berdasarkan data akun customer yang sedang digunakan."
+    }
+  ]
 }
