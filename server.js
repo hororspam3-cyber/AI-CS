@@ -1040,15 +1040,15 @@ app.post(
        */
 
       const company =
-        clients[companyId];
+  await getCompany(companyId);
 
-      if (!company) {
-        return res.status(404).json({
-          success: false,
-          message:
-            "Perusahaan tidak ditemukan."
-        });
-      }
+if (!company) {
+  return res.status(404).json({
+    success: false,
+    message:
+      "Perusahaan tidak ditemukan di database."
+  });
+}
 
       /*
        * Ambil data customer melalui
