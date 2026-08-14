@@ -1,83 +1,60 @@
-const clients = require("./clients.json");
+const { getCompany } = require("./companyRepository");
 
 async function getCompanyKnowledge(companyId) {
+  const id = String(companyId || "")
+    .trim()
+    .toUpperCase();
+
+  if (!id) {
+    throw new Error(
+      "Company ID diperlukan."
+    );
+  }
+
+  /*
+  =====================================
+  AMBIL PERUSAHAAN DARI POSTGRESQL
+  =====================================
+  */
+
   const company =
-    clients[companyId];
+    await getCompany(id);
 
   if (!company) {
     throw new Error(
-      "Perusahaan tidak ditemukan."
+      "Perusahaan tidak ditemukan di database."
     );
   }
 
   /*
-   * ==============================
-   * DEMO COMPANY KNOWLEDGE API
-   * ==============================
-   */
+  =====================================
+  AMBIL KNOWLEDGE BASE
+  =====================================
+  */
 
-  const apiUrl =
-    "https://ai-cs-pt47.onrender.com/api/demo-company/knowledge/" +
-    encodeURIComponent(companyId);
+  const knowledgeData =
+    require("./companyKnowledge.json");
+
+  const companyKnowledge =
+    knowledgeData[id];
 
   /*
-   * Gunakan API key perusahaan.
-   */
+  =====================================
+  JIKA KNOWLEDGE BELUM ADA
+  =====================================
+  */
 
-  let apiKey = null;
-
-  if (companyId === "ABC001") {
-    apiKey =
-      process.env.ABC001_API_KEY;
+  if (!companyKnowledge) {
+    return [];
   }
 
-  if (companyId === "XYZ001") {
-    apiKey =
-      process.env.XYZ001_API_KEY;
-  }
+  /*
+  =====================================
+  KEMBALIKAN FAQ
+  =====================================
+  */
 
-  if (!apiKey) {
-    throw new Error(
-      "API key perusahaan belum tersedia."
-    );
-  }
-
-  const response =
-    await fetch(apiUrl, {
-      method: "GET",
-
-      headers: {
-        "Content-Type":
-          "application/json",
-
-        "x-company-id":
-          companyId,
-
-        "x-ai-cs-key":
-          apiKey
-      }
-    });
-
-  const data =
-    await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message ||
-        "Gagal mengambil Knowledge Base perusahaan."
-    );
-  }
-
-  if (
-    !data.success ||
-    !Array.isArray(data.knowledge)
-  ) {
-    throw new Error(
-      "Format Knowledge Base tidak valid."
-    );
-  }
-
-  return data.knowledge;
+  return companyKnowledge.faq || [];
 }
 
 module.exports = {
